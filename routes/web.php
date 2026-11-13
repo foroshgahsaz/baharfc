@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Payment\PaymentCallbackController;
 use App\Http\Controllers\Shop\HomeController;
+use App\Http\Controllers\Shop\OrderInvoiceController;
 use App\Http\Controllers\Shop\ProductController;
 use App\Livewire\Account\AccountIndex;
 use App\Livewire\Auth\CustomerLogin;
@@ -36,4 +37,8 @@ Route::post('/logout', LogoutController::class)->middleware('auth')->name('logou
 
 Route::middleware('auth')->prefix('account')->name('account.')->group(function (): void {
     Route::get('/', AccountIndex::class)->name('index');
+});
+
+Route::middleware('auth')->group(function (): void {
+    Route::get('/orders/{order}/invoice', OrderInvoiceController::class)->name('orders.invoice');
 });

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Contracts\SmsSender;
+use App\Models\Order;
+use App\Observers\OrderObserver;
 use App\Services\CartService;
 use App\Services\LogSmsSender;
 use Illuminate\Auth\Events\Login;
@@ -33,5 +35,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('payment-callbacks', function (Request $request) {
             return Limit::perMinute(30)->by($request->ip());
         });
+
+        Order::observe(OrderObserver::class);
     }
 }
