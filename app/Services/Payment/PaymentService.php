@@ -7,8 +7,10 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Services\Payment\Gateways\DigiPayGateway;
 use App\Services\Payment\Gateways\MellatGateway;
 use App\Services\Payment\Gateways\ParsianGateway;
+use App\Services\Payment\Gateways\SnappPayGateway;
 use App\Support\Payments\GatewayInitResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +27,8 @@ class PaymentService
         $this->gateways = [
             'mellat' => new MellatGateway,
             'parsian' => new ParsianGateway,
+            'digipay' => new DigiPayGateway,
+            'snapppay' => new SnappPayGateway,
         ];
     }
 

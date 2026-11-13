@@ -24,18 +24,42 @@
             <form wire:submit="pay" class="mt-8 space-y-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <p class="text-sm font-medium text-slate-700">انتخاب درگاه پرداخت</p>
                 <ul class="space-y-2">
-                    @foreach ($gateways as $slug => $gateway)
+                    @php
+                        $gatewayBadges = [
+                            'mellat' => ['بانک', 'bg-blue-100 text-blue-800'],
+                            'parsian' => ['بانک', 'bg-indigo-100 text-indigo-800'],
+                            'digipay' => ['کیف پول', 'bg-violet-100 text-violet-800'],
+                            'snapppay' => ['اقساطی', 'bg-orange-100 text-orange-800'],
+                        ];
+                    @endphp
+                    @foreach ($gateways as $slug => $gatewayDriver)
+                        @php [$badgeLabel, $badgeClass] = $gatewayBadges[$slug] ?? ['درگاه', 'bg-slate-100 text-slate-700']; @endphp
                         <li>
-                            <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 p-4 hover:border-brand-300">
-                                <input type="radio" wire:model="gateway" value="{{ $slug }}" class="text-brand-600" />
-                                <span class="text-sm font-medium">{{ $gateway->name() }}
-                                    @if (config('payment.mode') === 'sandbox' || ! $gateway->isConfigured())
+                            <label @class([
+                                'flex cursor-pointer items-center gap-3 rounded-2xl border p-4 transition',
+                                'border-brand-500 bg-brand-50 ring-2 ring-brand-500/20' => $gateway === $slug,
+                                'border-slate-200 hover:border-brand-300' => $gateway !== $slug,
+                            ])>
+                                <input type="radio" wire:model.live="gateway" value="{{ $slug }}" class="text-brand-600" />
+                                <span class="flex flex-1 flex-wrap items-center gap-2 text-sm font-medium">
+                                    {{ $gatewayDriver->name() }}
+                                    <span class="rounded-lg px-2 py-0.5 text-xs {{ $badgeClass }}">{{ $badgeLabel }}</span>
+                                    @if (config('payment.mode') === 'sandbox' || ! $gatewayDriver->isConfigured())
                                         <span class="text-xs text-amber-600">(حالت آزمایشی)</span>
                                     @endif
                                 </span>
                             </label>
                         </li>
                     @endforeach
+                    @if (in_array($gateway, ['digipay', 'snapppay'], true))
+                        <p class="text-xs leading-relaxed text-slate-500">
+                            @if ($gateway === 'digipay')
+                                پرداخت از کیف پول و اعتبار دیجی‌پی — در حالت آزمایشی بدون اتصال واقعی انجام می‌شود.
+                            @else
+                                پرداخت اقساطی اسنپ‌پی — در حالت آزمایشی بدون اتصال واقعی انجام می‌شود.
+                            @endif
+                        </p>
+                    @endif
                 </ul>
                 <button type="submit" class="w-full rounded-2xl bg-brand-600 py-3 text-sm font-semibold text-white hover:bg-brand-700">
                     پرداخت و اتصال به درگاه
