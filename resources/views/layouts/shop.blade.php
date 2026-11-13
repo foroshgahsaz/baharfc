@@ -14,6 +14,9 @@
             <a href="{{ route('home') }}" class="text-lg font-bold tracking-tight text-brand-700">
                 {{ config('app.name') }}
             </a>
+            <div class="hidden flex-1 justify-center px-4 md:flex">
+                <livewire:shop.search-bar />
+            </div>
             <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
                 <a href="{{ route('home') }}" class="transition hover:text-brand-700">خانه</a>
                 <a href="{{ route('products.index') }}" class="transition hover:text-brand-700">محصولات</a>

@@ -1,6 +1,12 @@
 @extends('layouts.shop')
 
 @section('content')
+    @php
+        $gallery = $product->images->isNotEmpty()
+            ? $product->images->map(fn ($img) => $img->url())->all()
+            : ($product->imageUrl() ? [$product->imageUrl()] : []);
+        $mainImage = $gallery[0] ?? null;
+    @endphp
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <nav class="mb-6 text-sm text-slate-500">
             <a href="{{ route('home') }}" class="hover:text-brand-600">خانه</a>
@@ -17,12 +23,21 @@
         <div class="grid gap-10 lg:grid-cols-2">
             <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white">
                 <div class="aspect-square bg-slate-100">
-                    @if ($product->imageUrl())
-                        <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" class="h-full w-full object-cover" />
+                    @if ($mainImage)
+                        <img src="{{ $mainImage }}" alt="{{ $product->name }}" class="h-full w-full object-cover" id="product-main-image" />
                     @else
                         <div class="flex h-full items-center justify-center text-6xl text-slate-300">📦</div>
                     @endif
                 </div>
+                @if (count($gallery) > 1)
+                    <div class="flex gap-2 overflow-x-auto p-3">
+                        @foreach ($gallery as $url)
+                            <button type="button" data-gallery-thumb="{{ $url }}" class="size-16 shrink-0 overflow-hidden rounded-lg border-2 border-transparent hover:border-brand-400">
+                                <img src="{{ $url }}" alt="" class="h-full w-full object-cover" />
+                            </button>
+                        @endforeach
+                    </div>
+                @endif
             </div>
 
             <div>
@@ -65,4 +80,16 @@
             </section>
         @endif
     </div>
+    @if (count($gallery) > 1)
+        <script>
+            document.querySelectorAll('[data-gallery-thumb]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const img = document.getElementById('product-main-image');
+                    if (img) img.src = btn.dataset.galleryThumb;
+                    document.querySelectorAll('[data-gallery-thumb]').forEach(b => b.classList.remove('border-brand-600'));
+                    btn.classList.add('border-brand-600');
+                });
+            });
+        </script>
+    @endif
 @endsection
