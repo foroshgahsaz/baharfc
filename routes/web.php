@@ -26,7 +26,7 @@ Route::get('/products/{slug}', [ProductController::class, 'show'])->name('produc
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/cart', CartPage::class)->name('cart.index');
 
-Route::middleware('auth')->group(function (): void {
+Route::middleware(['auth', 'throttle:checkout'])->group(function (): void {
     Route::get('/checkout', CheckoutPage::class)->name('checkout.index');
     Route::get('/checkout/payment/{order}', CheckoutPayment::class)->name('checkout.payment');
 });
@@ -35,7 +35,7 @@ Route::match(['get', 'post'], '/payment/callback/{gateway}', PaymentCallbackCont
     ->middleware('throttle:payment-callbacks')
     ->name('payment.callback');
 
-Route::middleware('guest')->group(function (): void {
+Route::middleware(['guest', 'throttle:auth-pages'])->group(function (): void {
     Route::get('/login', CustomerLogin::class)->name('login');
     Route::get('/register', CustomerRegister::class)->name('register');
 });
