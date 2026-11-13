@@ -21,6 +21,7 @@
             </nav>
             <div class="flex items-center gap-2">
                 @auth
+                    <a href="{{ route('account.index') }}" class="hidden text-sm text-slate-600 transition hover:text-brand-700 sm:inline">حساب من</a>
                     <span class="hidden text-sm text-slate-600 sm:inline">{{ auth()->user()->name }}</span>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
