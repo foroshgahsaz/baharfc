@@ -42,9 +42,9 @@
                     @endif
                 </div>
 
-                <button type="button" class="mt-8 w-full rounded-2xl bg-brand-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700 sm:w-auto">
-                    افزودن به سبد خرید
-                </button>
+                <div class="mt-8">
+                    <livewire:shop.add-to-cart :product-id="$product->id" :key="'add-'.$product->id" />
+                </div>
 
                 @if ($product->description)
                     <div class="prose prose-slate mt-10 max-w-none text-sm leading-relaxed">

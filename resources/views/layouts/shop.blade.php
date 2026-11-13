@@ -17,6 +17,7 @@
             <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 md:flex">
                 <a href="{{ route('home') }}" class="transition hover:text-brand-700">خانه</a>
                 <a href="{{ route('products.index') }}" class="transition hover:text-brand-700">محصولات</a>
+                <a href="{{ route('cart.index') }}" class="transition hover:text-brand-700">سبد خرید @if(($cartItemCount ?? 0) > 0)<span class="text-brand-600">({{ $cartItemCount }})</span>@endif</a>
                 <a href="#" class="transition hover:text-brand-700">تماس</a>
             </nav>
             <div class="flex items-center gap-2">
