@@ -83,6 +83,16 @@
                 @if ($appliedCoupon)
                     <button type="button" wire:click="removeCoupon" class="mt-2 text-xs text-slate-500 hover:underline">حذف کد تخفیف</button>
                 @endif
+
+                @auth
+                    <a href="{{ route('checkout.index') }}" class="mt-6 block w-full rounded-2xl bg-brand-600 py-3 text-center text-sm font-semibold text-white hover:bg-brand-700">
+                        ادامه تسویه حساب
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="mt-6 block w-full rounded-2xl border border-brand-300 py-3 text-center text-sm font-semibold text-brand-700 hover:bg-brand-50">
+                        برای تسویه حساب وارد شوید
+                    </a>
+                @endauth
             </aside>
         </div>
     @endif
