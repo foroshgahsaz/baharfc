@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Payment\PaymentCallbackController;
 use App\Http\Controllers\Shop\HomeController;
 use App\Http\Controllers\Shop\ProductController;
 use App\Livewire\Account\AccountIndex;
@@ -21,6 +22,10 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/checkout', CheckoutPage::class)->name('checkout.index');
     Route::get('/checkout/payment/{order}', CheckoutPayment::class)->name('checkout.payment');
 });
+
+Route::match(['get', 'post'], '/payment/callback/{gateway}', PaymentCallbackController::class)
+    ->middleware('throttle:payment-callbacks')
+    ->name('payment.callback');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', CustomerLogin::class)->name('login');
