@@ -1,4 +1,30 @@
 <div>
+    @if ($product->isVariable() && $product->activeVariants->isNotEmpty())
+        <div class="mb-4">
+            <p class="mb-2 text-sm font-medium text-slate-700">انتخاب گزینه</p>
+            <div class="flex flex-wrap gap-2">
+                @foreach ($product->activeVariants as $variant)
+                    <button
+                        type="button"
+                        wire:click="$set('productVariantId', {{ $variant->id }})"
+                        @class([
+                            'rounded-xl border px-3 py-2 text-sm transition',
+                            $productVariantId === $variant->id
+                                ? 'border-brand-600 bg-brand-50 text-brand-800'
+                                : 'border-slate-200 text-slate-700 hover:border-brand-300',
+                        ])
+                    >
+                        <span>{{ $variant->name }}</span>
+                        <span class="mr-2 text-xs text-slate-500">{{ number_format($variant->price) }} تومان</span>
+                    </button>
+                @endforeach
+            </div>
+            @error('variant')
+                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+            @enderror
+        </div>
+    @endif
+
     <div class="flex flex-wrap items-center gap-3">
         <label class="text-sm text-slate-600">
             تعداد

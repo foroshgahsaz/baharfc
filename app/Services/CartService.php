@@ -26,7 +26,10 @@ class CartService
 
     public function items(): Collection
     {
-        $query = CartItem::query()->with(['product' => fn ($q) => $q->where('is_active', true)]);
+        $query = CartItem::query()->with([
+            'product' => fn ($q) => $q->where('is_active', true),
+            'variant',
+        ]);
 
         if ($userId = Auth::id()) {
             $query->where('user_id', $userId);
@@ -37,16 +40,30 @@ class CartService
         return $query->get()->filter(fn (CartItem $item) => $item->product !== null);
     }
 
-    public function add(Product $product, int $quantity = 1): CartItem
+    public function add(Product $product, int $quantity = 1, ?int $productVariantId = null): CartItem
     {
         if (! $product->is_active) {
             throw new InvalidArgumentException('محصول غیرفعال است.');
+        }
+
+        if ($product->isVariable()) {
+            if ($productVariantId === null) {
+                throw new InvalidArgumentException('لطفاً یک گزینه انتخاب کنید.');
+            }
+
+            $variant = $product->activeVariants()->whereKey($productVariantId)->first();
+            if ($variant === null) {
+                throw new InvalidArgumentException('تنوع انتخاب‌شده معتبر نیست.');
+            }
+        } else {
+            $productVariantId = null;
         }
 
         $quantity = max(1, min(99, $quantity));
 
         $attributes = [
             'product_id' => $product->id,
+            'product_variant_id' => $productVariantId,
         ];
 
         if ($userId = Auth::id()) {
@@ -182,6 +199,7 @@ class CartService
                 $existing = CartItem::query()
                     ->where('user_id', $user->id)
                     ->where('product_id', $guestItem->product_id)
+                    ->where('product_variant_id', $guestItem->product_variant_id)
                     ->first();
 
                 if ($existing) {

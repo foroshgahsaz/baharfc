@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use App\Enums\ProductType;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -27,6 +28,12 @@ class ProductForm
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)
                     ->helperText('برای فارسی نامک را دستی وارد کنید'),
+                Select::make('type')
+                    ->label('نوع محصول')
+                    ->options(collect(ProductType::cases())->mapWithKeys(fn ($t) => [$t->value => $t->label()]))
+                    ->default(ProductType::Simple->value)
+                    ->required()
+                    ->native(false),
                 Select::make('category_id')
                     ->label('دسته‌بندی')
                     ->relationship('category', 'name')

@@ -62,9 +62,11 @@ class CreateOrderFromCart
                 $product = $cartItem->product;
                 $order->items()->create([
                     'product_id' => $product->id,
-                    'product_name' => $product->name,
+                    'product_variant_id' => $cartItem->product_variant_id,
+                    'product_name' => $cartItem->displayName(),
                     'product_slug' => $product->slug,
-                    'unit_price' => $product->price,
+                    'variant_label' => $cartItem->variant?->name,
+                    'unit_price' => $cartItem->unitPrice(),
                     'quantity' => $cartItem->quantity,
                     'line_total' => $cartItem->lineTotal(),
                 ]);
