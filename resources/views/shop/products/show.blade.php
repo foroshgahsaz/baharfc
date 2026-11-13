@@ -1,5 +1,28 @@
 @extends('layouts.shop')
 
+@push('head')
+    @php
+        $jsonLd = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Product',
+            'name' => $product->name,
+            'description' => strip_tags($product->short_description ?: $product->name),
+            'sku' => $product->slug,
+            'offers' => [
+                '@type' => 'Offer',
+                'priceCurrency' => 'IRR',
+                'price' => $product->price,
+                'availability' => $product->is_active ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                'url' => route('products.show', $product->slug),
+            ],
+        ];
+        if ($product->imageUrl()) {
+            $jsonLd['image'] = $product->imageUrl();
+        }
+    @endphp
+    <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endpush
+
 @section('content')
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <nav class="mb-6 text-sm text-slate-500">

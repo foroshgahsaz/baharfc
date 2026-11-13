@@ -7,6 +7,7 @@
     <title>{{ $title ?? 'فروشگاه' }} — {{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    @stack('head')
 </head>
 <body class="min-h-full bg-slate-50 font-sans text-slate-800 antialiased">
     <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">

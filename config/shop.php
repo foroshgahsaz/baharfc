@@ -13,4 +13,8 @@ return [
         'driver' => env('SHOP_SMS_DRIVER', 'log'),
     ],
 
+    'cache' => [
+        'product_page_minutes' => (int) env('SHOP_PRODUCT_PAGE_CACHE_MINUTES', 15),
+    ],
+
 ];

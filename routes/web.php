@@ -6,6 +6,7 @@ use App\Http\Controllers\Shop\BlogController;
 use App\Http\Controllers\Shop\HomeController;
 use App\Http\Controllers\Shop\OrderInvoiceController;
 use App\Http\Controllers\Shop\ProductController;
+use App\Http\Controllers\Shop\SitemapController;
 use App\Livewire\Account\AccountIndex;
 use App\Livewire\Auth\CustomerLogin;
 use App\Livewire\Auth\CustomerRegister;
@@ -21,6 +22,8 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/cart', CartPage::class)->name('cart.index');
 
 Route::middleware('auth')->group(function (): void {
