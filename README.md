@@ -9,6 +9,8 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate --seed
+# یا فقط دمو کاتالوگ:
+php artisan db:seed --class=DemoCatalogSeeder
 php artisan storage:link
 npm ci && npm run build
 php artisan serve
