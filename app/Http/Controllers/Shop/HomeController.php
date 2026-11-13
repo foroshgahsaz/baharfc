@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banner;
 use App\Models\Product;
 use Illuminate\View\View;
 
@@ -23,7 +24,13 @@ class HomeController extends Controller
             ->limit(8)
             ->get();
 
+        $banners = Banner::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
         return view('shop.home', [
+            'banners' => $banners,
             'featuredProducts' => $featuredProducts,
             'latestProducts' => $latestProducts,
         ]);

@@ -1,6 +1,31 @@
 @extends('layouts.shop')
 
 @section('content')
+    @if ($banners->isNotEmpty())
+        <section class="bg-slate-900">
+            <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <div class="grid gap-4 md:grid-cols-2">
+                    @foreach ($banners as $banner)
+                        <a
+                            href="{{ $banner->link_url ?: route('products.index') }}"
+                            class="group relative overflow-hidden rounded-3xl bg-gradient-to-l from-brand-800 to-brand-600 p-8 text-white shadow-lg"
+                        >
+                            @if ($banner->image_url)
+                                <img src="{{ $banner->image_url }}" alt="" class="absolute inset-0 h-full w-full object-cover opacity-40" />
+                            @endif
+                            <div class="relative">
+                                <h2 class="text-2xl font-bold">{{ $banner->title }}</h2>
+                                @if ($banner->subtitle)
+                                    <p class="mt-2 text-sm text-brand-100">{{ $banner->subtitle }}</p>
+                                @endif
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
     <section class="relative overflow-hidden bg-gradient-to-bl from-brand-700 via-brand-600 to-teal-500 text-white">
         <div class="absolute -left-24 top-10 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
         <div class="absolute -bottom-16 right-0 h-72 w-72 rounded-full bg-teal-300/20 blur-3xl"></div>
@@ -70,4 +95,10 @@
             </div>
         </section>
     @endif
+
+    <section class="border-t border-slate-200 bg-white">
+        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <livewire:shop.newsletter-subscribe />
+        </div>
+    </section>
 @endsection
