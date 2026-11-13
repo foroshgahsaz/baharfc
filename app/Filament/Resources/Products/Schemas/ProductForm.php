@@ -3,10 +3,12 @@
 namespace App\Filament\Resources\Products\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Str;
 
 class ProductForm
 {
@@ -18,18 +20,23 @@ class ProductForm
                 TextInput::make('name')
                     ->label('نام محصول')
                     ->required()
-                    ->maxLength(255)
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(function ($set, ?string $state): void {
-                        if (filled($state)) {
-                            $set('slug', Str::slug($state));
-                        }
-                    }),
+                    ->maxLength(255),
                 TextInput::make('slug')
                     ->label('نامک (URL)')
                     ->required()
                     ->maxLength(255)
-                    ->unique(ignoreRecord: true),
+                    ->unique(ignoreRecord: true)
+                    ->helperText('برای فارسی نامک را دستی وارد کنید'),
+                Select::make('category_id')
+                    ->label('دسته‌بندی')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload(),
+                Select::make('brand_id')
+                    ->label('برند')
+                    ->relationship('brand', 'name')
+                    ->searchable()
+                    ->preload(),
                 TextInput::make('price')
                     ->label('قیمت (تومان)')
                     ->numeric()
@@ -39,6 +46,18 @@ class ProductForm
                     ->label('قیمت قبل از تخفیف')
                     ->numeric()
                     ->minValue(0),
+                Textarea::make('short_description')
+                    ->label('توضیح کوتاه')
+                    ->rows(2)
+                    ->columnSpanFull(),
+                RichEditor::make('description')
+                    ->label('توضیحات')
+                    ->columnSpanFull(),
+                TextInput::make('meta_title')
+                    ->label('عنوان SEO'),
+                Textarea::make('meta_description')
+                    ->label('توضیح SEO')
+                    ->rows(2),
                 TextInput::make('sort_order')
                     ->label('ترتیب نمایش')
                     ->numeric()

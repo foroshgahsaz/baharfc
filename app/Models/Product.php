@@ -4,11 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
 #[Fillable([
     'name',
     'slug',
+    'category_id',
+    'brand_id',
+    'short_description',
+    'description',
+    'meta_title',
+    'meta_description',
     'price',
     'compare_at_price',
     'image_path',
@@ -18,9 +25,41 @@ use Illuminate\Support\Facades\Storage;
 ])]
 class Product extends Model
 {
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+            'is_featured' => 'boolean',
+        ];
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
     public function formattedPrice(): string
     {
         return number_format($this->price).' تومان';
+    }
+
+    public function hasDiscount(): bool
+    {
+        return $this->compare_at_price !== null && $this->compare_at_price > $this->price;
+    }
+
+    public function discountPercent(): ?int
+    {
+        if (! $this->hasDiscount()) {
+            return null;
+        }
+
+        return (int) round((1 - ($this->price / $this->compare_at_price)) * 100);
     }
 
     public function imageUrl(): ?string

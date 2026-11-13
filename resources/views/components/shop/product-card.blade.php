@@ -1,6 +1,6 @@
 @props(['product'])
 
-<article class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+<a href="{{ route('products.show', $product->slug) }}" class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
     <div class="relative aspect-square overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
         @if ($product->imageUrl())
             <img
@@ -26,8 +26,8 @@
                 <p class="text-xs text-slate-400 line-through">{{ number_format($product->compare_at_price) }}</p>
             @endif
         </div>
-        <button type="button" class="mt-4 w-full rounded-xl border border-slate-200 py-2 text-sm font-medium text-slate-700 transition hover:border-brand-400 hover:text-brand-700">
-            افزودن به سبد
-        </button>
+        <span class="mt-4 block w-full rounded-xl border border-slate-200 py-2 text-center text-sm font-medium text-slate-700 transition group-hover:border-brand-400 group-hover:text-brand-700">
+            مشاهده محصول
+        </span>
     </div>
-</article>
+</a>
