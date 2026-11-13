@@ -54,6 +54,34 @@ class PaymentTest extends TestCase
         $this->assertSame(OrderStatus::Paid, $order->fresh()->status);
     }
 
+    public function test_digipay_gateway_available_in_sandbox(): void
+    {
+        $user = User::factory()->create(['is_admin' => false]);
+        $product = Product::factory()->create();
+        $address = Address::query()->create([
+            'user_id' => $user->id,
+            'title' => 'x',
+            'recipient_name' => 'a',
+            'phone' => '09120000000',
+            'province' => 'تهران',
+            'city' => 'تهران',
+            'address_line' => 'a',
+        ]);
+
+        $this->actingAs($user);
+        app(CartService::class)->add($product);
+        $order = app(CreateOrderFromCart::class)->execute($user, $address);
+
+        $payments = app(PaymentService::class);
+        $this->assertArrayHasKey('digipay', $payments->availableGateways());
+        $this->assertArrayHasKey('snapppay', $payments->availableGateways());
+
+        $payment = $payments->createPayment($order, 'snapppay');
+        $init = $payments->start($payment);
+        $this->get($init->redirectUrl)->assertRedirect(route('checkout.payment', $order));
+        $this->assertSame(PaymentStatus::Paid, $payment->fresh()->status);
+    }
+
     public function test_invalid_signature_fails_payment(): void
     {
         $user = User::factory()->create(['is_admin' => false]);
