@@ -6,7 +6,10 @@ use App\Contracts\SmsSender;
 use App\Services\CartService;
 use App\Services\LogSmsSender;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(Login::class, function (Login $event): void {
             app(CartService::class)->mergeGuestCartIntoUser($event->user);
+        });
+
+        RateLimiter::for('payment-callbacks', function (Request $request) {
+            return Limit::perMinute(30)->by($request->ip());
         });
     }
 }
