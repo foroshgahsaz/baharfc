@@ -51,5 +51,7 @@ class DatabaseSeeder extends Seeder
                 array_merge($item, ['is_active' => true]),
             );
         }
+
+        $this->call(CartCatalogSeeder::class);
     }
 }
