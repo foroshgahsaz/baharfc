@@ -28,6 +28,17 @@ class ProductController extends Controller
             $query->whereHas('brand', fn ($q) => $q->where('slug', $brandSlug)->where('is_active', true));
         }
 
+        $search = $request->string('q')->trim()->toString();
+        $query->search($search);
+
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', (int) $request->input('min_price'));
+        }
+
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', (int) $request->input('max_price'));
+        }
+
         $sort = $request->string('sort', 'newest')->toString();
         match ($sort) {
             'price_asc' => $query->orderBy('price'),
@@ -44,13 +55,14 @@ class ProductController extends Controller
             'categories' => Category::query()->where('is_active', true)->whereNull('parent_id')->orderBy('sort_order')->get(),
             'brands' => Brand::query()->where('is_active', true)->orderBy('name')->get(),
             'sort' => $sort,
+            'search' => $search,
         ]);
     }
 
     public function show(string $slug): View
     {
         $product = Product::query()
-            ->with(['category', 'brand'])
+            ->with(['category', 'brand', 'images'])
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
