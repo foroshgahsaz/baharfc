@@ -42,8 +42,9 @@
                     @endif
                 </div>
 
-                <div class="mt-8">
+                <div class="mt-8 flex flex-wrap items-center gap-4">
                     <livewire:shop.add-to-cart :product-id="$product->id" :key="'add-'.$product->id" />
+                    <livewire:shop.product-wishlist-toggle :product-id="$product->id" :key="'wish-'.$product->id" />
                 </div>
 
                 @if ($product->description)

@@ -57,7 +57,7 @@ class AccountIndex extends Component
 
     public function setTab(string $tab): void
     {
-        if (in_array($tab, ['profile', 'addresses'], true)) {
+        if (in_array($tab, ['profile', 'addresses', 'returns'], true)) {
             $this->activeTab = $tab;
         }
     }
