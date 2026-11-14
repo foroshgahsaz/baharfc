@@ -4,6 +4,7 @@ namespace App\Filament\Resources\PaymentGatewaySettings\Pages;
 
 use App\Filament\Resources\PaymentGatewaySettings\PaymentGatewaySettingResource;
 use App\Models\PaymentGatewaySetting;
+use App\Services\Payment\PaymentConfiguration;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\EditRecord;
@@ -12,6 +13,17 @@ use Filament\Schemas\Schema;
 class EditPaymentGatewaySetting extends EditRecord
 {
     protected static string $resource = PaymentGatewaySettingResource::class;
+
+    public function mount(int | string $record): void
+    {
+        if (! app(PaymentConfiguration::class)->schemaReady()) {
+            $this->redirect(PaymentGatewaySettingResource::getUrl('index'));
+
+            return;
+        }
+
+        parent::mount($record);
+    }
 
     public function form(Schema $schema): Schema
     {

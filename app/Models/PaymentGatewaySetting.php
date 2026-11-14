@@ -2,7 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
+use JsonException;
 
 class PaymentGatewaySetting extends Model
 {
@@ -17,8 +21,33 @@ class PaymentGatewaySetting extends Model
     {
         return [
             'is_enabled' => 'boolean',
-            'credentials' => 'encrypted:array',
         ];
+    }
+
+    protected function credentials(): Attribute
+    {
+        return Attribute::make(
+            get: function (?string $value): array {
+                if (blank($value)) {
+                    return [];
+                }
+
+                try {
+                    $decoded = json_decode(Crypt::decryptString($value), true, 512, JSON_THROW_ON_ERROR);
+
+                    return is_array($decoded) ? $decoded : [];
+                } catch (DecryptException|JsonException) {
+                    return [];
+                }
+            },
+            set: function (?array $value): ?string {
+                if ($value === null || $value === []) {
+                    return null;
+                }
+
+                return Crypt::encryptString(json_encode($value, JSON_THROW_ON_ERROR));
+            },
+        );
     }
 
     public function isConfigured(): bool

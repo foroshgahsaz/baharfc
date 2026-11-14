@@ -10,7 +10,7 @@ class PaymentConfiguration
 {
     public function mode(): string
     {
-        if ($this->tablesReady()) {
+        if ($this->schemaReady()) {
             return PaymentSetting::current()->payment_mode;
         }
 
@@ -29,7 +29,7 @@ class PaymentConfiguration
     {
         $defaults = config("payment.gateways.{$slug}", []);
 
-        if (! $this->tablesReady()) {
+        if (! $this->schemaReady()) {
             return $defaults;
         }
 
@@ -44,7 +44,7 @@ class PaymentConfiguration
 
     public function isGatewayEnabled(string $slug): bool
     {
-        if (! $this->tablesReady()) {
+        if (! $this->schemaReady()) {
             return true;
         }
 
@@ -53,7 +53,7 @@ class PaymentConfiguration
             ->value('is_enabled') ?? true;
     }
 
-    protected function tablesReady(): bool
+    public function schemaReady(): bool
     {
         return Schema::hasTable('payment_settings')
             && Schema::hasTable('payment_gateway_settings');
