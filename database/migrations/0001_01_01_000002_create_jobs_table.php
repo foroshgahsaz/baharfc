@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('queue')->index();
+            $table->string('queue', 125)->index();
             $table->longText('payload');
             $table->unsignedSmallInteger('attempts');
             $table->unsignedInteger('reserved_at')->nullable();
@@ -37,13 +37,15 @@ return new class extends Migration
         Schema::create('failed_jobs', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
-            $table->string('connection');
-            $table->string('queue');
+            // Short columns so composite index fits MySQL utf8mb4 1000-byte limit
+            $table->string('connection', 100);
+            $table->string('queue', 100);
             $table->longText('payload');
             $table->longText('exception');
             $table->timestamp('failed_at')->useCurrent();
 
-            $table->index(['connection', 'queue', 'failed_at']);
+            // No composite index: some MySQL hosts cap index length at 1000 bytes (utf8mb4).
+            $table->index('failed_at');
         });
     }
 
