@@ -37,7 +37,12 @@ class PaymentService
      */
     public function availableGateways(): array
     {
-        return $this->gateways;
+        $configuration = app(PaymentConfiguration::class);
+
+        return array_filter(
+            $this->gateways,
+            fn (PaymentGatewayInterface $gateway): bool => $configuration->isGatewayEnabled($gateway->slug()),
+        );
     }
 
     public function gateway(string $slug): PaymentGatewayInterface

@@ -21,7 +21,9 @@ class ParsianGateway extends AbstractSandboxGateway
 
     public function isConfigured(): bool
     {
-        return filled(config('payment.gateways.parsian.pin'));
+        $config = $this->paymentConfiguration()->gatewayCredentials('parsian');
+
+        return filled($config['pin'] ?? null);
     }
 
     protected function initiateLive(Payment $payment): GatewayInitResult

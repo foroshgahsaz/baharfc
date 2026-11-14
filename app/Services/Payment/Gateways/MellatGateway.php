@@ -21,7 +21,7 @@ class MellatGateway extends AbstractSandboxGateway
 
     public function isConfigured(): bool
     {
-        $config = config('payment.gateways.mellat');
+        $config = $this->paymentConfiguration()->gatewayCredentials('mellat');
 
         return filled($config['terminal_id'] ?? null)
             && filled($config['username'] ?? null)
