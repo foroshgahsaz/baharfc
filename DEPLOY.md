@@ -28,6 +28,53 @@
 - **ایمیل:** `admin@baharfc.local` (فیلامنت با ایمیل لاگین می‌کند، نه نام کاربری `admin`)
 - رمز: `password` — حتماً بعد از اولین ورود عوض کنید
 
+## فایل‌ها و تصاویر (دیسک پایدار)
+
+آپلودهای ادمین روی دیسک **`public`** ذخیره می‌شوند (مسیر پیش‌فرض: `storage/app/public`). با هر deploy اگر کد از نو checkout شود، این پوشه خالی می‌شود؛ **تنها `FILESYSTEM_DISK` کافی نیست** چون فرم‌ها صریحاً `disk('public')` استفاده می‌کنند.
+
+### روش توصیه‌شده: دیسک جدا + متغیر env
+
+1. دیسک پایدار را mount کنید (مثلاً `/data`).
+2. یک‌بار پوشه را بسازید و مالکیت وب‌سرور را بدهید:
+
+```bash
+sudo mkdir -p /data/baharfc/storage/app/public
+sudo chown -R www-data:www-data /data/baharfc
+```
+
+3. در `.env` روی سرور:
+
+```env
+FILESYSTEM_PUBLIC_ROOT=/data/baharfc/storage/app/public
+```
+
+4. اگر قبلاً فایل داخل پروژه بود، یک‌بار جابه‌جا کنید:
+
+```bash
+rsync -a storage/app/public/ /data/baharfc/storage/app/public/
+```
+
+5. بعد از هر deploy حتماً لینک عمومی را بسازید (اگر `public/storage` نیست، تصاویر 404 می‌شوند):
+
+```bash
+php artisan storage:link
+```
+
+6. پس از تغییر `.env`: `php artisan config:clear` یا `php artisan optimize:clear`
+
+### جایگزین: symlink (بدون env)
+
+```bash
+rm -rf storage/app/public && ln -sfn /data/baharfc/storage/app/public storage/app/public
+php artisan storage:link
+```
+
+همچنین برای لاگ و کش: `storage/logs`, `storage/framework`, `bootstrap/cache` را به `/data/...` symlink کنید تا deploy آن‌ها را هم پاک نکند.
+
+### ذخیره ابری (اختیاری)
+
+برای S3/فضای ابری باید `AWS_*` و تغییر دیسک در کد پشتیبانی شود؛ در وضعیت فعلی پروژه مسیر بالا ساده‌تر است.
+
 ## امنیت و عملکرد
 
 - HTTPS اجباری و HSTS در reverse proxy؛ `APP_URL=https://example.com` (بدون `/` آخر). اپ پشت load balancer/Kubernetes با `trustProxies` لینک CSS/JS را با `https` می‌سازد — در غیر این صورت مرورگر استایل را block می‌کند (Mixed Content).
