@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Observers\OrderObserver;
 use App\Services\CartService;
 use App\Services\LogSmsSender;
+use App\Services\Payment\PaymentConfiguration;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(SmsSender::class, LogSmsSender::class);
+        $this->app->singleton(PaymentConfiguration::class);
     }
 
     public function boot(): void

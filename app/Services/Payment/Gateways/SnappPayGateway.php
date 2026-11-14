@@ -21,7 +21,7 @@ class SnappPayGateway extends AbstractSandboxGateway
 
     public function isConfigured(): bool
     {
-        $config = config('payment.gateways.snapppay');
+        $config = $this->paymentConfiguration()->gatewayCredentials('snapppay');
 
         return filled($config['merchant_id'] ?? null) && filled($config['secret'] ?? null);
     }

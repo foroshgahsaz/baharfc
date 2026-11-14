@@ -21,7 +21,7 @@ class DigiPayGateway extends AbstractSandboxGateway
 
     public function isConfigured(): bool
     {
-        $config = config('payment.gateways.digipay');
+        $config = $this->paymentConfiguration()->gatewayCredentials('digipay');
 
         return filled($config['client_id'] ?? null) && filled($config['client_secret'] ?? null);
     }
