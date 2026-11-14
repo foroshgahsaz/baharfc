@@ -21,7 +21,7 @@
 
 ## امنیت و عملکرد
 
-- HTTPS اجباری و HSTS در reverse proxy
+- HTTPS اجباری و HSTS در reverse proxy؛ `APP_URL=https://example.com` (بدون `/` آخر). اپ پشت load balancer/Kubernetes با `trustProxies` لینک CSS/JS را با `https` می‌سازد — در غیر این صورت مرورگر استایل را block می‌کند (Mixed Content).
 - `APP_DEBUG=false` در تولید
 - بک‌آپ دوره‌ای دیتابیس و فایل‌های `storage/app/public`
 - مانیتور لاگ (`storage/logs`) و health check مسیر `/up`
