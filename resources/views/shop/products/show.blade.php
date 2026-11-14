@@ -1,5 +1,28 @@
 @extends('layouts.shop')
 
+@push('head')
+    @php
+        $jsonLd = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Product',
+            'name' => $product->name,
+            'description' => strip_tags($product->short_description ?: $product->name),
+            'sku' => $product->slug,
+            'offers' => [
+                '@type' => 'Offer',
+                'priceCurrency' => 'IRR',
+                'price' => $product->price,
+                'availability' => $product->is_active ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                'url' => route('products.show', $product->slug),
+            ],
+        ];
+        if ($product->imageUrl()) {
+            $jsonLd['image'] = $product->imageUrl();
+        }
+    @endphp
+    <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endpush
+
 @section('content')
     @php
         $gallery = $product->images->isNotEmpty()
@@ -57,9 +80,10 @@
                     @endif
                 </div>
 
-                <button type="button" class="mt-8 w-full rounded-2xl bg-brand-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700 sm:w-auto">
-                    افزودن به سبد خرید
-                </button>
+                <div class="mt-8 flex flex-wrap items-center gap-4">
+                    <livewire:shop.add-to-cart :product-id="$product->id" :key="'add-'.$product->id" />
+                    <livewire:shop.product-wishlist-toggle :product-id="$product->id" :key="'wish-'.$product->id" />
+                </div>
 
                 @if ($product->description)
                     <div class="prose prose-slate mt-10 max-w-none text-sm leading-relaxed">

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\CacheGuestProductPages;
+use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocaleFa;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -13,8 +15,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+
         $middleware->web(append: [
+            SecurityHeaders::class,
             SetLocaleFa::class,
+            CacheGuestProductPages::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
