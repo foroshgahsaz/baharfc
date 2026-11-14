@@ -4,6 +4,7 @@ namespace App\Services\Payment\Gateways;
 
 use App\Contracts\PaymentGatewayInterface;
 use App\Models\Payment;
+use App\Services\Payment\PaymentConfiguration;
 use App\Support\Payments\GatewayInitResult;
 use App\Support\Payments\GatewayVerifyResult;
 use Illuminate\Http\Request;
@@ -11,9 +12,14 @@ use Illuminate\Support\Facades\URL;
 
 abstract class AbstractSandboxGateway implements PaymentGatewayInterface
 {
+    protected function paymentConfiguration(): PaymentConfiguration
+    {
+        return app(PaymentConfiguration::class);
+    }
+
     protected function sandboxMode(): bool
     {
-        return config('payment.mode') === 'sandbox' || ! $this->isConfigured();
+        return $this->paymentConfiguration()->sandboxMode() || ! $this->isConfigured();
     }
 
     protected function signedCallbackUrl(Payment $payment, string $status): string
