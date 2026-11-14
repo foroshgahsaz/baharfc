@@ -37,6 +37,15 @@
                     @if ($category)
                         <input type="hidden" name="category" value="{{ $category->slug }}" />
                     @endif
+                    @if (! empty($search))
+                        <input type="hidden" name="q" value="{{ $search }}" />
+                        <p class="text-sm text-brand-700">نتایج جستجو: «{{ $search }}»</p>
+                    @endif
+                    <div class="flex gap-2 text-sm">
+                        <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="حداقل قیمت" class="w-28 rounded-lg border-slate-200" />
+                        <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="حداکثر قیمت" class="w-28 rounded-lg border-slate-200" />
+                        <button type="submit" class="rounded-lg bg-slate-100 px-3 py-1">اعمال</button>
+                    </div>
                     <label class="flex items-center gap-2 text-sm text-slate-600">
                         مرتب‌سازی
                         <select name="sort" onchange="this.form.submit()" class="rounded-lg border-slate-200 text-sm">
