@@ -12,14 +12,15 @@
 1. کلون مخزن و checkout شاخه release مورد نظر
 2. `composer install --no-dev --optimize-autoloader`
 3. `cp .env.example .env` و تنظیم `APP_KEY`, `APP_URL`, دیتابیس، درگاه‌های پرداخت
-4. `php artisan migrate --force`
+4. `php artisan migrate --force` (شامل جداول `payment_settings` / `payment_gateway_settings` پس از PR #24)
 5. `npm ci && npm run build`
 6. `php artisan vendor:publish --tag=livewire:assets --force` و `php artisan filament:assets`
-7. پس از تنظیم/تغییر `APP_KEY`: حتماً `php artisan optimize:clear` (کش view/route قدیمی باعث مسیر اشتباه Livewire و لاگین شکسته می‌شود)
-8. `php artisan config:cache` و `php artisan view:cache` (اختیاری؛ بعد از هر تغییر `APP_KEY` دوباره پاک و در صورت نیاز بسازید)
-9. تنظیم وب‌سرور (Nginx/Apache) با `public/` به عنوان document root
-10. اجرای worker صف: `php artisan queue:work` (systemd/supervisor)
-11. کرون لاراول: `* * * * * php /path/to/artisan schedule:run`
+7. پس از هر `git pull` روی ادمین Filament: `php artisan optimize:clear` و `php artisan filament:optimize-clear` (بدون آن صفحاتی مثل درگاه‌های پرداخت ممکن است ۵۰۰ بدهند)
+8. پس از تنظیم/تغییر `APP_KEY`: حتماً `php artisan optimize:clear` (کش view/route قدیمی باعث مسیر اشتباه Livewire و لاگین شکسته می‌شود)
+9. `php artisan config:cache` و `php artisan view:cache` (اختیاری؛ بعد از هر تغییر `APP_KEY` دوباره پاک و در صورت نیاز بسازید)
+10. تنظیم وب‌سرور (Nginx/Apache) با `public/` به عنوان document root
+11. اجرای worker صف: `php artisan queue:work` (systemd/supervisor)
+12. کرون لاراول: `* * * * * php /path/to/artisan schedule:run`
 
 ## ورود ادمین (پس از سیدر)
 
