@@ -6,7 +6,7 @@
                 <span class="text-accent" aria-hidden="true">›››</span>
             </a>
 
-            @foreach (config('shop.demo_category_icons') as $item)
+            @foreach (config('shop.demo_category_icons', []) as $item)
                 <a href="{{ route('products.index', ['category' => $item['slug']]) }}" class="group flex shrink-0 flex-col items-center">
                     <div class="lebasino-cat-orbit">
                         <img

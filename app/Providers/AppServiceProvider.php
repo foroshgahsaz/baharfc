@@ -59,9 +59,13 @@ class AppServiceProvider extends ServiceProvider
             $cart = app(CartService::class);
             $view->with('cartItemCount', $cart->itemCount());
             $view->with('cartSubtotal', $cart->subtotal());
-            $view->with('wishlistCount', auth()->check()
-                ? auth()->user()->wishlistItems()->count()
-                : 0);
+
+            $wishlistCount = 0;
+            if (auth()->check() && Schema::hasTable('wishlist_items')) {
+                $wishlistCount = auth()->user()->wishlistItems()->count();
+            }
+
+            $view->with('wishlistCount', $wishlistCount);
         });
 
         Event::listen(Login::class, function (Login $event): void {

@@ -2,7 +2,7 @@
     <div class="lebasino-shell">
         <div class="flex items-center gap-4 lg:gap-6">
             <a href="{{ route('home') }}" class="lebasino-logo shrink-0">
-                {{ config('shop.logo_wordmark') }}
+                {{ config('shop.logo_wordmark', 'LEBASINO') }}
             </a>
 
             <div class="min-w-0 flex-1">
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="lebasino-nav__links">
-                    @foreach (config('shop.nav_links') as $link)
+                    @foreach (config('shop.nav_links', []) as $link)
                         @php
                             $isActive = isset($link['active']) && request()->routeIs($link['active']);
                             $href = isset($link['params'])
