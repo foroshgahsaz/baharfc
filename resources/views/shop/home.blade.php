@@ -1,7 +1,7 @@
 @extends('layouts.shop')
 
 @section('content')
-    <x-shop.home-category-strip :icon-categories="$iconCategories" />
+    <x-shop.home-category-strip />
     <x-shop.home-hero :banners="$banners" />
 
     <section id="products" class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
