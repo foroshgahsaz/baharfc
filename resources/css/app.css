@@ -6,6 +6,14 @@
 @source '../js/**/*.js';
 
 @font-face {
+    font-family: 'Peyda';
+    src: url('/fonts/PeydaWebVF.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
     font-family: 'Abar Mid FaNum';
     src: url('/fonts/AbarMidFaNum-Regular.woff2') format('woff2');
     font-weight: 400;
@@ -14,7 +22,7 @@
 }
 
 @theme {
-    --font-sans: 'Abar Mid FaNum', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Peyda', 'Abar Mid FaNum', ui-sans-serif, system-ui, sans-serif;
     --color-brand-50: #f0fdfa;
     --color-brand-100: #ccfbf1;
     --color-brand-200: #99f6e4;
@@ -25,4 +33,98 @@
     --color-brand-700: #0f766e;
     --color-brand-800: #115e59;
     --color-brand-900: #134e4a;
+    --color-accent: #462766;
+    --color-accent-light: #fdf5f8;
+    --color-accent-muted: #ece2f0;
+}
+
+@layer components {
+    .shop-logo {
+        @apply border-b-2 border-accent pb-0.5 text-lg font-bold text-slate-900 sm:text-xl;
+    }
+
+    .shop-search-pill {
+        @apply w-full rounded-full border border-slate-200 bg-white py-2.5 pe-11 ps-5 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-accent/40 focus:ring-4 focus:ring-accent/10;
+    }
+
+    .shop-icon-badge {
+        @apply absolute -top-1 -start-1 flex h-[1.125rem] w-[1.125rem] items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white;
+    }
+
+    .category-orbit {
+        @apply flex size-[4.75rem] shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-accent bg-white p-0.5 sm:size-20;
+    }
+
+    .hero-clip {
+        clip-path: polygon(
+            0% 6%,
+            4% 0%,
+            12% 3%,
+            20% 0%,
+            28% 4%,
+            36% 0%,
+            44% 3%,
+            52% 0%,
+            60% 4%,
+            68% 0%,
+            76% 3%,
+            84% 0%,
+            92% 4%,
+            96% 0%,
+            100% 6%,
+            100% 94%,
+            96% 100%,
+            88% 97%,
+            80% 100%,
+            72% 96%,
+            64% 100%,
+            56% 97%,
+            48% 100%,
+            40% 96%,
+            32% 100%,
+            24% 97%,
+            16% 100%,
+            8% 96%,
+            4% 100%,
+            0% 94%
+        );
+    }
+
+    .hero-offer-bar {
+        @apply bg-gradient-to-l from-transparent via-accent to-transparent px-6 py-1 text-4xl font-black tracking-tight text-white sm:text-5xl;
+    }
+
+    .hero-nav-btn {
+        @apply flex size-9 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20;
+    }
+}
+
+/* Homepage hero: CSS-only slider (no JS) */
+.hero-carousel {
+    @apply relative overflow-hidden;
+}
+
+.hero-carousel__slides {
+    @apply flex transition-transform duration-500 ease-out;
+}
+
+.hero-carousel__slide {
+    @apply w-full shrink-0;
+}
+
+.hero-carousel:has(#hero-slide-2:checked) .hero-carousel__slides {
+    transform: translateX(-50%);
+}
+
+.hero-carousel input[name='hero-slide'] {
+    @apply sr-only;
+}
+
+.hero-dot {
+    @apply size-2 rounded-full bg-white/35 transition;
+}
+
+.hero-carousel:has(#hero-slide-1:checked) label[for='hero-slide-1'] .hero-dot,
+.hero-carousel:has(#hero-slide-2:checked) label[for='hero-slide-2'] .hero-dot {
+    @apply bg-accent;
 }
