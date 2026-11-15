@@ -13,16 +13,8 @@
     font-display: swap;
 }
 
-@font-face {
-    font-family: 'Abar Mid FaNum';
-    src: url('/fonts/AbarMidFaNum-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
 @theme {
-    --font-sans: 'Peyda', 'Abar Mid FaNum', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Peyda', ui-sans-serif, system-ui, sans-serif;
     --color-brand-50: #f0fdfa;
     --color-brand-100: #ccfbf1;
     --color-brand-200: #99f6e4;
@@ -34,74 +26,105 @@
     --color-brand-800: #115e59;
     --color-brand-900: #134e4a;
     --color-accent: #462766;
-    --color-accent-light: #fdf5f8;
-    --color-accent-muted: #ece2f0;
+    --color-accent-light: #f7eff9;
+    --color-accent-muted: #ead9ef;
+    --color-lebasino-gray: #7a7a7a;
+    --color-lebasino-border: #ebebeb;
 }
 
 @layer components {
-    .shop-logo {
-        @apply border-b-2 border-accent pb-0.5 text-lg font-bold text-slate-900 sm:text-xl;
+    .lebasino-shell {
+        @apply mx-auto w-full max-w-[1180px] px-3 sm:px-4;
     }
 
-    .shop-search-pill {
-        @apply w-full rounded-full border border-slate-200 bg-white py-2.5 pe-11 ps-5 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-accent/40 focus:ring-4 focus:ring-accent/10;
+    .lebasino-logo {
+        @apply inline-block border-b-[3px] border-accent pb-0.5 text-[1.35rem] font-bold tracking-[0.18em] text-black uppercase;
     }
 
-    .shop-icon-badge {
-        @apply absolute -top-1 -start-1 flex h-[1.125rem] w-[1.125rem] items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white;
+    .lebasino-search {
+        @apply h-11 w-full rounded-full border border-lebasino-border bg-white pe-12 ps-5 text-[13px] text-slate-600 outline-none transition placeholder:text-slate-400 focus:border-accent/35;
     }
 
-    .category-orbit {
-        @apply flex size-[4.75rem] shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-accent bg-white p-0.5 sm:size-20;
+    .lebasino-action {
+        @apply relative flex min-w-[72px] flex-col items-center gap-1 text-center text-[11px] leading-tight text-lebasino-gray transition hover:text-accent;
     }
 
-    .hero-clip {
-        clip-path: polygon(
-            0% 6%,
-            4% 0%,
-            12% 3%,
-            20% 0%,
-            28% 4%,
-            36% 0%,
-            44% 3%,
-            52% 0%,
-            60% 4%,
-            68% 0%,
-            76% 3%,
-            84% 0%,
-            92% 4%,
-            96% 0%,
-            100% 6%,
-            100% 94%,
-            96% 100%,
-            88% 97%,
-            80% 100%,
-            72% 96%,
-            64% 100%,
-            56% 97%,
-            48% 100%,
-            40% 96%,
-            32% 100%,
-            24% 97%,
-            16% 100%,
-            8% 96%,
-            4% 100%,
-            0% 94%
-        );
+    .lebasino-action__icon {
+        @apply relative text-slate-800;
     }
 
-    .hero-offer-bar {
-        @apply bg-gradient-to-l from-transparent via-accent to-transparent px-6 py-1 text-4xl font-black tracking-tight text-white sm:text-5xl;
+    .lebasino-badge {
+        @apply absolute -top-1.5 -start-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-0.5 text-[9px] font-bold text-white;
     }
 
-    .hero-nav-btn {
-        @apply flex size-9 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20;
+    .lebasino-nav {
+        @apply flex flex-wrap items-center justify-between gap-y-2 border-t border-lebasino-border py-2.5 text-[13px] text-slate-800;
+    }
+
+    .lebasino-nav__gender {
+        @apply flex items-center gap-3 border-e border-lebasino-border pe-4 font-medium;
+    }
+
+    .lebasino-nav__links {
+        @apply hidden flex-wrap items-center gap-4 lg:flex xl:gap-5;
+    }
+
+    .lebasino-nav__link {
+        @apply whitespace-nowrap text-slate-800 transition hover:text-accent;
+    }
+
+    .lebasino-nav__link--active {
+        @apply font-bold text-black;
+    }
+
+    .lebasino-offer-pill {
+        @apply rounded-full bg-accent-light px-4 py-1.5 text-[12px] font-semibold text-accent;
+    }
+
+    .lebasino-new-box {
+        @apply flex h-[92px] w-[62px] shrink-0 flex-col items-center justify-center gap-2 rounded-xl border border-lebasino-border bg-[#f8f8f8] text-[11px] font-semibold leading-snug text-slate-800;
+    }
+
+    .lebasino-cat-orbit {
+        @apply box-border flex size-[64px] shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-accent bg-white;
+    }
+
+    .lebasino-cat-label {
+        @apply mt-1.5 max-w-[4.5rem] text-center text-[11px] leading-tight text-slate-800;
+    }
+
+    .lebasino-hero-frame {
+        @apply relative overflow-hidden rounded-[2.25rem];
+    }
+
+    .lebasino-hero-offer {
+        @apply relative inline-flex items-center gap-1 text-white;
+    }
+
+    .lebasino-hero-upto {
+        @apply text-sm font-bold tracking-[0.2em] [writing-mode:vertical-rl] rotate-180;
+    }
+
+    .lebasino-hero-percent {
+        @apply relative text-[3.25rem] font-black leading-none sm:text-[3.75rem];
+    }
+
+    .lebasino-hero-percent::before {
+        content: '';
+        @apply absolute top-1/2 right-[-8%] left-[-8%] z-[-1] h-9 -translate-y-1/2 bg-gradient-to-l from-transparent via-accent to-transparent;
+    }
+
+    .lebasino-hero-btn {
+        @apply mt-5 inline-flex min-w-[132px] items-center justify-center rounded-lg bg-accent px-6 py-2.5 text-[13px] font-bold text-white shadow-sm transition hover:bg-accent/90;
+    }
+
+    .lebasino-hero-arrow {
+        @apply absolute top-1/2 z-20 flex size-8 -translate-y-1/2 items-center justify-center text-2xl font-light text-white/90;
     }
 }
 
-/* Homepage hero: CSS-only slider (no JS) */
 .hero-carousel {
-    @apply relative overflow-hidden;
+    @apply relative;
 }
 
 .hero-carousel__slides {
@@ -116,12 +139,8 @@
     transform: translateX(-50%);
 }
 
-.hero-carousel input[name='hero-slide'] {
-    @apply sr-only;
-}
-
 .hero-dot {
-    @apply size-2 rounded-full bg-white/35 transition;
+    @apply size-[7px] rounded-full bg-white/50;
 }
 
 .hero-carousel:has(#hero-slide-1:checked) label[for='hero-slide-1'] .hero-dot,

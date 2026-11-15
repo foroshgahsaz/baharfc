@@ -1,83 +1,83 @@
 @php
-    $slides = $banners->isNotEmpty()
-        ? $banners
-        : collect([
-            (object) [
-                'title' => '!لباساتو نو کن',
-                'subtitle' => 'حراجی پایان سال ' . config('app.name'),
-                'link_url' => route('products.index'),
-                'image_url' => null,
-            ],
-        ]);
+    use App\Models\Banner;
 
-    $defaultHero = asset('images/hero/bahar-hero.jpg');
+    $defaultHero = asset('images/lebasino/ref-hero.jpg');
+    $hasSecond = $banners->count() > 1;
+
+    $slides = $banners->isNotEmpty()
+        ? $banners->take(2)
+        : collect([(object) [
+            'title' => '!لباساتو نو کن',
+            'subtitle' => 'حراجی پایان سال لباسینو',
+            'link_url' => route('products.index'),
+            'image_url' => null,
+        ]]);
 @endphp
 
-<section class="bg-slate-100 px-2 pb-6 pt-3 sm:px-4 lg:px-6">
-    <div class="hero-carousel hero-clip relative mx-auto max-w-[90rem] bg-slate-900" dir="ltr">
-        @if ($slides->count() > 1)
-            <input type="radio" name="hero-slide" id="hero-slide-1" class="peer/s1" checked hidden>
-            <input type="radio" name="hero-slide" id="hero-slide-2" class="peer/s2" hidden>
+<section class="bg-white pb-5 pt-1">
+    <div class="lebasino-shell hero-carousel relative">
+        @if ($hasSecond)
+            <input type="radio" name="hero-slide" id="hero-slide-1" checked hidden>
+            <input type="radio" name="hero-slide" id="hero-slide-2" hidden>
         @endif
 
-        <div
-            @class([
-                'hero-carousel__slides',
-                'w-[200%]' => $slides->count() > 1,
-                'w-full' => $slides->count() <= 1,
-            ])
-            @if ($slides->count() > 1)
-                style="transform: translateX(0%);"
-            @endif
-        >
-            @foreach ($slides->take(2) as $index => $banner)
-                <article class="hero-carousel__slide relative min-h-[220px] sm:min-h-[280px] md:min-h-[340px]">
-                    <img
-                        src="{{ $banner->image_url ?: $defaultHero }}"
-                        alt=""
-                        width="1400"
-                        height="360"
-                        @if ($loop->first)
-                            loading="eager"
-                            fetchpriority="high"
-                        @else
-                            loading="lazy"
-                        @endif
-                        decoding="async"
-                        class="absolute inset-0 size-full object-cover object-center"
-                    />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/25 to-black/10"></div>
+        <div @class(['hero-carousel__slides', 'w-[200%]' => $hasSecond])>
+            @foreach ($slides as $banner)
+                @php
+                    $img = $banner->image_url ?: $defaultHero;
+                    $baked = blank($banner->image_url);
+                    $showOverlay = $banner instanceof Banner;
+                    $link = $banner->link_url ?: route('products.index');
+                @endphp
+                <article class="hero-carousel__slide relative">
+                    <div class="lebasino-hero-frame bg-[#1d1d1f]">
+                        <img
+                            src="{{ $img }}"
+                            alt=""
+                            width="1180"
+                            height="240"
+                            @if ($loop->first)
+                                loading="eager"
+                                fetchpriority="high"
+                            @else
+                                loading="lazy"
+                            @endif
+                            decoding="async"
+                            class="block h-auto w-full object-cover"
+                        />
 
-                    <div class="relative z-10 flex min-h-[220px] flex-col items-center justify-center px-6 py-10 text-center text-white sm:min-h-[280px] md:min-h-[340px]" dir="rtl">
-                        <h1 class="text-3xl font-black sm:text-4xl md:text-5xl">{{ $banner->title }}</h1>
-                        @if (! empty($banner->subtitle))
-                            <p class="mt-2 text-sm font-medium text-accent-light sm:text-base">{{ $banner->subtitle }}</p>
+                        @if ($showOverlay)
+                            <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pt-2 text-center text-white" dir="rtl">
+                                <h1 class="text-[1.65rem] font-black drop-shadow sm:text-[2rem]">{{ $banner->title }}</h1>
+                                @if (! empty($banner->subtitle))
+                                    <p class="mt-1 text-[13px] font-semibold text-accent-light">{{ $banner->subtitle }}</p>
+                                @endif
+                                <div class="lebasino-hero-offer mt-3">
+                                    <span class="lebasino-hero-upto">UP TO</span>
+                                    <span class="lebasino-hero-percent">۴۰%<span class="text-[0.55em] font-bold">OFF</span></span>
+                                </div>
+                            </div>
                         @endif
-                        <p class="mt-4 text-xs font-semibold tracking-[0.35em] text-white/80 sm:text-sm">UP TO</p>
-                        <p class="hero-offer-bar mt-1">۴۰% OFF</p>
-                        <a
-                            href="{{ $banner->link_url ?: route('products.index') }}"
-                            class="mt-6 inline-flex rounded-full bg-accent px-8 py-2.5 text-sm font-bold text-white shadow-lg shadow-accent/30 transition hover:bg-accent/90"
-                        >
+
+                        <a href="{{ $link }}" class="lebasino-hero-btn absolute bottom-[13%] left-1/2 z-10 -translate-x-1/2">
                             مشاهده و خرید
                         </a>
+
+                        @if ($hasSecond)
+                            <label for="hero-slide-1" class="lebasino-hero-arrow start-3 cursor-pointer sm:start-5" aria-label="اسلاید قبل">‹</label>
+                            <label for="hero-slide-2" class="lebasino-hero-arrow end-3 cursor-pointer sm:end-5" aria-label="اسلاید بعد">›</label>
+                        @else
+                            <span class="lebasino-hero-arrow start-3 sm:start-5" aria-hidden="true">‹</span>
+                            <span class="lebasino-hero-arrow end-3 sm:end-5" aria-hidden="true">›</span>
+                        @endif
                     </div>
                 </article>
             @endforeach
         </div>
 
-        @if ($slides->count() > 1)
-            <label for="hero-slide-1" class="hero-nav-btn absolute start-4 top-1/2 z-20 -translate-y-1/2 cursor-pointer" aria-label="اسلاید قبل">
-                ‹
-            </label>
-            <label for="hero-slide-2" class="hero-nav-btn absolute end-4 top-1/2 z-20 -translate-y-1/2 cursor-pointer" aria-label="اسلاید بعد">
-                ›
-            </label>
-
-            <div class="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
-                <label for="hero-slide-1" class="cursor-pointer p-1"><span class="hero-dot"></span></label>
-                <label for="hero-slide-2" class="cursor-pointer p-1"><span class="hero-dot"></span></label>
-            </div>
-        @endif
+        <div class="mt-2 flex justify-center gap-1.5">
+            <span @class(['hero-dot', 'bg-accent' => ! $hasSecond])></span>
+            <span class="hero-dot"></span>
+        </div>
     </div>
 </section>
