@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\View\View;
 
@@ -29,10 +30,17 @@ class HomeController extends Controller
             ->orderBy('sort_order')
             ->get();
 
+        $iconCategories = Category::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->limit(8)
+            ->get();
+
         return view('shop.home', [
             'banners' => $banners,
             'featuredProducts' => $featuredProducts,
             'latestProducts' => $latestProducts,
+            'iconCategories' => $iconCategories,
         ]);
     }
 }

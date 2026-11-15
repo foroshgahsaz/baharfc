@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Contracts\SmsSender;
+use App\Models\Category;
 use App\Models\Order;
 use App\Observers\OrderObserver;
 use App\Services\CartService;
@@ -38,8 +39,29 @@ class AppServiceProvider extends ServiceProvider
 
         Schema::defaultStringLength(191);
 
+        View::composer('components.shop.site-header', function ($view): void {
+            $view->with('headerGenderCategories', Category::query()
+                ->where('is_active', true)
+                ->whereNull('parent_id')
+                ->whereIn('slug', ['women', 'men'])
+                ->orderByRaw("case slug when 'women' then 0 when 'men' then 1 else 2 end")
+                ->get());
+
+            $view->with('headerNavCategories', Category::query()
+                ->where('is_active', true)
+                ->whereNotNull('parent_id')
+                ->orderBy('sort_order')
+                ->limit(7)
+                ->get());
+        });
+
         View::composer('layouts.shop', function ($view): void {
-            $view->with('cartItemCount', app(CartService::class)->itemCount());
+            $cart = app(CartService::class);
+            $view->with('cartItemCount', $cart->itemCount());
+            $view->with('cartSubtotal', $cart->subtotal());
+            $view->with('wishlistCount', auth()->check()
+                ? auth()->user()->wishlistItems()->count()
+                : 0);
         });
 
         Event::listen(Login::class, function (Login $event): void {
