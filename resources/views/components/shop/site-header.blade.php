@@ -32,9 +32,14 @@
     </div>
 
     <div class="nav-wrap">
+        <div class="mobile-nav-backdrop" id="mobileNavBackdrop" aria-hidden="true"></div>
         <div class="container nav-row">
-            <button class="mobile-menu" id="menuToggle" type="button" aria-expanded="false" aria-controls="mainNav">☰</button>
-            <nav class="main-nav" id="mainNav">
+            <button class="mobile-menu" id="menuToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="باز کردن منو">☰</button>
+            <nav class="main-nav" id="mainNav" aria-label="منوی اصلی">
+                <div class="mobile-nav-head">
+                    <span>منو</span>
+                    <button type="button" class="mobile-nav-close" id="mobileNavClose" aria-label="بستن منو">×</button>
+                </div>
                 @if (($headerMenuItems ?? collect())->isNotEmpty())
                     @foreach ($headerMenuItems as $item)
                         <a
