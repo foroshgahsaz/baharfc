@@ -17,14 +17,25 @@ class BaharfcEnsureStorageCommand extends Command
         $this->components->info("دیسک public: {$root}");
 
         $result = PublicUploadStorage::ensureUploadDirectories();
+        $symlink = PublicUploadStorage::symlinkDiagnostics();
 
         if ($result['ok']) {
             $this->components->success($result['message']);
+        } else {
+            $this->components->error($result['message']);
+        }
 
+        if ($symlink['ok']) {
+            $this->components->success($symlink['message']);
+        } else {
+            $this->components->error($symlink['message']);
+            $this->components->warn('اجرا: php artisan storage:link --force');
+        }
+
+        if ($result['ok'] && $symlink['ok']) {
             return self::SUCCESS;
         }
 
-        $this->components->error($result['message']);
         $this->line('');
         $this->line(PublicUploadStorage::k8sFixHint($root));
 

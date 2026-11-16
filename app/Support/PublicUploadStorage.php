@@ -99,6 +99,78 @@ class PublicUploadStorage
         ];
     }
 
+    public static function publicSymlinkPath(): string
+    {
+        return public_path('storage');
+    }
+
+    public static function configuredSymlinkTarget(): string
+    {
+        $links = config('filesystems.links', []);
+
+        return (string) ($links[self::publicSymlinkPath()] ?? self::publicRoot());
+    }
+
+    /**
+     * @return array{ok: bool, link: string, expected: string, actual: ?string, message: string}
+     */
+    public static function symlinkDiagnostics(): array
+    {
+        $link = self::publicSymlinkPath();
+        $expected = self::configuredSymlinkTarget();
+
+        if (! file_exists($link)) {
+            return [
+                'ok' => false,
+                'link' => $link,
+                'expected' => $expected,
+                'actual' => null,
+                'message' => 'لینک public/storage وجود ندارد؛ تصاویر /storage/... همیشه ۴۰۴ می‌شوند.',
+            ];
+        }
+
+        if (! is_link($link)) {
+            return [
+                'ok' => false,
+                'link' => $link,
+                'expected' => $expected,
+                'actual' => null,
+                'message' => 'public/storage پوشهٔ معمولی است نه symlink — باید به دیسک public اشاره کند.',
+            ];
+        }
+
+        $resolvedLink = realpath($link) ?: null;
+        $resolvedExpected = realpath($expected) ?: $expected;
+
+        if ($resolvedLink === null) {
+            return [
+                'ok' => false,
+                'link' => $link,
+                'expected' => $expected,
+                'actual' => readlink($link) ?: null,
+                'message' => 'symlink public/storage شکسته است (target وجود ندارد).',
+            ];
+        }
+
+        if ($resolvedLink !== $resolvedExpected && ! str_starts_with($resolvedLink, rtrim($resolvedExpected, '/'))) {
+            return [
+                'ok' => false,
+                'link' => $link,
+                'expected' => $resolvedExpected,
+                'actual' => $resolvedLink,
+                'message' => "public/storage به «{$resolvedLink}» می‌رود؛ باید به «{$resolvedExpected}» (FILESYSTEM_PUBLIC_ROOT) برود.",
+            ];
+        }
+
+        return [
+            'ok' => true,
+            'link' => $link,
+            'expected' => $resolvedExpected,
+            'actual' => $resolvedLink,
+            'message' => 'symlink public/storage درست است.',
+        ];
+    }
+
     public static function k8sFixHint(string $root): string
     {
         return <<<TEXT
@@ -107,8 +179,10 @@ class PublicUploadStorage
   mkdir -p {$root}/shop {$root}/banners {$root}/categories {$root}/products/gallery {$root}/brands
   chown -R www-data:www-data /data/baharfc
   chmod -R ug+rwx /data/baharfc/storage
+  php artisan storage:link --force
+  php artisan config:clear
 
-در .env مقدار FILESYSTEM_PUBLIC_ROOT باید دقیقاً همین مسیر باشد:
+در .env مقدار FILESYSTEM_PUBLIC_ROOT باید دقیقاً همین mount باشد:
   FILESYSTEM_PUBLIC_ROOT={$root}
 TEXT;
     }
