@@ -42,7 +42,11 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         // Legacy cache key stored serialized ShopSetting models and caused 500 after deploy.
-        Cache::forget('shop_settings.singleton');
+        try {
+            Cache::forget('shop_settings.singleton');
+        } catch (\Throwable) {
+            // Never abort bootstrap when cache (e.g. Redis) is temporarily unavailable.
+        }
 
         View::composer(['layouts.shop', 'components.shop.site-header', 'components.shop.home-category-strip'], function ($view): void {
             $view->with('shopSiteName', ShopAppearance::siteName());
