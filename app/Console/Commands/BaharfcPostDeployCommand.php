@@ -16,6 +16,11 @@ class BaharfcPostDeployCommand extends Command
         $this->components->info('اجرای migrate...');
         $this->call('migrate', ['--force' => true]);
 
+        if (\Illuminate\Support\Facades\Schema::hasTable('admin_roles')) {
+            $this->components->info('نقش‌های پیش‌فرض پنل (در صورت وجود کد)...');
+            $this->call('baharfc:seed-admin-roles');
+        }
+
         if ($this->option('seed-menu')) {
             $this->components->info('Seed منوی فروشگاه (در صورت خالی بودن)...');
             $this->call('db:seed', ['--class' => 'Database\\Seeders\\ShopMenuSeeder', '--force' => true]);
