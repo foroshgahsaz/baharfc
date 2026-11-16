@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
@@ -15,7 +14,8 @@ class DeployResilienceTest extends TestCase
     public function test_storefront_ok_when_menus_migration_not_applied_yet(): void
     {
         if (Schema::hasTable('menus')) {
-            Artisan::call('migrate:rollback', ['--step' => 1, '--force' => true]);
+            Schema::dropIfExists('menu_items');
+            Schema::dropIfExists('menus');
         }
 
         $this->assertFalse(Schema::hasTable('menus'));
@@ -27,7 +27,8 @@ class DeployResilienceTest extends TestCase
     public function test_admin_menus_page_does_not_500_without_menus_table(): void
     {
         if (Schema::hasTable('menus')) {
-            Artisan::call('migrate:rollback', ['--step' => 1, '--force' => true]);
+            Schema::dropIfExists('menu_items');
+            Schema::dropIfExists('menus');
         }
 
         $admin = User::factory()->create(['is_admin' => true]);
