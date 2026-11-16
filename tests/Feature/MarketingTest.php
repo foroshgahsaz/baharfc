@@ -44,7 +44,7 @@ class MarketingTest extends TestCase
             'title' => 'راهنمای خرید',
             'slug' => 'buying-guide',
             'body' => 'متن مقاله',
-            'is_published' => true,
+            'status' => 'published',
             'published_at' => now(),
         ]);
 
