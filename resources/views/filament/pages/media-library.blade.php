@@ -104,7 +104,7 @@
                                     </button>
                                 </td>
                                 <td class="p-3">{{ $item->typeLabel() }}</td>
-                                <td class="p-3">{{ $item->created_at?->format('Y/m/d H:i') }}</td>
+                                <td class="p-3">{{ \App\Support\JalaliDate::dateTime($item->created_at) }}</td>
                                 <td class="p-3">{{ $item->formattedSize() }}</td>
                             </tr>
                         @empty

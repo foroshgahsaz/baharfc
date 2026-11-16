@@ -7,7 +7,7 @@ use App\Filament\Resources\Banners\Pages\EditBanner;
 use App\Filament\Resources\Banners\Pages\ListBanners;
 use App\Models\Banner;
 use BackedEnum;
-use Filament\Forms\Components\FileUpload;
+use App\Filament\Forms\Components\MediaPicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
@@ -39,12 +39,10 @@ class BannerResource extends Resource
         return $schema->components([
             TextInput::make('title')->label('عنوان')->required(),
             TextInput::make('subtitle')->label('زیرعنوان')->columnSpanFull(),
-            FileUpload::make('image_path')
+            MediaPicker::make('image_path')
                 ->label('تصویر اسلاید')
-                ->image()
-                ->disk('public')
-                ->directory('banners')
-                ->helperText('ابعاد پیشنهادی: ۱۳۸۸×۴۶۳ پیکسل')
+                ->imagesOnly()
+                ->helperText('ابعاد پیشنهادی: ۱۳۸۸×۴۶۳ — انتخاب از کتابخانه رسانه')
                 ->columnSpanFull(),
             TextInput::make('image_url')
                 ->label('یا آدرس تصویر (اختیاری)')

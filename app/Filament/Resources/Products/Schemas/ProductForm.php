@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Products\Schemas;
 
 use App\Enums\ProductType;
-use Filament\Forms\Components\FileUpload;
+use App\Filament\Forms\Components\MediaPicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -69,11 +69,9 @@ class ProductForm
                     ->label('ترتیب نمایش')
                     ->numeric()
                     ->default(0),
-                FileUpload::make('image_path')
+                MediaPicker::make('image_path')
                     ->label('تصویر')
-                    ->image()
-                    ->disk('public')
-                    ->directory('products')
+                    ->imagesOnly()
                     ->columnSpanFull(),
                 Toggle::make('is_active')
                     ->label('فعال')

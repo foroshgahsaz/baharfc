@@ -28,7 +28,7 @@
                         'border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200' => ! $isActive,
                     ])
                 >
-                    {{ $isToday ? 'امروز' : \Illuminate\Support\Carbon::parse($day)->locale('fa')->translatedFormat('l j F') }}
+                    {{ $isToday ? 'امروز' : (\App\Support\JalaliDate::date($day) ?? $day) }}
                     <span class="mr-1 text-xs opacity-80">({{ $count }})</span>
                 </button>
             @endforeach
@@ -37,7 +37,7 @@
         <div class="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
             <div class="border-b border-gray-100 px-4 py-3 dark:border-gray-800">
                 <h3 class="font-semibold text-gray-900 dark:text-white">
-                    خطاهای {{ $selectedDay }}
+                    خطاهای @jalaliDate($selectedDay)
                 </h3>
             </div>
 
@@ -48,7 +48,7 @@
                     @foreach ($entries as $index => $entry)
                         <li class="p-4" wire:key="err-{{ $selectedDay }}-{{ $index }}">
                             <div class="flex flex-wrap items-center justify-between gap-2">
-                                <span class="font-mono text-xs text-gray-500 dark:text-gray-400" dir="ltr">{{ $entry['at'] }}</span>
+                                <span class="font-mono text-xs text-gray-500 dark:text-gray-400" dir="ltr">{{ \App\Support\JalaliDate::dateTime($entry['at']) ?? $entry['at'] }}</span>
                                 <span class="rounded-md bg-danger-50 px-2 py-0.5 text-xs font-semibold text-danger-700 dark:bg-danger-500/10 dark:text-danger-300">
                                     {{ $entry['level'] }}
                                 </span>
