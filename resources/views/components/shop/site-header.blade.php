@@ -35,27 +35,44 @@
         <div class="container nav-row">
             <button class="mobile-menu" id="menuToggle" type="button" aria-expanded="false" aria-controls="mainNav">☰</button>
             <nav class="main-nav" id="mainNav">
-                @forelse ($headerGenderCategories ?? [] as $gender)
-                    <a href="{{ route('products.index', ['category' => $gender->slug]) }}">{{ $gender->name }}</a>
-                @empty
+                @if (($headerMenuItems ?? collect())->isNotEmpty())
+                    @foreach ($headerMenuItems as $item)
+                        <a
+                            href="{{ $item->resolvedUrl() }}"
+                            @class([
+                                'nav-divider' => $item->show_divider_before,
+                                'is-active' => $item->isCurrent(),
+                            ])
+                            @if ($item->open_in_new_tab) target="_blank" rel="noopener noreferrer" @endif
+                        >{{ $item->label }}</a>
+                    @endforeach
+                @else
                     <a href="{{ route('products.index', ['category' => 'women']) }}">زنانه</a>
                     <a href="{{ route('products.index', ['category' => 'men']) }}">مردانه</a>
-                @endforelse
-                @foreach (config('shop.nav_links', []) as $link)
-                    @php
-                        $isActive = isset($link['active']) && request()->routeIs($link['active']);
-                        $href = isset($link['params'])
-                            ? route($link['route'], $link['params'])
-                            : route($link['route']);
-                        $isHome = ($link['label'] ?? '') === 'صفحه اصلی';
-                    @endphp
-                    <a
-                        href="{{ $href }}"
-                        @class(['nav-divider' => $isHome, 'is-active' => $isActive])
-                    >{{ $link['label'] }}</a>
-                @endforeach
+                    @foreach (config('shop.nav_links', []) as $link)
+                        @php
+                            $isActive = isset($link['active']) && request()->routeIs($link['active']);
+                            $href = isset($link['params'])
+                                ? route($link['route'], $link['params'])
+                                : route($link['route']);
+                            $isHome = ($link['label'] ?? '') === 'صفحه اصلی';
+                        @endphp
+                        <a
+                            href="{{ $href }}"
+                            @class(['nav-divider' => $isHome, 'is-active' => $isActive])
+                        >{{ $link['label'] }}</a>
+                    @endforeach
+                @endif
             </nav>
-            <a class="special" href="{{ route('products.index', ['sort' => 'price_desc']) }}">پیشنهاد ویژه</a>
+            @if ($headerCta ?? null)
+                <a
+                    class="special"
+                    href="{{ $headerCta->resolvedUrl() }}"
+                    @if ($headerCta->open_in_new_tab) target="_blank" rel="noopener noreferrer" @endif
+                >{{ $headerCta->label }}</a>
+            @else
+                <a class="special" href="{{ route('products.index', ['sort' => 'price_desc']) }}">پیشنهاد ویژه</a>
+            @endif
         </div>
     </div>
 </header>
