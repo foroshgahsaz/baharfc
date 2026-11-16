@@ -39,8 +39,10 @@ class BaharfcPostDeployCommand extends Command
             $this->components->warn($symlink['message']);
         }
 
-        $this->components->info('storage:link --force (اتصال public/storage به FILESYSTEM_PUBLIC_ROOT)');
-        $this->call('storage:link', ['--force' => true]);
+        $this->components->info('اتصال public/storage به FILESYSTEM_PUBLIC_ROOT');
+        if (! PublicUploadStorage::ensurePublicSymlink()) {
+            $this->call('storage:link', ['--force' => true]);
+        }
 
         $afterLink = PublicUploadStorage::symlinkDiagnostics();
         if ($afterLink['ok']) {

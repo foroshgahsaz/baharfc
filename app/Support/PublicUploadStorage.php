@@ -171,6 +171,55 @@ class PublicUploadStorage
         ];
     }
 
+    /**
+     * بعد از هر deploy، اگر public/storage حذف یا پوشهٔ اشتباه شده باشد، دوباره می‌سازد.
+     */
+    public static function ensurePublicSymlink(): bool
+    {
+        if (self::symlinkDiagnostics()['ok']) {
+            return true;
+        }
+
+        self::ensureUploadDirectories();
+
+        $link = self::publicSymlinkPath();
+        $target = self::configuredSymlinkTarget();
+
+        if (! File::isDirectory($target)) {
+            try {
+                File::makeDirectory($target, 0775, true);
+            } catch (\Throwable) {
+                return false;
+            }
+        }
+
+        try {
+            if (file_exists($link)) {
+                if (is_link($link)) {
+                    @unlink($link);
+                } elseif (File::isDirectory($link)) {
+                    $isEmpty = count(File::allFiles($link, true)) === 0
+                        && count(File::directories($link)) === 0;
+                    if ($isEmpty) {
+                        File::deleteDirectory($link);
+                    } else {
+                        File::move($link, $link.'.replaced-'.time());
+                    }
+                } else {
+                    File::delete($link);
+                }
+            }
+
+            if (! @symlink($target, $link) && ! self::symlinkDiagnostics()['ok']) {
+                \Illuminate\Support\Facades\Artisan::call('storage:link', ['--force' => true]);
+            }
+        } catch (\Throwable) {
+            return false;
+        }
+
+        return self::symlinkDiagnostics()['ok'];
+    }
+
     public static function k8sFixHint(string $root): string
     {
         return <<<TEXT

@@ -25,6 +25,34 @@ class PublicUploadStorageTest extends TestCase
         }
     }
 
+    public function test_ensure_public_symlink_creates_link(): void
+    {
+        $root = storage_path('framework/testing/symlink-target-'.uniqid());
+        Config::set('filesystems.disks.public.root', $root);
+        Config::set('filesystems.links', [public_path('storage') => $root]);
+
+        $link = public_path('storage');
+        $backup = null;
+        if (file_exists($link)) {
+            $backup = $link.'_symlink_test_'.uniqid();
+            rename($link, $backup);
+        }
+
+        try {
+            $this->assertTrue(PublicUploadStorage::ensurePublicSymlink());
+            $this->assertTrue(PublicUploadStorage::symlinkDiagnostics()['ok']);
+        } finally {
+            if (file_exists($link)) {
+                if (is_link($link)) {
+                    unlink($link);
+                }
+            }
+            if ($backup !== null && file_exists($backup)) {
+                rename($backup, $link);
+            }
+        }
+    }
+
     public function test_symlink_diagnostics_detects_missing_public_storage_link(): void
     {
         $link = public_path('storage');

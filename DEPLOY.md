@@ -12,7 +12,9 @@
 1. کلون مخزن و checkout شاخه release مورد نظر
 2. `composer install --no-dev --optimize-autoloader`
 3. `cp .env.example .env` و تنظیم `APP_KEY`, `APP_URL`, دیتابیس، درگاه‌های پرداخت
-4. **یک‌خطی پیشنهادی بعد از هر `git pull`:** `php artisan baharfc:post-deploy --seed-menu` (همان migrate + storage:link + پاک‌سازی کش + در صورت نیاز seed منو)
+4. **یک‌خطی پیشنهادی بعد از هر `git pull` / rollout پاد جدید:** `php artisan baharfc:post-deploy` (migrate + تعمیر symlink + پاک‌سازی کش؛ با `--seed-menu` در صورت نیاز منو)
+   - از **فقط** `migrate` بدون `post-deploy` خودداری کنید — symlink `public/storage` معمولاً بعد از deploy می‌پاشد.
+   - از نسخهٔ جدید: اپلیکیشن در **اولین درخواست وب** هم symlink را خودکار درست می‌کند (اگر `FILESYSTEM_PUBLIC_ROOT` درست باشد).
    - یا دستی: `php artisan migrate --force` (شامل `show_on_home` / `image_path` بنرها پس از به‌روزرسانی صفحه اصلی)
 5. **`git pull` باید پوشه `public/build/` را هم بیاورد** یا روی سرور `npm ci && npm run build` بزنید — اگر Blade به entryای در Vite اشاره کند که در `manifest.json` نیست، **صفحه اصلی ۵۰۰** می‌دهد
 6. `php artisan vendor:publish --tag=livewire:assets --force` و `php artisan filament:assets`
@@ -74,12 +76,25 @@ php artisan storage:link
 rsync -a storage/app/public/ /data/baharfc/storage/app/public/
 ```
 
-5. بعد از هر deploy حتماً لینک عمومی را بسازید (اگر `public/storage` به جای دیسک `/data` باشد، **آپلود در ادمین OK ولی URL مثل `/storage/shop/logo.png` همیشه ۴۰۴** می‌شود):
+5. بعد از هر deploy (یا اگر ۴۰۴ ماند):
 
 ```bash
-php artisan storage:link --force
+php artisan baharfc:post-deploy
+# یا فقط:
+php artisan baharfc:repair-storage
 php artisan baharfc:ensure-storage
 ```
+
+**K8s (پایدار):** در Deployment یک `lifecycle.postStart` یا entrypoint که `php artisan baharfc:post-deploy` را بزند تا هر پاد تازه symlink درست داشته باشد.
+
+```yaml
+lifecycle:
+  postStart:
+    exec:
+      command: ["/bin/sh", "-c", "cd /var/www && php artisan baharfc:post-deploy || true"]
+```
+
+اگر `public/storage` به جای دیسک `/data` باشد، **آپلود در ادمین OK ولی `/storage/...` ۴۰۴** می‌شود.
 
 اگر فقط نام فایل در ادمین دیده می‌شود و پیش‌نمایش نمی‌آید: اول symlink را درست کنید؛ اگر باز ۴۰۴ بود فایل واقعاً روی volume نیست — دوباره آپلود کنید.
 
