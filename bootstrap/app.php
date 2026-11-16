@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CacheGuestProductPages;
+use App\Http\Middleware\RecordPageViews;
 use App\Http\Middleware\CheckShopMaintenance;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocaleFa;
@@ -22,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             SecurityHeaders::class,
             SetLocaleFa::class,
             CheckShopMaintenance::class,
+            RecordPageViews::class,
             CacheGuestProductPages::class,
         ]);
     })

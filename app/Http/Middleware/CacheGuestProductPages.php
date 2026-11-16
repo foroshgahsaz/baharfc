@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Traffic\TrafficHitResolver;
+use App\Services\Traffic\TrafficStatsService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -18,7 +20,10 @@ class CacheGuestProductPages
         $key = 'guest_product_page:'.sha1($request->fullUrl());
 
         if (Cache::has($key)) {
+            $this->recordCachedProductView($request);
+
             return response(Cache::get($key))
+                ->header('Content-Type', 'text/html; charset=UTF-8')
                 ->header('X-Page-Cache', 'HIT');
         }
 
@@ -30,5 +35,19 @@ class CacheGuestProductPages
         }
 
         return $response;
+    }
+
+    private function recordCachedProductView(Request $request): void
+    {
+        if (! config('shop.traffic.enabled', true)) {
+            return;
+        }
+
+        $hit = app(TrafficHitResolver::class)->resolve($request);
+        if ($hit === null) {
+            return;
+        }
+
+        app(TrafficStatsService::class)->record($hit['type'], $hit['key']);
     }
 }

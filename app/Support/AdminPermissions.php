@@ -39,6 +39,9 @@ final class AdminPermissions
                 'brands.update' => 'ویرایش برند',
                 'brands.delete' => 'حذف برند',
             ],
+            'گزارش‌ها' => [
+                'analytics.view' => 'مشاهده آمار بازدید داخلی',
+            ],
             'فروش و سفارش' => [
                 'orders.view' => 'مشاهده سفارش‌ها',
                 'orders.create' => 'ایجاد سفارش',
@@ -163,6 +166,7 @@ final class AdminPermissions
                 'users.view',
                 'media.view',
                 'media.upload',
+                'analytics.view',
             ],
         ];
     }
