@@ -20,8 +20,11 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
+        if (class_exists(AdminRoleSeeder::class)) {
+            $this->call(AdminRoleSeeder::class);
+        }
+
         $this->call([
-            AdminRoleSeeder::class,
             DemoCatalogSeeder::class,
             CartCatalogSeeder::class,
             ShopMenuSeeder::class,
