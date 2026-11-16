@@ -15,6 +15,13 @@
 4. `php artisan migrate --force` (شامل `show_on_home` / `image_path` بنرها پس از به‌روزرسانی صفحه اصلی)
 5. **`git pull` باید پوشه `public/build/` را هم بیاورد** یا روی سرور `npm ci && npm run build` بزنید — اگر Blade به entryای در Vite اشاره کند که در `manifest.json` نیست، **صفحه اصلی ۵۰۰** می‌دهد
 6. `php artisan vendor:publish --tag=livewire:assets --force` و `php artisan filament:assets`
+6b. **مجوزهای K8s / PHP-FPM:** پوشه `bootstrap/cache` باید وجود داشته باشد و برای کاربر وب‌سرور (مثلاً `www-data`) قابل نوشتن باشد؛ وگرنه در لاگ `The bootstrap/cache directory must be present and writable` و سایت **۵۰۰** می‌دهد (`artisan` به‌صورت root ممکن است سالم بماند):
+
+```bash
+mkdir -p bootstrap/cache storage/framework/{cache,sessions,views} storage/logs
+chown -R www-data:www-data bootstrap/cache storage
+chmod -R ug+rwx bootstrap/cache storage
+```
 7. پس از هر `git pull` روی ادمین Filament: `php artisan optimize:clear` و `php artisan filament:optimize-clear` (بدون آن صفحاتی مثل درگاه‌های پرداخت ممکن است ۵۰۰ بدهند)
 8. پس از تنظیم/تغییر `APP_KEY`: حتماً `php artisan optimize:clear` (کش view/route قدیمی باعث مسیر اشتباه Livewire و لاگین شکسته می‌شود)
 9. `php artisan config:cache` و `php artisan view:cache` (اختیاری؛ بعد از هر تغییر `APP_KEY` دوباره پاک و در صورت نیاز بسازید)
