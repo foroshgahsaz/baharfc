@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Storage;
     'image_path',
     'sort_order',
     'is_active',
+    'show_on_home',
+    'home_caption',
     'meta_title',
     'meta_description',
 ])]
@@ -25,6 +27,7 @@ class Category extends Model
     {
         return [
             'is_active' => 'boolean',
+            'show_on_home' => 'boolean',
         ];
     }
 

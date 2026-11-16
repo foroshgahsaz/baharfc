@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'فروشگاه' }} — {{ config('app.name') }}</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/shop-home.js'])
     @livewireStyles
     @stack('head')
 </head>
-<body class="min-h-full bg-white font-sans text-slate-800 antialiased">
+<body class="lebasino-page min-h-full bg-white font-sans text-slate-800 antialiased">
     @include('components.shop.site-header')
 
-    <main>
+    <main @if (! empty($mainClass)) class="{{ $mainClass }}" @endif>
         @hasSection('content')
             @yield('content')
         @else

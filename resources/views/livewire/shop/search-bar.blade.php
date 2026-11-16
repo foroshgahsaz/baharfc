@@ -1,17 +1,23 @@
-<form wire:submit="search" class="relative w-full max-w-[540px] lg:mx-auto">
+<form wire:submit="search" class="search" wire:click.outside="closeResults">
     <input
         type="search"
-        wire:model="q"
-        placeholder="جستجوی محصولات …"
-        class="lebasino-search"
-    />
-    <button
-        type="submit"
-        class="absolute end-4 top-1/2 -translate-y-1/2 text-slate-500 transition hover:text-accent"
-        aria-label="جستجو"
+        wire:model.live.debounce.300ms="q"
+        placeholder="جستجوی محصولات ..."
+        aria-label="جستجوی محصولات"
+        autocomplete="off"
     >
-        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"/>
-        </svg>
+    <button type="submit" aria-label="جستجو">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
     </button>
+
+    @if ($open && count($results) > 0)
+        <div class="search-results" role="listbox">
+            @foreach ($results as $item)
+                <a href="{{ route('products.show', $item['slug']) }}" wire:navigate role="option">
+                    <span>{{ $item['name'] }}</span>
+                    <span class="text-xs text-[var(--lebasino-muted)]"> — {{ $item['formatted_price'] }}</span>
+                </a>
+            @endforeach
+        </div>
+    @endif
 </form>

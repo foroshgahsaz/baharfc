@@ -19,6 +19,7 @@ class CategoriesTable
                 TextColumn::make('name')->label('نام')->searchable()->sortable(),
                 TextColumn::make('parent.name')->label('والد')->toggleable(),
                 TextColumn::make('slug')->label('نامک')->toggleable(),
+                IconColumn::make('show_on_home')->label('صفحه اصلی')->boolean(),
                 IconColumn::make('is_active')->label('فعال')->boolean(),
             ])
             ->recordActions([EditAction::make()])

@@ -55,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
                 ->get());
         });
 
-        View::composer('layouts.shop', function ($view): void {
+        View::composer(['layouts.shop', 'components.shop.site-header'], function ($view): void {
             $cart = app(CartService::class);
             $view->with('cartItemCount', $cart->itemCount());
             $view->with('cartSubtotal', $cart->subtotal());

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Banner extends Model
 {
@@ -10,6 +11,7 @@ class Banner extends Model
         'title',
         'subtitle',
         'image_url',
+        'image_path',
         'link_url',
         'sort_order',
         'is_active',
@@ -20,5 +22,14 @@ class Banner extends Model
         return [
             'is_active' => 'boolean',
         ];
+    }
+
+    public function slideImageUrl(): ?string
+    {
+        if (filled($this->image_path)) {
+            return Storage::disk('public')->url($this->image_path);
+        }
+
+        return filled($this->image_url) ? $this->image_url : null;
     }
 }

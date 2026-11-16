@@ -1,6 +1,6 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-DG-t6jtA.css",
+    "file": "assets/app-D3iKrg8-.css",
     "name": "app",
     "names": [
       "app.css"
@@ -21,6 +21,12 @@
     "file": "assets/app-BvRk9kiK.js",
     "name": "app",
     "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/shop-home.js": {
+    "file": "assets/shop-home-CxV0MUP7.js",
+    "name": "shop-home",
+    "src": "resources/js/shop-home.js",
     "isEntry": true
   }
 }

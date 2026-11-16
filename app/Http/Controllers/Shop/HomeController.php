@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -29,10 +31,22 @@ class HomeController extends Controller
             ->orderBy('sort_order')
             ->get();
 
+        $homeCategories = collect();
+        if (Schema::hasColumn('categories', 'show_on_home')) {
+            $homeCategories = Category::query()
+                ->where('is_active', true)
+                ->where('show_on_home', true)
+                ->orderBy('sort_order')
+                ->limit(12)
+                ->get();
+        }
+
         return view('shop.home', [
             'banners' => $banners,
+            'homeCategories' => $homeCategories,
             'featuredProducts' => $featuredProducts,
             'latestProducts' => $latestProducts,
+            'mainClass' => 'container',
         ]);
     }
 }

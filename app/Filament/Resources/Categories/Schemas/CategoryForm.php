@@ -28,6 +28,15 @@ class CategoryForm
                 TextInput::make('meta_title')->label('عنوان SEO'),
                 Textarea::make('meta_description')->label('توضیح SEO')->rows(2),
                 FileUpload::make('image_path')->label('تصویر')->image()->disk('public')->directory('categories')->columnSpanFull(),
+                Toggle::make('show_on_home')
+                    ->label('نمایش در نوار دسته‌بندی صفحه اصلی')
+                    ->default(false)
+                    ->columnSpanFull(),
+                TextInput::make('home_caption')
+                    ->label('برچسب دایره‌ای (اختیاری)')
+                    ->helperText('برای خط‌شکست از Enter استفاده کنید؛ خالی = نام دسته')
+                    ->maxLength(120)
+                    ->columnSpanFull(),
                 Toggle::make('is_active')->label('فعال')->default(true),
             ]);
     }
