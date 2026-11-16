@@ -11,7 +11,13 @@ class CheckShopMaintenance
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! ShopAppearance::maintenanceActive()) {
+        try {
+            $maintenance = ShopAppearance::maintenanceActive();
+        } catch (\Throwable) {
+            return $next($request);
+        }
+
+        if (! $maintenance) {
             return $next($request);
         }
 
