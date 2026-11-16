@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Contracts\SmsSender;
 use App\Models\Category;
+use App\Support\ShopAppearance;
 use App\Models\Order;
 use App\Observers\OrderObserver;
 use App\Services\CartService;
@@ -39,6 +40,16 @@ class AppServiceProvider extends ServiceProvider
 
         Schema::defaultStringLength(191);
 
+        View::composer(['layouts.shop', 'components.shop.site-header'], function ($view): void {
+            $view->with('shopSiteName', ShopAppearance::siteName());
+            $view->with('shopWordmark', ShopAppearance::wordmark());
+            $view->with('shopLogoUrl', ShopAppearance::logoUrl());
+            $view->with('shopAccent', ShopAppearance::accentColor());
+            $settings = ShopAppearance::settings();
+            $view->with('shopMetaDescription', $settings->meta_description);
+            $view->with('shopFooterText', $settings->footer_text);
+        });
+
         View::composer('components.shop.site-header', function ($view): void {
             $view->with('headerGenderCategories', Category::query()
                 ->where('is_active', true)
@@ -55,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
                 ->get());
         });
 
-        View::composer(['layouts.shop', 'components.shop.site-header'], function ($view): void {
+        View::composer('layouts.shop', function ($view): void {
             $cart = app(CartService::class);
             $view->with('cartItemCount', $cart->itemCount());
             $view->with('cartSubtotal', $cart->subtotal());

@@ -4,7 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'فروشگاه' }} — {{ config('app.name') }}</title>
+    <title>{{ $title ?? 'فروشگاه' }} — {{ $shopSiteName ?? config('app.name') }}</title>
+    @if (! empty($shopAccent))
+        <style>:root { --lebasino-accent: {{ $shopAccent }}; }</style>
+    @endif
+    @if (! empty($shopMetaDescription))
+        <meta name="description" content="{{ $shopMetaDescription }}">
+    @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     @stack('head')
@@ -20,12 +26,15 @@
         @endif
     </main>
 
-    <footer class="mt-16 border-t border-slate-200 bg-slate-50">
-        <div class="mx-auto max-w-7xl px-4 py-10 text-center text-sm text-slate-500 sm:px-6 lg:px-8">
-            <p>فروشگاه اینترنتی {{ config('app.name') }}</p>
+    <livewire:shop.cart-drawer />
+
+    <footer class="shop-footer">
+        <div class="container shop-footer-inner">
+            <p>{{ $shopFooterText ?? 'فروشگاه اینترنتی '.($shopSiteName ?? config('app.name')) }}</p>
         </div>
     </footer>
 
     @livewireScripts
+    @stack('scripts')
 </body>
 </html>

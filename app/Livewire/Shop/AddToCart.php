@@ -35,8 +35,8 @@ class AddToCart extends Component
             return;
         }
 
-        $this->dispatch('cart-updated');
-        session()->flash('cart_toast', 'به سبد خرید افزوده شد.');
+        $this->dispatch('cart-updated', productId: $this->productId);
+        $this->dispatch('cart-header-refresh');
     }
 
     public function render()

@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 #[Layout('layouts.shop')]
@@ -19,6 +20,17 @@ class CheckoutPage extends Component
     public ?int $addressId = null;
 
     public string $customerNote = '';
+
+    public function openAddressModal(): void
+    {
+        $this->dispatch('open-checkout-address');
+    }
+
+    #[On('checkout-address-saved')]
+    public function onAddressSaved(int $addressId): void
+    {
+        $this->addressId = $addressId;
+    }
 
     public function mount(CartService $cart): void
     {

@@ -1,7 +1,11 @@
 <header class="site-header">
     <div class="topbar container">
-        <a class="brand" href="{{ route('home') }}" aria-label="{{ config('shop.logo_wordmark', 'LEBASINO') }}">
-            {{ config('shop.logo_wordmark', 'LEBASINO') }}
+        <a class="brand" href="{{ route('home') }}" aria-label="{{ $shopWordmark ?? 'LEBASINO' }}">
+            @if (! empty($shopLogoUrl))
+                <img src="{{ $shopLogoUrl }}" alt="{{ $shopWordmark }}" class="brand-logo">
+            @else
+                {{ $shopWordmark ?? 'LEBASINO' }}
+            @endif
         </a>
 
         <livewire:shop.search-bar />
@@ -23,11 +27,7 @@
                     <span class="link-text">{{ auth()->user()->name }}</span>
                 </a>
             @endguest
-            <a href="{{ route('cart.index') }}">
-                <span class="bag" aria-hidden="true">♧</span>
-                <span class="link-text">{{ number_format($cartSubtotal ?? 0) }} تومان</span>
-                <b>{{ $cartItemCount ?? 0 }}</b>
-            </a>
+            <livewire:shop.cart-header-badge />
         </nav>
     </div>
 

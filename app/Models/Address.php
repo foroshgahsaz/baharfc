@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'city',
     'address_line',
     'postal_code',
+    'latitude',
+    'longitude',
     'is_default',
 ])]
 class Address extends Model
@@ -23,6 +25,8 @@ class Address extends Model
     {
         return [
             'is_default' => 'boolean',
+            'latitude' => 'float',
+            'longitude' => 'float',
         ];
     }
 

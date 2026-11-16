@@ -1,97 +1,87 @@
-<div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-    <h1 class="text-2xl font-bold text-slate-900">سبد خرید</h1>
+<div class="shop-page container">
+    <header class="shop-page-head">
+        <h1>سبد خرید</h1>
+        <p class="shop-page-sub">محصولات انتخاب‌شده را مرور کنید و برای پرداخت ادامه دهید.</p>
+    </header>
 
     @if (session('cart_status'))
-        <p class="mt-4 rounded-2xl bg-brand-50 px-4 py-3 text-sm text-brand-800">{{ session('cart_status') }}</p>
+        <p class="shop-alert shop-alert-success">{{ session('cart_status') }}</p>
     @endif
-    @error('cart') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
+    @error('cart') <p class="shop-alert shop-alert-error">{{ $message }}</p> @enderror
 
     @if ($items->isEmpty())
-        <p class="mt-10 text-center text-slate-500">سبد خرید شما خالی است.</p>
-        <div class="mt-6 text-center">
-            <a href="{{ route('products.index') }}" class="text-brand-700 hover:underline">مشاهده محصولات</a>
+        <div class="shop-empty">
+            <p>سبد خرید شما خالی است.</p>
+            <a href="{{ route('products.index') }}" class="shop-btn shop-btn-primary" wire:navigate>مشاهده محصولات</a>
         </div>
     @else
-        <div class="mt-8 grid gap-8 lg:grid-cols-3">
-            <ul class="space-y-4 lg:col-span-2">
+        <div class="shop-cart-layout">
+            <ul class="shop-cart-list">
                 @foreach ($items as $item)
-                    <li class="flex gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <div class="h-24 w-24 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
+                    <li class="shop-cart-item">
+                        <a href="{{ route('products.show', $item->product->slug) }}" class="shop-cart-thumb" wire:navigate>
                             @if ($item->product->imageUrl())
-                                <img src="{{ $item->product->imageUrl() }}" alt="" class="h-full w-full object-cover" />
+                                <img src="{{ $item->product->imageUrl() }}" alt="">
                             @endif
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <a href="{{ route('products.show', $item->product->slug) }}" class="font-semibold text-slate-900 hover:text-brand-700">
+                        </a>
+                        <div class="shop-cart-item-body">
+                            <a href="{{ route('products.show', $item->product->slug) }}" class="shop-cart-title" wire:navigate>
                                 {{ $item->product->name }}
                             </a>
-                            <p class="mt-1 text-sm text-brand-700">{{ $item->product->formattedPrice() }}</p>
-                            <div class="mt-3 flex flex-wrap items-center gap-3">
+                            <p class="shop-cart-unit">{{ $item->product->formattedPrice() }}</p>
+                            <div class="shop-cart-qty">
                                 <input
                                     type="number"
                                     min="1"
                                     max="99"
                                     value="{{ $item->quantity }}"
                                     wire:change="updateQuantity({{ $item->id }}, $event.target.value)"
-                                    class="w-16 rounded-lg border border-slate-200 px-2 py-1 text-sm"
+                                    class="shop-input shop-input-qty"
                                 />
-                                <button type="button" wire:click="removeItem({{ $item->id }})" class="text-xs text-red-600 hover:underline">حذف</button>
+                                <button type="button" wire:click="removeItem({{ $item->id }})" class="shop-link-danger">حذف</button>
                             </div>
                         </div>
-                        <p class="text-sm font-semibold text-slate-800">{{ number_format($item->lineTotal()) }} تومان</p>
+                        <p class="shop-cart-line-total">{{ number_format($item->lineTotal()) }} <small>تومان</small></p>
                     </li>
                 @endforeach
             </ul>
 
-            <aside class="h-fit rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h2 class="text-lg font-semibold text-slate-900">جمع‌بندی</h2>
-                <dl class="mt-4 space-y-2 text-sm">
-                    <div class="flex justify-between">
-                        <dt class="text-slate-600">جمع جزء</dt>
-                        <dd>{{ number_format($subtotal) }} تومان</dd>
-                    </div>
+            <aside class="shop-summary">
+                <h2>جمع‌بندی</h2>
+                <dl class="shop-summary-lines">
+                    <div><dt>جمع جزء</dt><dd>{{ number_format($subtotal) }} تومان</dd></div>
                     @if ($discount > 0)
-                        <div class="flex justify-between text-green-700">
+                        <div class="shop-summary-discount">
                             <dt>تخفیف @if($appliedCoupon) ({{ $appliedCoupon->code }}) @endif</dt>
                             <dd>−{{ number_format($discount) }} تومان</dd>
                         </div>
                     @endif
-                    <div class="flex justify-between">
-                        <dt class="text-slate-600">ارسال</dt>
-                        <dd>{{ number_format($shipping) }} تومان</dd>
-                    </div>
-                    <div class="flex justify-between border-t border-slate-100 pt-3 text-base font-bold">
-                        <dt>قابل پرداخت</dt>
-                        <dd class="text-brand-700">{{ number_format($total) }} تومان</dd>
-                    </div>
+                    <div><dt>ارسال</dt><dd>{{ number_format($shipping) }} تومان</dd></div>
+                    <div class="shop-summary-total"><dt>قابل پرداخت</dt><dd>{{ number_format($total) }} تومان</dd></div>
                 </dl>
 
-                <div class="mt-6">
-                    <label class="text-xs font-medium text-slate-600">روش ارسال</label>
-                    <select wire:model.live="shippingMethodId" class="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm">
+                <label class="shop-field">
+                    <span>روش ارسال</span>
+                    <select wire:model.live="shippingMethodId" class="shop-input">
                         @foreach ($shippingMethods as $method)
                             <option value="{{ $method->id }}">{{ $method->name }} — {{ $method->formattedPrice() }}</option>
                         @endforeach
                     </select>
-                </div>
+                </label>
 
-                <form wire:submit="applyCoupon" class="mt-6 flex gap-2">
-                    <input type="text" wire:model="couponCode" placeholder="کد تخفیف" class="flex-1 rounded-xl border border-slate-200 px-3 py-2 text-sm" dir="ltr" />
-                    <button type="submit" class="rounded-xl bg-slate-800 px-4 py-2 text-sm text-white hover:bg-slate-900">اعمال</button>
+                <form wire:submit="applyCoupon" class="shop-coupon-form">
+                    <input type="text" wire:model="couponCode" placeholder="کد تخفیف" class="shop-input" dir="ltr" />
+                    <button type="submit" class="shop-btn shop-btn-outline">اعمال</button>
                 </form>
-                @error('couponCode') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                @error('couponCode') <p class="shop-field-error">{{ $message }}</p> @enderror
                 @if ($appliedCoupon)
-                    <button type="button" wire:click="removeCoupon" class="mt-2 text-xs text-slate-500 hover:underline">حذف کد تخفیف</button>
+                    <button type="button" wire:click="removeCoupon" class="shop-link-muted">حذف کد تخفیف</button>
                 @endif
 
                 @auth
-                    <a href="{{ route('checkout.index') }}" class="mt-6 block w-full rounded-2xl bg-brand-600 py-3 text-center text-sm font-semibold text-white hover:bg-brand-700">
-                        ادامه تسویه حساب
-                    </a>
+                    <a href="{{ route('checkout.index') }}" class="shop-btn shop-btn-primary shop-btn-block" wire:navigate>ادامه تسویه حساب</a>
                 @else
-                    <a href="{{ route('login') }}" class="mt-6 block w-full rounded-2xl border border-brand-300 py-3 text-center text-sm font-semibold text-brand-700 hover:bg-brand-50">
-                        برای تسویه حساب وارد شوید
-                    </a>
+                    <a href="{{ route('login') }}" class="shop-btn shop-btn-primary shop-btn-block" wire:navigate>ورود برای تسویه حساب</a>
                 @endauth
             </aside>
         </div>
