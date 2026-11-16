@@ -12,7 +12,8 @@
 1. کلون مخزن و checkout شاخه release مورد نظر
 2. `composer install --no-dev --optimize-autoloader`
 3. `cp .env.example .env` و تنظیم `APP_KEY`, `APP_URL`, دیتابیس، درگاه‌های پرداخت
-4. `php artisan migrate --force` (شامل `show_on_home` / `image_path` بنرها پس از به‌روزرسانی صفحه اصلی)
+4. **یک‌خطی پیشنهادی بعد از هر `git pull`:** `php artisan baharfc:post-deploy --seed-menu` (همان migrate + storage:link + پاک‌سازی کش + در صورت نیاز seed منو)
+   - یا دستی: `php artisan migrate --force` (شامل `show_on_home` / `image_path` بنرها پس از به‌روزرسانی صفحه اصلی)
 5. **`git pull` باید پوشه `public/build/` را هم بیاورد** یا روی سرور `npm ci && npm run build` بزنید — اگر Blade به entryای در Vite اشاره کند که در `manifest.json` نیست، **صفحه اصلی ۵۰۰** می‌دهد
 6. `php artisan vendor:publish --tag=livewire:assets --force` و `php artisan filament:assets`
 6b. **مجوزهای K8s / PHP-FPM:** پوشه `bootstrap/cache` باید وجود داشته باشد و برای کاربر وب‌سرور (مثلاً `www-data`) قابل نوشتن باشد؛ وگرنه در لاگ `The bootstrap/cache directory must be present and writable` و سایت **۵۰۰** می‌دهد (`artisan` به‌صورت root ممکن است سالم بماند):
