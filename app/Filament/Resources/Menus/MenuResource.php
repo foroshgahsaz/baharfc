@@ -7,6 +7,7 @@ use App\Filament\Resources\Menus\Pages\EditMenu;
 use App\Filament\Resources\Menus\Pages\ListMenus;
 use App\Filament\Resources\Menus\RelationManagers\MenuItemsRelationManager;
 use App\Models\Menu;
+use App\Support\SchemaGuard;
 use BackedEnum;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -36,6 +37,16 @@ class MenuResource extends Resource
     protected static ?int $navigationSort = 6;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
+    }
+
+    public static function canAccess(): bool
+    {
+        return SchemaGuard::hasTable('menus');
+    }
 
     public static function form(Schema $schema): Schema
     {

@@ -59,8 +59,13 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('components.shop.site-header', function ($view): void {
-            $view->with('headerMenuItems', ShopMenu::headerItems());
-            $view->with('headerCta', ShopMenu::headerCta());
+            try {
+                $view->with('headerMenuItems', ShopMenu::headerItems());
+                $view->with('headerCta', ShopMenu::headerCta());
+            } catch (\Throwable) {
+                $view->with('headerMenuItems', collect());
+                $view->with('headerCta', null);
+            }
         });
 
         View::composer('layouts.shop', function ($view): void {
