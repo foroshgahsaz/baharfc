@@ -24,7 +24,7 @@
     </div>
 
     <h1>فاکتور فروش</h1>
-    <p class="muted">شماره سفارش: {{ $order->number }} — تاریخ: {{ $order->paid_at?->format('Y/m/d H:i') ?? $order->created_at->format('Y/m/d H:i') }}</p>
+    <p class="muted">شماره سفارش: {{ $order->number }} — تاریخ: @jalali($order->paid_at ?? $order->created_at)</p>
 
     <p>
         <strong>{{ $order->recipient_name }}</strong><br>

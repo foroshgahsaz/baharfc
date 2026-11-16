@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Brands\Schemas;
 
-use Filament\Forms\Components\FileUpload;
+use App\Filament\Forms\Components\MediaPicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -16,7 +16,7 @@ class BrandForm
             TextInput::make('name')->label('نام برند')->required(),
             TextInput::make('slug')->label('نامک')->required()->unique(ignoreRecord: true),
             Textarea::make('description')->label('توضیحات'),
-            FileUpload::make('logo_path')->label('لوگو')->image()->disk('public')->directory('brands'),
+            MediaPicker::make('logo_path')->label('لوگو')->imagesOnly(),
             Toggle::make('is_active')->label('فعال')->default(true),
         ]);
     }

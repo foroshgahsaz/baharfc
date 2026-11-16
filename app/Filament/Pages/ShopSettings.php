@@ -6,7 +6,7 @@ use App\Models\ShopSetting;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
-use Filament\Forms\Components\FileUpload;
+use App\Filament\Forms\Components\MediaPicker;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -55,11 +55,10 @@ class ShopSettings extends Page implements HasSchemas
             ->components([
                 TextInput::make('site_name')->label('عنوان سایت')->maxLength(120)->columnSpanFull(),
                 TextInput::make('logo_wordmark')->label('متن لوگو (اگر تصویر ندارید)')->maxLength(80),
-                FileUpload::make('logo_path')
+                MediaPicker::make('logo_path')
                     ->label('لوگو')
-                    ->image()
-                    ->disk('public')
-                    ->directory('shop'),
+                    ->imagesOnly()
+                    ->helperText('از کتابخانه رسانه انتخاب کنید یا ابتدا در «کتابخانهٔ رسانه» آپلود کنید.'),
                 Textarea::make('site_description')->label('توضیح کوتاه فروشگاه')->rows(2)->columnSpanFull(),
                 Textarea::make('meta_description')->label('توضیح SEO')->rows(2)->columnSpanFull(),
                 ColorPicker::make('accent_color')->label('رنگ تأکید (برند)'),

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Categories\Schemas;
 
-use Filament\Forms\Components\FileUpload;
+use App\Filament\Forms\Components\MediaPicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -27,7 +27,7 @@ class CategoryForm
                 Textarea::make('description')->label('توضیحات')->columnSpanFull(),
                 TextInput::make('meta_title')->label('عنوان SEO'),
                 Textarea::make('meta_description')->label('توضیح SEO')->rows(2),
-                FileUpload::make('image_path')->label('تصویر')->image()->disk('public')->directory('categories')->columnSpanFull(),
+                MediaPicker::make('image_path')->label('تصویر')->imagesOnly()->columnSpanFull(),
                 Toggle::make('show_on_home')
                     ->label('نمایش در نوار دسته‌بندی صفحه اصلی')
                     ->default(false)

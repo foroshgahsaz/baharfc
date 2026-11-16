@@ -5,7 +5,7 @@ namespace App\Filament\Resources\Products\RelationManagers;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\FileUpload;
+use App\Filament\Forms\Components\MediaPicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -22,11 +22,9 @@ class ImagesRelationManager extends RelationManager
     public function form(Schema $schema): Schema
     {
         return $schema->components([
-            FileUpload::make('path')
+            MediaPicker::make('path')
                 ->label('تصویر')
-                ->image()
-                ->disk('public')
-                ->directory('products/gallery')
+                ->imagesOnly()
                 ->required(),
             TextInput::make('alt')->label('متن جایگزین'),
             TextInput::make('sort_order')->label('ترتیب')->numeric()->default(0),

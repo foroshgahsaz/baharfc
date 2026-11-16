@@ -7,7 +7,7 @@
             <p class="mt-4 text-sm font-medium text-brand-600">{{ $post->category->name }}</p>
         @endif
         <h1 class="mt-2 text-3xl font-bold text-slate-900">{{ $post->title }}</h1>
-        <p class="mt-2 text-sm text-slate-400">{{ $post->published_at?->format('Y/m/d H:i') }}</p>
+        <p class="mt-2 text-sm text-slate-400">@jalali($post->published_at)</p>
         <div class="prose prose-slate mt-8 max-w-none text-sm leading-relaxed">
             {!! nl2br(e($post->body)) !!}
         </div>

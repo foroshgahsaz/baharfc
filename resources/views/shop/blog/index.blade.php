@@ -15,7 +15,7 @@
                     @if ($post->excerpt)
                         <p class="mt-2 text-sm text-slate-600">{{ $post->excerpt }}</p>
                     @endif
-                    <p class="mt-3 text-xs text-slate-400">{{ $post->published_at?->format('Y/m/d') }}</p>
+                    <p class="mt-3 text-xs text-slate-400">@jalaliDate($post->published_at)</p>
                 </article>
             @empty
                 <p class="text-slate-500">هنوز مطلبی منتشر نشده است.</p>
