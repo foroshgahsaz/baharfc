@@ -39,12 +39,14 @@ class ShopSetting extends Model
             return $model;
         }
 
-        return Cache::remember('shop_settings.singleton', 300, fn () => static::query()->firstOrCreate([]));
+        // Do not cache the Eloquent model — serialized models break after deploy (Incomplete_Class).
+        return static::query()->firstOrCreate([]);
     }
 
     public static function clearCache(): void
     {
         Cache::forget('shop_settings.singleton');
+        Cache::forget('shop_settings.id');
     }
 
     public function logoUrl(): ?string
