@@ -56,6 +56,18 @@ sudo chown -R www-data:www-data /data/baharfc
 FILESYSTEM_PUBLIC_ROOT=/data/baharfc/storage/app/public
 ```
 
+3b. **مجوز نوشتن (خطای `mkdir(): Permission denied` در تنظیمات سایت / آپلود لوگو):** کاربر PHP (معمولاً `www-data`) باید روی `/data/baharfc` مالک باشد. یک‌بار داخل پاد:
+
+```bash
+mkdir -p /data/baharfc/storage/app/public/{shop,banners,categories,products/gallery,brands}
+chown -R www-data:www-data /data/baharfc
+chmod -R ug+rwx /data/baharfc/storage
+php artisan baharfc:ensure-storage
+php artisan storage:link
+```
+
+بدون این مرحله ذخیرهٔ **تنظیمات سایت** با آپلود لوگو در `/admin/shop-settings` شکست می‌خورد.
+
 4. اگر قبلاً فایل داخل پروژه بود، یک‌بار جابه‌جا کنید:
 
 ```bash
