@@ -24,6 +24,14 @@ return [
         ['label' => 'تاپ آستین کوتاه', 'slug' => 'women', 'image' => 'images/lebasino/categories/cat-10.jpg'],
     ],
 
+    'traffic' => [
+        'enabled' => env('SHOP_TRAFFIC_STATS', true),
+    ],
+
+    'cache' => [
+        'product_page_minutes' => (int) env('SHOP_PRODUCT_PAGE_CACHE_MINUTES', 15),
+    ],
+
     'nav_links' => [
         ['label' => 'صفحه اصلی', 'route' => 'home', 'active' => 'home'],
         ['label' => 'صفحات قالب', 'route' => 'products.index'],
