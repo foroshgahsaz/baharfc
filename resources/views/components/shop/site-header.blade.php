@@ -1,10 +1,10 @@
 <header class="site-header">
     <div class="topbar container">
-        <a class="brand" href="{{ route('home') }}" aria-label="{{ $shopWordmark ?? 'LEBASINO' }}">
+        <a class="brand" href="{{ route('home') }}" aria-label="{{ $shopWordmark ?? 'BAHARFC' }}">
             @if (! empty($shopLogoUrl))
                 <img src="{{ $shopLogoUrl }}" alt="{{ $shopWordmark }}" class="brand-logo">
             @else
-                {{ $shopWordmark ?? 'LEBASINO' }}
+                {{ $shopWordmark ?? 'BAHARFC' }}
             @endif
         </a>
 

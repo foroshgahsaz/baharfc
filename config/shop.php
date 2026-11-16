@@ -7,7 +7,7 @@ return [
     | Shop front wordmark (Lebasino-style header)
     |--------------------------------------------------------------------------
     */
-    'logo_wordmark' => env('SHOP_LOGO_WORDMARK', 'LEBASINO'),
+    'logo_wordmark' => env('SHOP_LOGO_WORDMARK', 'BAHARFC'),
 
     'accent' => env('SHOP_ACCENT_COLOR', '#462766'),
 

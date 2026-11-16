@@ -67,7 +67,7 @@ class ShopSetting extends Model
     {
         return filled($this->logo_wordmark)
             ? $this->logo_wordmark
-            : (string) config('shop.logo_wordmark', 'LEBASINO');
+            : (string) config('shop.logo_wordmark', 'BAHARFC');
     }
 
     public function displayAccent(): string
