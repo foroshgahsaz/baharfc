@@ -43,11 +43,10 @@
     font-size: 36px;
     letter-spacing: 1px;
     line-height: 1;
-    border-top: 2px solid var(--lebasino-ink);
-    border-bottom: 2px solid var(--lebasino-ink);
-    padding: 2px 3px 1px;
+    padding: 0;
     white-space: nowrap;
     flex-shrink: 0;
+    border: 0;
 }
 
 .lebasino-page .search {
@@ -117,6 +116,13 @@
     color: var(--lebasino-accent);
 }
 
+.lebasino-page .search-results-empty {
+    padding: 12px 14px;
+    margin: 0;
+    font-size: 13px;
+    color: var(--lebasino-muted);
+}
+
 .lebasino-page .user-links {
     display: flex;
     align-items: center;
@@ -163,20 +169,21 @@
     height: 68px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 24px;
+    justify-content: flex-start;
+    gap: 16px;
 }
 
 .lebasino-page .main-nav {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: clamp(13px, 2.5vw, 44px);
+    justify-content: flex-start;
+    gap: clamp(7px, 1.25vw, 22px);
     flex: 1;
+    margin-inline-start: auto;
 }
 
 .lebasino-page .main-nav a {
-    font-size: 14px;
+    font-size: 17px;
     white-space: nowrap;
     transition: color 0.2s;
 }
@@ -187,8 +194,9 @@
 }
 
 .lebasino-page .main-nav a.nav-divider {
-    border-left: 1px solid #ddd;
-    padding-left: 28px;
+    border-inline-start: 1px solid #ddd;
+    padding-inline-start: 14px;
+    margin-inline-start: 4px;
 }
 
 .lebasino-page .special {
@@ -206,6 +214,31 @@
     background: none;
     font-size: 24px;
     cursor: pointer;
+    color: var(--lebasino-ink);
+    padding: 6px 8px;
+}
+
+.lebasino-page .mobile-nav-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 85;
+    background: rgba(15, 20, 35, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+}
+
+.lebasino-page .mobile-nav-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.lebasino-page .mobile-nav-head {
+    display: none;
+}
+
+.lebasino-page.mobile-nav-open {
+    overflow: hidden;
 }
 
 .lebasino-page .categories {
@@ -390,11 +423,11 @@
     }
 
     .lebasino-page .main-nav {
-        gap: 17px;
+        gap: 10px;
     }
 
     .lebasino-page .main-nav a {
-        font-size: 12px;
+        font-size: 15px;
     }
 }
 
@@ -444,38 +477,71 @@
     }
 
     .lebasino-page .special {
-        margin-right: auto;
+        margin-inline-start: auto;
     }
 
     .lebasino-page .main-nav {
-        display: none;
-        position: absolute;
-        z-index: 50;
-        top: calc(100% + 4px);
-        right: 14px;
-        left: 14px;
-        background: #fff;
-        box-shadow: 0 12px 30px rgba(28, 36, 51, 0.11);
-        border-radius: 12px;
-        padding: 16px;
+        position: fixed;
+        z-index: 90;
+        top: 0;
+        right: 0;
+        left: auto;
+        bottom: 0;
+        width: min(320px, 88vw);
+        height: 100dvh;
+        margin: 0;
+        flex: none;
+        display: flex;
         flex-direction: column;
         align-items: stretch;
+        justify-content: flex-start;
         gap: 0;
+        padding: 0;
+        background: #fff;
+        box-shadow: -12px 0 40px rgba(20, 24, 40, 0.18);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        overflow-y: auto;
+        border-radius: 0;
     }
 
     .lebasino-page .main-nav.open {
+        transform: translateX(0);
+    }
+
+    .lebasino-page .mobile-nav-head {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 18px;
+        border-bottom: 1px solid #f0f0f4;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .lebasino-page .mobile-nav-close {
+        border: 0;
+        background: none;
+        font-size: 28px;
+        line-height: 1;
+        cursor: pointer;
+        color: #666;
+        padding: 4px;
     }
 
     .lebasino-page .main-nav a {
-        padding: 11px;
+        padding: 14px 18px;
         border-bottom: 1px solid #f2f2f2;
-        font-size: 14px;
+        font-size: 17px;
     }
 
     .lebasino-page .main-nav a.nav-divider {
-        border-left: 0;
-        padding-left: 11px;
+        border-inline-start: 0;
+        padding-inline-start: 18px;
+        margin-inline-start: 0;
+        border-top: 1px solid #eee;
+        margin-top: 6px;
+        padding-top: 18px;
     }
 
     .lebasino-page .categories {

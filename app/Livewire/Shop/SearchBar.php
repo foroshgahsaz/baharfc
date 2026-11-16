@@ -23,7 +23,7 @@ class SearchBar extends Component
     {
         $term = trim($this->q);
 
-        if (mb_strlen($term) < 2) {
+        if (mb_strlen($term) < 3) {
             $this->results = [];
             $this->open = false;
 
@@ -44,7 +44,7 @@ class SearchBar extends Component
             ])
             ->all();
 
-        $this->open = count($this->results) > 0;
+        $this->open = true;
     }
 
     public function closeResults(): void
