@@ -6,6 +6,14 @@
         <div class="mt-8 space-y-6">
             @forelse ($posts as $post)
                 <article class="rounded-2xl border border-slate-200 bg-white p-6">
+                    @if ($post->featuredImageUrl())
+                        <img
+                            src="{{ $post->featuredImageUrl() }}"
+                            alt=""
+                            class="mb-4 w-full rounded-xl object-cover max-h-48"
+                            loading="lazy"
+                        />
+                    @endif
                     @if ($post->category)
                         <p class="text-xs font-medium text-brand-600">{{ $post->category->name }}</p>
                     @endif

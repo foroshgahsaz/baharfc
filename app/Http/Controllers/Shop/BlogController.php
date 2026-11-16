@@ -11,8 +11,8 @@ class BlogController extends Controller
     public function index(): View
     {
         $posts = BlogPost::query()
-            ->where('is_published', true)
-            ->with('category')
+            ->publishedOnSite()
+            ->with(['category', 'author'])
             ->latest('published_at')
             ->paginate(10);
 
@@ -23,8 +23,8 @@ class BlogController extends Controller
     {
         $post = BlogPost::query()
             ->where('slug', $slug)
-            ->where('is_published', true)
-            ->with('category')
+            ->publishedOnSite()
+            ->with(['category', 'author'])
             ->firstOrFail();
 
         return view('shop.blog.show', compact('post'));

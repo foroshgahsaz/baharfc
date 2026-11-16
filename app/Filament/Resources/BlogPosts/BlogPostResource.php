@@ -2,12 +2,17 @@
 
 namespace App\Filament\Resources\BlogPosts;
 
+use App\Enums\BlogPostStatus;
+use App\Filament\Forms\Components\MediaPicker;
 use App\Filament\Resources\BlogPosts\Pages\CreateBlogPost;
 use App\Filament\Resources\BlogPosts\Pages\EditBlogPost;
 use App\Filament\Resources\BlogPosts\Pages\ListBlogPosts;
+use App\Filament\Resources\BlogPosts\RelationManagers\CommentsRelationManager;
 use App\Models\BlogPost;
+use App\Models\User;
 use BackedEnum;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -15,8 +20,8 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -36,25 +41,101 @@ class BlogPostResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([
-            TextInput::make('title')->label('عنوان')->required(),
-            TextInput::make('slug')->label('نامک')->required()->unique(ignoreRecord: true),
-            Select::make('blog_category_id')->label('دسته')->relationship('category', 'name'),
-            Textarea::make('excerpt')->label('خلاصه')->rows(2),
-            Textarea::make('body')->label('متن')->required()->columnSpanFull(),
-            Toggle::make('is_published')->label('منتشر شده')->default(false),
-            DateTimePicker::make('published_at')->label('تاریخ انتشار'),
-        ]);
+        return $schema
+            ->columns(2)
+            ->components([
+                TextInput::make('title')
+                    ->label('عنوان')
+                    ->required()
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+                TextInput::make('slug')
+                    ->label('نامک (پیوند یکتا)')
+                    ->required()
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true)
+                    ->helperText('مثل وردپرس — در آدرس سایت استفاده می‌شود'),
+                Select::make('status')
+                    ->label('وضعیت')
+                    ->options(collect(BlogPostStatus::cases())->mapWithKeys(fn (BlogPostStatus $s) => [$s->value => $s->label()]))
+                    ->default(BlogPostStatus::Draft->value)
+                    ->required()
+                    ->native(false),
+                Select::make('blog_category_id')
+                    ->label('دسته')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload(),
+                Select::make('author_id')
+                    ->label('نویسنده')
+                    ->options(fn () => User::query()->orderBy('name')->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload(),
+                DateTimePicker::make('published_at')
+                    ->label('تاریخ انتشار')
+                    ->seconds(false)
+                    ->helperText('برای «زمان‌بندی شده» تاریخ آینده انتخاب کنید'),
+                MediaPicker::make('featured_image_path')
+                    ->label('تصویر شاخص')
+                    ->imagesOnly()
+                    ->columnSpanFull(),
+                Textarea::make('excerpt')
+                    ->label('خلاصه / چکیده')
+                    ->rows(3)
+                    ->columnSpanFull(),
+                RichEditor::make('body')
+                    ->label('محتوا')
+                    ->required()
+                    ->columnSpanFull(),
+                TextInput::make('tags')
+                    ->label('برچسب‌ها')
+                    ->helperText('با ویرگول جدا کنید')
+                    ->columnSpanFull(),
+                TextInput::make('meta_title')
+                    ->label('عنوان SEO'),
+                Textarea::make('meta_description')
+                    ->label('توضیح SEO')
+                    ->rows(2)
+                    ->maxLength(500)
+                    ->columnSpanFull(),
+                Toggle::make('allow_comments')
+                    ->label('امکان ثبت نظر')
+                    ->default(true),
+                Toggle::make('is_featured')
+                    ->label('مطلب ویژه'),
+            ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table->columns([
-            TextColumn::make('title')->label('عنوان')->searchable(),
-            TextColumn::make('category.name')->label('دسته'),
-            IconColumn::make('is_published')->label('منتشر')->boolean(),
-            TextColumn::make('published_at')->label('تاریخ')->dateTime('Y/m/d'),
-        ])->defaultSort('published_at', 'desc');
+        return $table
+            ->columns([
+                TextColumn::make('title')->label('عنوان')->searchable()->sortable(),
+                TextColumn::make('category.name')->label('دسته'),
+                TextColumn::make('author.name')->label('نویسنده')->toggleable(),
+                TextColumn::make('status')
+                    ->label('وضعیت')
+                    ->badge()
+                    ->formatStateUsing(fn (BlogPostStatus $state): string => $state->label()),
+                TextColumn::make('comments_count')
+                    ->label('نظرات')
+                    ->counts('comments')
+                    ->sortable(),
+                TextColumn::make('published_at')->label('انتشار')->dateTime('Y/m/d H:i')->sortable(),
+            ])
+            ->defaultSort('updated_at', 'desc')
+            ->filters([
+                SelectFilter::make('status')
+                    ->label('وضعیت')
+                    ->options(collect(BlogPostStatus::cases())->mapWithKeys(fn (BlogPostStatus $s) => [$s->value => $s->label()])),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            CommentsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
