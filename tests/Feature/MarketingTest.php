@@ -18,6 +18,7 @@ class MarketingTest extends TestCase
         Banner::query()->create([
             'title' => 'جشنواره پاییز',
             'subtitle' => 'تا ۳۰٪ تخفیف',
+            'image_url' => 'https://example.test/banner-fall.jpg',
             'is_active' => true,
             'sort_order' => 1,
         ]);

@@ -1,0 +1,536 @@
+/* مطابق قالب آپلودشده — رنگ accent از تم (#462766) */
+:root {
+    --lebasino-accent: #462766;
+    --lebasino-ink: #273044;
+    --lebasino-muted: #85858a;
+    --lebasino-line: #eee;
+}
+
+.lebasino-page {
+    --red: var(--lebasino-accent);
+    color: var(--lebasino-ink);
+}
+
+.lebasino-page a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.lebasino-page button,
+.lebasino-page input {
+    font: inherit;
+}
+
+.lebasino-page .container {
+    width: min(1388px, calc(100% - 48px));
+    margin-inline: auto;
+}
+
+.lebasino-page .site-header {
+    background: #fff;
+    box-shadow: 0 8px 30px rgba(30, 35, 50, 0.025);
+}
+
+.lebasino-page .topbar {
+    height: 86px;
+    display: flex;
+    align-items: center;
+    gap: 38px;
+}
+
+.lebasino-page .brand {
+    font-family: 'Peyda', Arial, sans-serif;
+    font-size: 36px;
+    letter-spacing: 1px;
+    line-height: 1;
+    border-top: 2px solid var(--lebasino-ink);
+    border-bottom: 2px solid var(--lebasino-ink);
+    padding: 2px 3px 1px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.lebasino-page .search {
+    height: 54px;
+    border: 1px solid #ececf0;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    flex: 1;
+    max-width: 670px;
+    position: relative;
+}
+
+.lebasino-page .search input {
+    border: 0;
+    outline: 0;
+    background: transparent;
+    width: 100%;
+    font-size: 12px;
+    color: var(--lebasino-ink);
+}
+
+.lebasino-page .search input::placeholder {
+    color: #aaa;
+}
+
+.lebasino-page .search button {
+    border: 0;
+    background: none;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.lebasino-page .search svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: #9299a6;
+    stroke-width: 1.7;
+}
+
+.lebasino-page .search-results {
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 6px);
+    right: 0;
+    left: 0;
+    background: #fff;
+    border: 1px solid #ececf0;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(30, 35, 50, 0.12);
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 6px;
+}
+
+.lebasino-page .search-results a {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.lebasino-page .search-results a:hover {
+    background: #f7f5fa;
+    color: var(--lebasino-accent);
+}
+
+.lebasino-page .user-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-inline-start: auto;
+}
+
+.lebasino-page .user-links a {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    white-space: nowrap;
+    position: relative;
+}
+
+.lebasino-page .user-links b {
+    position: absolute;
+    top: -13px;
+    right: -8px;
+    background: var(--lebasino-accent);
+    color: white;
+    border-radius: 50%;
+    font: 10px Arial, sans-serif;
+    padding: 4px 6px;
+    min-width: 18px;
+    text-align: center;
+}
+
+.lebasino-page .heart,
+.lebasino-page .user-icon,
+.lebasino-page .bag {
+    font-size: 27px;
+    color: var(--lebasino-accent);
+    line-height: 1;
+}
+
+.lebasino-page .nav-wrap {
+    border-top: 1px solid #fafafa;
+    position: relative;
+}
+
+.lebasino-page .nav-row {
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.lebasino-page .main-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: clamp(13px, 2.5vw, 44px);
+    flex: 1;
+}
+
+.lebasino-page .main-nav a {
+    font-size: 14px;
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+.lebasino-page .main-nav a:hover,
+.lebasino-page .main-nav a.is-active {
+    color: var(--lebasino-accent);
+}
+
+.lebasino-page .main-nav a.nav-divider {
+    border-left: 1px solid #ddd;
+    padding-left: 28px;
+}
+
+.lebasino-page .special {
+    background: #f7eff9;
+    color: var(--lebasino-accent);
+    padding: 9px 20px;
+    border-radius: 13px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.lebasino-page .mobile-menu {
+    display: none;
+    border: 0;
+    background: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.lebasino-page .categories {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 33px 0 20px;
+}
+
+.lebasino-page .category-list {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.lebasino-page .category {
+    border: 0;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+    color: #777;
+    font-size: 11px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.lebasino-page .category img {
+    width: 82px;
+    height: 82px;
+    object-fit: cover;
+    border: 2px solid var(--lebasino-accent);
+    border-radius: 50%;
+    padding: 4px;
+    background: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.lebasino-page .category:hover img {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 16px color-mix(in srgb, var(--lebasino-accent) 20%, transparent);
+}
+
+.lebasino-page .category span {
+    min-height: 35px;
+}
+
+.lebasino-page .category-promo {
+    width: 139px;
+    min-width: 139px;
+    height: 140px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #f7eff9, #fff);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: var(--lebasino-ink);
+    font-size: 15px;
+}
+
+.lebasino-page .category-promo strong {
+    color: var(--lebasino-accent);
+    font-size: 15px;
+}
+
+.lebasino-page .category-promo span {
+    color: var(--lebasino-accent);
+    font-size: 26px;
+    line-height: 1;
+    margin-top: 18px;
+    letter-spacing: -6px;
+}
+
+.lebasino-page .hero {
+    position: relative;
+    border-radius: 30px;
+    overflow: hidden;
+    line-height: 0;
+    background: #20283a;
+}
+
+.lebasino-page .hero-link,
+.lebasino-page .hero img {
+    display: block;
+    width: 100%;
+}
+
+.lebasino-page .hero img {
+    aspect-ratio: 1388 / 463;
+    object-fit: cover;
+}
+
+.lebasino-page .slider-arrow {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 46px;
+    height: 74px;
+    border: 0;
+    background: #fff;
+    color: #273044;
+    font-size: 30px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.lebasino-page .slider-arrow.prev {
+    right: 0;
+    border-radius: 40px 0 0 40px;
+}
+
+.lebasino-page .slider-arrow.next {
+    left: 0;
+    border-radius: 0 40px 40px 0;
+}
+
+.lebasino-page .slider-dots {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    padding: 9px 24px 0;
+    border-radius: 22px 22px 0 0;
+}
+
+.lebasino-page .dot {
+    width: 8px;
+    height: 8px;
+    border: 0;
+    border-radius: 10px;
+    background: #ead9ef;
+    padding: 0;
+    cursor: pointer;
+}
+
+.lebasino-page .dot.active {
+    width: 16px;
+    background: var(--lebasino-accent);
+}
+
+@media (max-width: 1100px) {
+    .lebasino-page .container {
+        width: min(100% - 32px, 1000px);
+    }
+
+    .lebasino-page .topbar {
+        gap: 20px;
+    }
+
+    .lebasino-page .user-links {
+        gap: 14px;
+    }
+
+    .lebasino-page .user-links a .link-text {
+        display: none;
+    }
+
+    .lebasino-page .category-list {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        row-gap: 18px;
+    }
+
+    .lebasino-page .categories {
+        align-items: flex-start;
+    }
+
+    .lebasino-page .category-promo {
+        height: 130px;
+    }
+
+    .lebasino-page .main-nav {
+        gap: 17px;
+    }
+
+    .lebasino-page .main-nav a {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 700px) {
+    .lebasino-page .container {
+        width: calc(100% - 28px);
+    }
+
+    .lebasino-page .topbar {
+        height: auto;
+        min-height: 75px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        padding: 13px 0;
+    }
+
+    .lebasino-page .brand {
+        font-size: 28px;
+        grid-column: 1;
+        grid-row: 1;
+        justify-self: start;
+    }
+
+    .lebasino-page .user-links {
+        grid-column: 2;
+        grid-row: 1;
+        gap: 15px;
+        margin: 0;
+    }
+
+    .lebasino-page .search {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        max-width: none;
+        height: 44px;
+    }
+
+    .lebasino-page .nav-row {
+        height: auto;
+        min-height: 52px;
+        justify-content: space-between;
+    }
+
+    .lebasino-page .mobile-menu {
+        display: block;
+    }
+
+    .lebasino-page .special {
+        margin-right: auto;
+    }
+
+    .lebasino-page .main-nav {
+        display: none;
+        position: absolute;
+        z-index: 50;
+        top: calc(100% + 4px);
+        right: 14px;
+        left: 14px;
+        background: #fff;
+        box-shadow: 0 12px 30px rgba(28, 36, 51, 0.11);
+        border-radius: 12px;
+        padding: 16px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+    }
+
+    .lebasino-page .main-nav.open {
+        display: flex;
+    }
+
+    .lebasino-page .main-nav a {
+        padding: 11px;
+        border-bottom: 1px solid #f2f2f2;
+        font-size: 14px;
+    }
+
+    .lebasino-page .main-nav a.nav-divider {
+        border-left: 0;
+        padding-left: 11px;
+    }
+
+    .lebasino-page .categories {
+        padding-top: 20px;
+        gap: 12px;
+        overflow: hidden;
+    }
+
+    .lebasino-page .category-promo {
+        width: 95px;
+        min-width: 95px;
+        height: 112px;
+        font-size: 12px;
+    }
+
+    .lebasino-page .category-promo strong {
+        font-size: 12px;
+    }
+
+    .lebasino-page .category-promo span {
+        margin-top: 10px;
+    }
+
+    .lebasino-page .category-list {
+        grid-template-columns: repeat(6, 76px);
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: 4px 0 10px;
+    }
+
+    .lebasino-page .category-list::-webkit-scrollbar {
+        display: none;
+    }
+
+    .lebasino-page .category img {
+        width: 67px;
+        height: 67px;
+    }
+
+    .lebasino-page .category {
+        font-size: 10px;
+    }
+
+    .lebasino-page .hero {
+        border-radius: 18px;
+    }
+
+    .lebasino-page .hero img {
+        aspect-ratio: 1.65;
+        object-fit: cover;
+    }
+
+    .lebasino-page .slider-arrow {
+        width: 30px;
+        height: 52px;
+        font-size: 24px;
+    }
+}

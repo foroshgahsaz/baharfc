@@ -7,6 +7,7 @@ use App\Filament\Resources\Banners\Pages\EditBanner;
 use App\Filament\Resources\Banners\Pages\ListBanners;
 use App\Models\Banner;
 use BackedEnum;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
@@ -23,9 +24,11 @@ class BannerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
-    protected static ?string $modelLabel = 'بنر';
+    protected static ?string $modelLabel = 'اسلاید صفحه اصلی';
 
-    protected static ?string $pluralModelLabel = 'بنرها';
+    protected static ?string $pluralModelLabel = 'اسلایدر صفحه اصلی';
+
+    protected static ?string $navigationLabel = 'اسلایدر صفحه اصلی';
 
     protected static string|UnitEnum|null $navigationGroup = 'بازاریابی';
 
@@ -35,9 +38,19 @@ class BannerResource extends Resource
     {
         return $schema->components([
             TextInput::make('title')->label('عنوان')->required(),
-            TextInput::make('subtitle')->label('زیرعنوان'),
-            TextInput::make('image_url')->label('آدرس تصویر')->url(),
-            TextInput::make('link_url')->label('لینک')->url(),
+            TextInput::make('subtitle')->label('زیرعنوان')->columnSpanFull(),
+            FileUpload::make('image_path')
+                ->label('تصویر اسلاید')
+                ->image()
+                ->disk('public')
+                ->directory('banners')
+                ->helperText('ابعاد پیشنهادی: ۱۳۸۸×۴۶۳ پیکسل')
+                ->columnSpanFull(),
+            TextInput::make('image_url')
+                ->label('یا آدرس تصویر (اختیاری)')
+                ->url()
+                ->columnSpanFull(),
+            TextInput::make('link_url')->label('لینک کلیک')->url(),
             TextInput::make('sort_order')->label('ترتیب')->numeric()->default(0),
             Toggle::make('is_active')->label('فعال')->default(true),
         ]);
