@@ -93,13 +93,30 @@ class ShopSettings extends Page implements HasSchemas
 
     public function save(): void
     {
-        $state = $this->form->getState();
-        $setting = ShopSetting::current();
-        if (! $setting->exists) {
-            $setting = new ShopSetting;
+        try {
+            $state = $this->form->getState();
+            $setting = ShopSetting::current();
+            if (! $setting->exists) {
+                $setting = new ShopSetting;
+            }
+            $setting->fill($state);
+            $setting->save();
+        } catch (\Throwable $e) {
+            $hint = str_contains($e->getMessage(), 'Permission denied') || str_contains($e->getMessage(), 'UnableToCreateDirectory')
+                ? 'مجوز نوشتن روی دیسک آپلود نیست. روی سرور: php artisan baharfc:ensure-storage — یا chown www-data برای مسیر FILESYSTEM_PUBLIC_ROOT (مثلاً /data/baharfc/storage/app/public).'
+                : null;
+
+            Notification::make()
+                ->title('ذخیره ناموفق')
+                ->body(trim($hint ?: 'خطا در ذخیرهٔ تنظیمات. جزئیات در آرشیو خطاها.'))
+                ->danger()
+                ->send();
+
+            report($e);
+
+            return;
         }
-        $setting->fill($state);
-        $setting->save();
+
         ShopSetting::clearCache();
 
         Notification::make()

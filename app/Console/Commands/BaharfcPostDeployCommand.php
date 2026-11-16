@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Support\PublicUploadStorage;
 use Illuminate\Console\Command;
 
 class BaharfcPostDeployCommand extends Command
@@ -18,6 +19,14 @@ class BaharfcPostDeployCommand extends Command
         if ($this->option('seed-menu')) {
             $this->components->info('Seed منوی فروشگاه (در صورت خالی بودن)...');
             $this->call('db:seed', ['--class' => 'Database\\Seeders\\ShopMenuSeeder', '--force' => true]);
+        }
+
+        $storage = PublicUploadStorage::ensureUploadDirectories();
+        if ($storage['ok']) {
+            $this->components->success($storage['message']);
+        } else {
+            $this->components->warn($storage['message']);
+            $this->line(PublicUploadStorage::k8sFixHint($storage['root']));
         }
 
         $this->components->info('storage:link');
