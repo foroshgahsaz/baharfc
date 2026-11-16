@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\ChecksAdminPageAccess;
 use App\Services\Admin\ApplicationErrorLogReader;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -12,6 +13,13 @@ use UnitEnum;
 
 class ErrorLogArchive extends Page
 {
+    use ChecksAdminPageAccess;
+
+    protected static function adminPagePermission(): string
+    {
+        return 'system.logs';
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedExclamationTriangle;
 
     protected static ?string $navigationLabel = 'آرشیو خطاها';

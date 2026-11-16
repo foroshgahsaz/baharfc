@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\ChecksAdminPageAccess;
 use App\Models\ShopSetting;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -23,7 +24,13 @@ use UnitEnum;
 
 class ShopSettings extends Page implements HasSchemas
 {
+    use ChecksAdminPageAccess;
     use InteractsWithSchemas;
+
+    protected static function adminPagePermission(): string
+    {
+        return 'settings.shop';
+    }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 

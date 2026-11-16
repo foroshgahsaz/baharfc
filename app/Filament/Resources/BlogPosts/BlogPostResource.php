@@ -4,6 +4,7 @@ namespace App\Filament\Resources\BlogPosts;
 
 use App\Enums\BlogPostStatus;
 use App\Filament\Forms\Components\MediaPicker;
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\BlogPosts\Pages\CreateBlogPost;
 use App\Filament\Resources\BlogPosts\Pages\EditBlogPost;
 use App\Filament\Resources\BlogPosts\Pages\ListBlogPosts;
@@ -27,6 +28,13 @@ use UnitEnum;
 
 class BlogPostResource extends Resource
 {
+    use ChecksAdminPermissions;
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'blog_posts';
+    }
+
     protected static ?string $model = BlogPost::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;

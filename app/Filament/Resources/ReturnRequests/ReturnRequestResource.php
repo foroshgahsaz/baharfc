@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ReturnRequests;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\ReturnRequests\Pages\EditReturnRequest;
 use App\Filament\Resources\ReturnRequests\Pages\ListReturnRequests;
 use App\Filament\Resources\ReturnRequests\Tables\ReturnRequestsTable;
@@ -14,6 +15,13 @@ use UnitEnum;
 
 class ReturnRequestResource extends Resource
 {
+    use ChecksAdminPermissions;
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'returns';
+    }
+
     protected static ?string $model = ReturnRequest::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowUturnLeft;

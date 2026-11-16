@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\BlogComments;
 
 use App\Enums\BlogCommentStatus;
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\BlogComments\Pages\EditBlogComment;
 use App\Filament\Resources\BlogComments\Pages\ListBlogComments;
 use App\Models\BlogComment;
@@ -25,6 +26,13 @@ use UnitEnum;
 
 class BlogCommentResource extends Resource
 {
+    use ChecksAdminPermissions;
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'blog_comments';
+    }
+
     protected static ?string $model = BlogComment::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;

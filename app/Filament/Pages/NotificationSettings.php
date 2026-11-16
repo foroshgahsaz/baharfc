@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Concerns\ChecksAdminPageAccess;
 use BackedEnum;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
@@ -9,6 +10,13 @@ use UnitEnum;
 
 class NotificationSettings extends Page
 {
+    use ChecksAdminPageAccess;
+
+    protected static function adminPagePermission(): string
+    {
+        return 'settings.notifications';
+    }
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBellAlert;
 
     protected static ?string $navigationLabel = 'اعلان‌ها';

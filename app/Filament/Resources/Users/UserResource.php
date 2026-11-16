@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Filament\Resources\Users\Pages\EditUser;
 use App\Filament\Resources\Users\Pages\ListUsers;
@@ -17,6 +18,8 @@ use UnitEnum;
 
 class UserResource extends Resource
 {
+    use ChecksAdminPermissions;
+
     protected static ?string $model = User::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
@@ -27,9 +30,14 @@ class UserResource extends Resource
 
     protected static ?string $navigationLabel = 'مشتریان و کاربران';
 
-    protected static string|UnitEnum|null $navigationGroup = 'فروشگاه';
+    protected static string|UnitEnum|null $navigationGroup = 'دسترسی‌ها';
 
     protected static ?int $navigationSort = 2;
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'users';
+    }
 
     protected static ?string $recordTitleAttribute = 'name';
 

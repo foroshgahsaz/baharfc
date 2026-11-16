@@ -78,7 +78,11 @@ class MediaLibrary extends Page
 
     public static function canAccess(): bool
     {
-        return SchemaGuard::hasTable('media');
+        if (! SchemaGuard::hasTable('media')) {
+            return false;
+        }
+
+        return auth()->user()?->canAdmin('media.view') ?? false;
     }
 
     public function updatedSearch(): void

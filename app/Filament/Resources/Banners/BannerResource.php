@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Banners;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\Banners\Pages\CreateBanner;
 use App\Filament\Resources\Banners\Pages\EditBanner;
 use App\Filament\Resources\Banners\Pages\ListBanners;
@@ -20,6 +21,13 @@ use UnitEnum;
 
 class BannerResource extends Resource
 {
+    use ChecksAdminPermissions;
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'banners';
+    }
+
     protected static ?string $model = Banner::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;

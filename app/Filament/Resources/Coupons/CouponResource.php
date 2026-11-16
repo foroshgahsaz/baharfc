@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Coupons;
 
 use App\Enums\CouponType;
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\Coupons\Pages\CreateCoupon;
 use App\Filament\Resources\Coupons\Pages\EditCoupon;
 use App\Filament\Resources\Coupons\Pages\ListCoupons;
@@ -22,6 +23,13 @@ use UnitEnum;
 
 class CouponResource extends Resource
 {
+    use ChecksAdminPermissions;
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'coupons';
+    }
+
     protected static ?string $model = Coupon::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTicket;

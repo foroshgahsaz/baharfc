@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ShippingMethods;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\ShippingMethods\Pages\CreateShippingMethod;
 use App\Filament\Resources\ShippingMethods\Pages\EditShippingMethod;
 use App\Filament\Resources\ShippingMethods\Pages\ListShippingMethods;
@@ -19,6 +20,13 @@ use UnitEnum;
 
 class ShippingMethodResource extends Resource
 {
+    use ChecksAdminPermissions;
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'shipping';
+    }
+
     protected static ?string $model = ShippingMethod::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;

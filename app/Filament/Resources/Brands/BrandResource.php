@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Brands;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\Brands\Pages\CreateBrand;
 use App\Filament\Resources\Brands\Pages\EditBrand;
 use App\Filament\Resources\Brands\Pages\ListBrands;
@@ -17,6 +18,8 @@ use UnitEnum;
 
 class BrandResource extends Resource
 {
+    use ChecksAdminPermissions;
+
     protected static ?string $model = Brand::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingStorefront;
@@ -30,6 +33,11 @@ class BrandResource extends Resource
     protected static ?int $navigationSort = 0;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'brands';
+    }
 
     public static function form(Schema $schema): Schema
     {

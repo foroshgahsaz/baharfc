@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Menus;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\Menus\Pages\CreateMenu;
 use App\Filament\Resources\Menus\Pages\EditMenu;
 use App\Filament\Resources\Menus\Pages\ListMenus;
@@ -22,6 +23,8 @@ use UnitEnum;
 
 class MenuResource extends Resource
 {
+    use ChecksAdminPermissions;
+
     protected static ?string $model = Menu::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBars3;
@@ -38,14 +41,23 @@ class MenuResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function shouldRegisterNavigation(): bool
+    protected static function adminPermissionPrefix(): string
     {
-        return static::canAccess();
+        return 'menus';
     }
 
-    public static function canAccess(): bool
+    public static function canViewAny(): bool
     {
-        return SchemaGuard::hasTable('menus');
+        if (! SchemaGuard::hasTable('menus')) {
+            return false;
+        }
+
+        return parent::canViewAny();
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canViewAny();
     }
 
     public static function form(Schema $schema): Schema
