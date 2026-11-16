@@ -84,6 +84,7 @@ class TrafficStatsService
             'home' => 'صفحه اصلی',
             'blog_index' => 'فهرست بلاگ',
             'products_index' => 'فهرست محصولات',
+            'contact' => 'تماس با ما',
             default => $key,
         };
     }

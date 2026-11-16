@@ -42,6 +42,11 @@ final class AdminPermissions
             'گزارش‌ها' => [
                 'analytics.view' => 'مشاهده آمار بازدید داخلی',
             ],
+            'تماس' => [
+                'contact_messages.view' => 'مشاهده پیام‌های تماس',
+                'contact_messages.update' => 'مدیریت و پاسخ پیام‌ها',
+                'contact_messages.delete' => 'حذف پیام تماس',
+            ],
             'فروش و سفارش' => [
                 'orders.view' => 'مشاهده سفارش‌ها',
                 'orders.create' => 'ایجاد سفارش',
@@ -163,6 +168,9 @@ final class AdminPermissions
                 'coupons.delete',
                 'shipping.view',
                 'shipping.update',
+                'contact_messages.view',
+                'contact_messages.update',
+                'contact_messages.delete',
                 'users.view',
                 'media.view',
                 'media.upload',

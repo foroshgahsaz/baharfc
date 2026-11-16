@@ -20,6 +20,14 @@ class ShopSetting extends Model
         'maintenance_message',
         'contact_phone',
         'contact_email',
+        'contact_form_enabled',
+        'contact_form_title',
+        'contact_form_intro',
+        'contact_form_success_message',
+        'contact_form_show_phone',
+        'contact_form_require_phone',
+        'contact_form_show_subject',
+        'contact_form_require_subject',
         'footer_text',
     ];
 
@@ -27,6 +35,11 @@ class ShopSetting extends Model
     {
         return [
             'maintenance_enabled' => 'boolean',
+            'contact_form_enabled' => 'boolean',
+            'contact_form_show_phone' => 'boolean',
+            'contact_form_require_phone' => 'boolean',
+            'contact_form_show_subject' => 'boolean',
+            'contact_form_require_subject' => 'boolean',
         ];
     }
 
