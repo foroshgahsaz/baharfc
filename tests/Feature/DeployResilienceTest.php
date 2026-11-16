@@ -27,7 +27,8 @@ class DeployResilienceTest extends TestCase
     public function test_admin_menus_page_does_not_500_without_menus_table(): void
     {
         if (Schema::hasTable('menus')) {
-            Artisan::call('migrate:rollback', ['--step' => 1, '--force' => true]);
+            Schema::dropIfExists('menu_items');
+            Schema::dropIfExists('menus');
         }
 
         $admin = User::factory()->create(['is_admin' => true]);
