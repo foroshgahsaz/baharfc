@@ -24,12 +24,18 @@ class CartPage extends Component
         $this->shippingMethodId = $cart->selectedShippingMethod()?->id;
     }
 
+    protected function bumpCartUi(): void
+    {
+        $this->dispatch('cart-header-refresh');
+    }
+
     public function updateQuantity(int $cartItemId, int $quantity, CartService $cart): void
     {
         $item = CartItem::query()->findOrFail($cartItemId);
 
         try {
             $cart->updateQuantity($item, $quantity);
+            $this->bumpCartUi();
         } catch (InvalidArgumentException $e) {
             $this->addError('cart', $e->getMessage());
         }
@@ -41,6 +47,7 @@ class CartPage extends Component
 
         try {
             $cart->remove($item);
+            $this->bumpCartUi();
         } catch (InvalidArgumentException $e) {
             $this->addError('cart', $e->getMessage());
         }
