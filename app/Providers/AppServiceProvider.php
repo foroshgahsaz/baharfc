@@ -44,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
         // Legacy cache key stored serialized ShopSetting models and caused 500 after deploy.
         Cache::forget('shop_settings.singleton');
 
-        View::composer(['layouts.shop', 'components.shop.site-header'], function ($view): void {
+        View::composer(['layouts.shop', 'components.shop.site-header', 'components.shop.home-category-strip'], function ($view): void {
             $view->with('shopSiteName', ShopAppearance::siteName());
             $view->with('shopWordmark', ShopAppearance::wordmark());
             $view->with('shopLogoUrl', ShopAppearance::logoUrl());

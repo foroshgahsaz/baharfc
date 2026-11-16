@@ -3,7 +3,7 @@
 <section class="categories" aria-label="دسته‌بندی‌های محبوب">
     <a class="category-promo" href="{{ route('products.index', ['sort' => 'newest']) }}">
         <strong>با جدیدها</strong>
-        <b>{{ config('shop.logo_wordmark', 'لباسینو') }}</b>
+        <b>{{ $shopWordmark ?? config('shop.logo_wordmark', 'BAHARFC') }}</b>
         <span aria-hidden="true">‹‹‹</span>
     </a>
 
