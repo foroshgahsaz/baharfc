@@ -74,11 +74,14 @@ php artisan storage:link
 rsync -a storage/app/public/ /data/baharfc/storage/app/public/
 ```
 
-5. بعد از هر deploy حتماً لینک عمومی را بسازید (اگر `public/storage` نیست، تصاویر 404 می‌شوند):
+5. بعد از هر deploy حتماً لینک عمومی را بسازید (اگر `public/storage` به جای دیسک `/data` باشد، **آپلود در ادمین OK ولی URL مثل `/storage/shop/logo.png` همیشه ۴۰۴** می‌شود):
 
 ```bash
-php artisan storage:link
+php artisan storage:link --force
+php artisan baharfc:ensure-storage
 ```
+
+اگر فقط نام فایل در ادمین دیده می‌شود و پیش‌نمایش نمی‌آید: اول symlink را درست کنید؛ اگر باز ۴۰۴ بود فایل واقعاً روی volume نیست — دوباره آپلود کنید.
 
 6. پس از تغییر `.env`: `php artisan config:clear` یا `php artisan optimize:clear`
 

@@ -24,4 +24,23 @@ class PublicUploadStorageTest extends TestCase
             $this->assertDirectoryExists($root.'/'.str_replace('/', DIRECTORY_SEPARATOR, $dir));
         }
     }
+
+    public function test_symlink_diagnostics_detects_missing_public_storage_link(): void
+    {
+        $link = public_path('storage');
+        $backup = null;
+        if (file_exists($link)) {
+            $backup = $link.'_test_backup_'.uniqid();
+            rename($link, $backup);
+        }
+
+        try {
+            $diagnostics = PublicUploadStorage::symlinkDiagnostics();
+            $this->assertFalse($diagnostics['ok']);
+        } finally {
+            if ($backup !== null && file_exists($backup)) {
+                rename($backup, $link);
+            }
+        }
+    }
 }

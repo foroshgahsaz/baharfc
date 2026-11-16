@@ -29,8 +29,20 @@ class BaharfcPostDeployCommand extends Command
             $this->line(PublicUploadStorage::k8sFixHint($storage['root']));
         }
 
-        $this->components->info('storage:link');
-        $this->call('storage:link');
+        $symlink = PublicUploadStorage::symlinkDiagnostics();
+        if (! $symlink['ok']) {
+            $this->components->warn($symlink['message']);
+        }
+
+        $this->components->info('storage:link --force (اتصال public/storage به FILESYSTEM_PUBLIC_ROOT)');
+        $this->call('storage:link', ['--force' => true]);
+
+        $afterLink = PublicUploadStorage::symlinkDiagnostics();
+        if ($afterLink['ok']) {
+            $this->components->success($afterLink['message']);
+        } else {
+            $this->components->error($afterLink['message']);
+        }
 
         $this->components->info('پاک‌سازی کش...');
         $this->call('optimize:clear');
