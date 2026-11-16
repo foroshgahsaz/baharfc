@@ -71,6 +71,27 @@ class ShopSettings extends Page implements HasSchemas
                 ColorPicker::make('accent_color')->label('رنگ تأکید (برند)'),
                 TextInput::make('contact_phone')->label('تلفن تماس')->tel(),
                 TextInput::make('contact_email')->label('ایمیل تماس')->email(),
+                Toggle::make('contact_form_enabled')
+                    ->label('نمایش صفحه و فرم تماس در سایت')
+                    ->default(true)
+                    ->columnSpanFull(),
+                TextInput::make('contact_form_title')
+                    ->label('عنوان صفحه تماس')
+                    ->default('تماس با ما')
+                    ->maxLength(120)
+                    ->columnSpanFull(),
+                Textarea::make('contact_form_intro')
+                    ->label('متن راهنما بالای فرم')
+                    ->rows(3)
+                    ->columnSpanFull(),
+                TextInput::make('contact_form_success_message')
+                    ->label('پیام پس از ارسال موفق')
+                    ->maxLength(255)
+                    ->columnSpanFull(),
+                Toggle::make('contact_form_show_phone')->label('فیلد تلفن در فرم')->default(true),
+                Toggle::make('contact_form_require_phone')->label('تلفن اجباری')->default(false),
+                Toggle::make('contact_form_show_subject')->label('فیلد موضوع در فرم')->default(true),
+                Toggle::make('contact_form_require_subject')->label('موضوع اجباری')->default(false),
                 Textarea::make('footer_text')->label('متن فوتر')->rows(2)->columnSpanFull(),
                 Toggle::make('maintenance_enabled')->label('حالت در دست تعمیر')->columnSpanFull(),
                 Textarea::make('maintenance_message')

@@ -56,6 +56,7 @@ class AppServiceProvider extends ServiceProvider
             $settings = ShopAppearance::settings();
             $view->with('shopMetaDescription', $settings->meta_description);
             $view->with('shopFooterText', $settings->footer_text);
+            $view->with('shopContactEnabled', (bool) ($settings->contact_form_enabled ?? true));
         });
 
         View::composer('components.shop.site-header', function ($view): void {

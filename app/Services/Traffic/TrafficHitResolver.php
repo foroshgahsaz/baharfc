@@ -28,6 +28,10 @@ class TrafficHitResolver
                 'type' => TrafficEntityType::Page,
                 'key' => 'home',
             ],
+            'contact' => [
+                'type' => TrafficEntityType::Page,
+                'key' => 'contact',
+            ],
             'blog.index' => [
                 'type' => TrafficEntityType::Page,
                 'key' => 'blog_index',
