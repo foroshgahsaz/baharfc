@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\BlogCategories;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\BlogCategories\Pages\CreateBlogCategory;
 use App\Filament\Resources\BlogCategories\Pages\EditBlogCategory;
 use App\Filament\Resources\BlogCategories\Pages\ListBlogCategories;
@@ -19,6 +20,13 @@ use UnitEnum;
 
 class BlogCategoryResource extends Resource
 {
+    use ChecksAdminPermissions;
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'blog_categories';
+    }
+
     protected static ?string $model = BlogCategory::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFolder;

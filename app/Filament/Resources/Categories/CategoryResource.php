@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Categories;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\Categories\Pages\CreateCategory;
 use App\Filament\Resources\Categories\Pages\EditCategory;
 use App\Filament\Resources\Categories\Pages\ListCategories;
@@ -17,6 +18,8 @@ use UnitEnum;
 
 class CategoryResource extends Resource
 {
+    use ChecksAdminPermissions;
+
     protected static ?string $model = Category::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFolder;
@@ -30,6 +33,11 @@ class CategoryResource extends Resource
     protected static ?int $navigationSort = 0;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'categories';
+    }
 
     public static function form(Schema $schema): Schema
     {

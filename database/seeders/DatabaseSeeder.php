@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call([
+            AdminRoleSeeder::class,
             DemoCatalogSeeder::class,
             CartCatalogSeeder::class,
             ShopMenuSeeder::class,

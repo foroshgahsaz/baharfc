@@ -25,7 +25,7 @@ class CheckShopMaintenance
             return $next($request);
         }
 
-        if ($request->user()?->is_admin ?? false) {
+        if ($request->user()?->hasAdminPanelAccess() ?? false) {
             return $next($request);
         }
 

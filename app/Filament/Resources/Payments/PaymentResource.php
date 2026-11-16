@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Payments;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\Payments\Pages\ListPayments;
 use App\Filament\Resources\Payments\Tables\PaymentsTable;
 use App\Models\Payment;
@@ -13,6 +14,8 @@ use UnitEnum;
 
 class PaymentResource extends Resource
 {
+    use ChecksAdminPermissions;
+
     protected static ?string $model = Payment::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
@@ -28,6 +31,11 @@ class PaymentResource extends Resource
     protected static ?int $navigationSort = 6;
 
     protected static ?string $recordTitleAttribute = 'reference';
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'payments';
+    }
 
     public static function table(Table $table): Table
     {

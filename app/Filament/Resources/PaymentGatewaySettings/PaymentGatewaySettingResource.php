@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\PaymentGatewaySettings;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\PaymentGatewaySettings\Pages\EditPaymentGatewaySetting;
 use App\Filament\Resources\PaymentGatewaySettings\Pages\ListPaymentGatewaySettings;
 use App\Models\PaymentGatewaySetting;
@@ -15,6 +16,13 @@ use UnitEnum;
 
 class PaymentGatewaySettingResource extends Resource
 {
+    use ChecksAdminPermissions;
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'payment_gateways';
+    }
+
     protected static ?string $model = PaymentGatewaySetting::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCreditCard;

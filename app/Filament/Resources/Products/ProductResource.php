@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
@@ -17,6 +18,8 @@ use UnitEnum;
 
 class ProductResource extends Resource
 {
+    use ChecksAdminPermissions;
+
     protected static ?string $model = Product::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingBag;
@@ -32,6 +35,11 @@ class ProductResource extends Resource
     protected static ?int $navigationSort = 1;
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'products';
+    }
 
     public static function form(Schema $schema): Schema
     {

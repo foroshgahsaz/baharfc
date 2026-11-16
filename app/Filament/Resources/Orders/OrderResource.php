@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Orders;
 
+use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\Orders\Pages\EditOrder;
 use App\Filament\Resources\Orders\Pages\ListOrders;
 use App\Filament\Resources\Orders\Tables\OrdersTable;
@@ -14,6 +15,8 @@ use UnitEnum;
 
 class OrderResource extends Resource
 {
+    use ChecksAdminPermissions;
+
     protected static ?string $model = Order::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
@@ -29,6 +32,11 @@ class OrderResource extends Resource
     protected static ?int $navigationSort = 5;
 
     protected static ?string $recordTitleAttribute = 'number';
+
+    protected static function adminPermissionPrefix(): string
+    {
+        return 'orders';
+    }
 
     public static function table(Table $table): Table
     {

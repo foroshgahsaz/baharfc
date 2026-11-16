@@ -8,6 +8,7 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -19,6 +20,7 @@ use Illuminate\Notifications\Notifiable;
     'email',
     'password',
     'is_admin',
+    'admin_role_id',
     'phone_verified_at',
     'email_verified_at',
 ])]
@@ -40,7 +42,50 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->is_admin && $panel->getId() === 'admin';
+        if ($panel->getId() !== 'admin') {
+            return false;
+        }
+
+        if ($this->is_admin) {
+            return true;
+        }
+
+        return $this->admin_role_id !== null && $this->canAdmin('panel.access');
+    }
+
+    public function hasAdminPanelAccess(): bool
+    {
+        return $this->is_admin || $this->admin_role_id !== null;
+    }
+
+    public function canAdmin(string $permission): bool
+    {
+        if ($this->is_admin) {
+            return true;
+        }
+
+        $permissions = $this->adminRole?->permissions ?? [];
+
+        if (in_array('*', $permissions, true)) {
+            return true;
+        }
+
+        if (in_array($permission, $permissions, true)) {
+            return true;
+        }
+
+        if (str_contains($permission, '.')) {
+            [$prefix] = explode('.', $permission, 2);
+
+            return in_array($prefix.'.*', $permissions, true);
+        }
+
+        return false;
+    }
+
+    public function adminRole(): BelongsTo
+    {
+        return $this->belongsTo(AdminRole::class, 'admin_role_id');
     }
 
     public function hasPassword(): bool

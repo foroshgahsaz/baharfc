@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Models\AdminRole;
 use Filament\Actions\BulkActionGroup;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
@@ -30,15 +32,22 @@ class UsersTable
                     ->searchable()
                     ->toggleable(),
                 IconColumn::make('is_admin')
-                    ->label('ادمین')
+                    ->label('مدیر کل')
                     ->boolean(),
+                TextColumn::make('adminRole.name')
+                    ->label('نقش پنل')
+                    ->badge()
+                    ->placeholder('—'),
                 TextColumn::make('created_at')
                     ->label('عضویت')
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
-                TernaryFilter::make('is_admin')->label('ادمین'),
+                TernaryFilter::make('is_admin')->label('مدیر کل'),
+                SelectFilter::make('admin_role_id')
+                    ->label('نقش کارمند')
+                    ->options(fn () => AdminRole::query()->orderBy('name')->pluck('name', 'id')),
             ])
             ->recordActions([
                 EditAction::make(),
