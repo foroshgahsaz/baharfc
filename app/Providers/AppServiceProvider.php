@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Contracts\SmsSender;
+use App\Support\AdminBar\AdminBarBuilder;
 use App\Support\PublicUploadStorage;
 use App\Support\ShopAppearance;
 use App\Support\ShopMenu;
@@ -89,6 +90,8 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $view->with('wishlistCount', $wishlistCount);
+
+            $view->with('adminBar', app(AdminBarBuilder::class)->forShop(request()));
         });
 
         Event::listen(Login::class, function (Login $event): void {

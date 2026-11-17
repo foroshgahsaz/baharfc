@@ -1,0 +1,107 @@
+/* نوار مدیریت (الگوی Admin Bar وردپرس) */
+.baharfc-admin-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100000;
+    min-height: 38px;
+    background: #1d2327;
+    color: #f0f0f1;
+    font-size: 13px;
+    line-height: 1.4;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.baharfc-admin-bar__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+    min-height: 38px;
+    padding: 4px 14px;
+    max-width: 100%;
+}
+
+.baharfc-admin-bar__brand {
+    color: #f0f0f1;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.baharfc-admin-bar__brand:hover {
+    color: #72aee6;
+}
+
+.baharfc-admin-bar__sep {
+    opacity: 0.35;
+    user-select: none;
+}
+
+.baharfc-admin-bar__link {
+    color: #f0f0f1;
+    padding: 2px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+}
+
+.baharfc-admin-bar__link:hover,
+.baharfc-admin-bar__link--button:hover {
+    color: #72aee6;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.baharfc-admin-bar__link--highlight {
+    background: rgba(114, 174, 230, 0.18);
+    color: #9ec2e6;
+}
+
+.baharfc-admin-bar__fill {
+    flex: 1 1 auto;
+    min-width: 8px;
+}
+
+.baharfc-admin-bar__user {
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+.baharfc-admin-bar__logout {
+    margin: 0;
+    padding: 0;
+}
+
+/* فروشگاه: جا برای نوار ثابت */
+body.lebasino-page.has-baharfc-admin-bar {
+    padding-top: 38px;
+}
+
+body.lebasino-page.has-baharfc-admin-bar .site-header {
+    position: sticky;
+    top: 38px;
+    z-index: 50;
+}
+
+/* پنل Filament */
+body.fi-body.has-baharfc-admin-bar {
+    padding-top: 38px;
+}
+
+body.fi-body.has-baharfc-admin-bar .fi-topbar {
+    top: 38px;
+}
+
+@media (max-width: 640px) {
+    .baharfc-admin-bar__inner {
+        gap: 4px 6px;
+        padding-inline: 8px;
+    }
+
+    .baharfc-admin-bar__user {
+        display: none;
+    }
+}
