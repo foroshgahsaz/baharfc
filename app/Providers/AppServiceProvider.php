@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Contracts\SmsSender;
+use App\Support\PublicUploadStorage;
 use App\Support\ShopAppearance;
 use App\Support\ShopMenu;
 use App\Models\Order;
@@ -31,6 +32,14 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if (! $this->app->runningUnitTests()) {
+            static $storageSymlinkChecked = false;
+            if (! $storageSymlinkChecked) {
+                $storageSymlinkChecked = true;
+                PublicUploadStorage::ensurePublicSymlink();
+            }
+        }
+
         if ($this->app->environment('production')) {
             $appUrl = (string) config('app.url');
 

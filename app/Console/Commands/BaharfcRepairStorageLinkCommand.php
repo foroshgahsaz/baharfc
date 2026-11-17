@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class BaharfcRepairStorageLinkCommand extends Command
 {
-    protected $signature = 'baharfc:repair-storage-link';
+    protected $signature = 'baharfc:repair-storage-link|baharfc:repair-storage';
 
     protected $description = 'اگر /storage/... در سایت ۴۰۴ می‌دهد: public/storage را به FILESYSTEM_PUBLIC_ROOT وصل می‌کند';
 
@@ -24,7 +24,11 @@ class BaharfcRepairStorageLinkCommand extends Command
         }
 
         $this->components->warn($before['message']);
-        $this->call('storage:link', ['--force' => true]);
+        PublicUploadStorage::ensureUploadDirectories();
+        $repaired = PublicUploadStorage::ensurePublicSymlink();
+        if (! $repaired) {
+            $this->call('storage:link', ['--force' => true]);
+        }
 
         $after = PublicUploadStorage::symlinkDiagnostics();
         if ($after['ok']) {
