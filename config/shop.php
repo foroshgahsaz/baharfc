@@ -32,9 +32,13 @@ return [
         'product_page_minutes' => (int) env('SHOP_PRODUCT_PAGE_CACHE_MINUTES', 15),
     ],
 
+    /*
+    | Seed defaults for the header menu (ShopMenuSeeder). The live header
+    | always renders the admin-managed `header_main` menu — these links are
+    | not a runtime fallback, so template leftovers like «صفحه اصلی» /
+    | «صفحات قالب» must never appear here.
+    */
     'nav_links' => [
-        ['label' => 'صفحه اصلی', 'route' => 'home', 'active' => 'home'],
-        ['label' => 'صفحات قالب', 'route' => 'products.index'],
         ['label' => 'تی شرت', 'route' => 'products.index', 'params' => ['q' => 'تی شرت']],
         ['label' => 'هودی', 'route' => 'products.index', 'params' => ['q' => 'هودی']],
         ['label' => 'کت و پافر', 'route' => 'products.index', 'params' => ['q' => 'کت']],

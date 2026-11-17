@@ -54,19 +54,6 @@
                 @else
                     <a href="{{ route('products.index', ['category' => 'women']) }}">زنانه</a>
                     <a href="{{ route('products.index', ['category' => 'men']) }}">مردانه</a>
-                    @foreach (config('shop.nav_links', []) as $link)
-                        @php
-                            $isActive = isset($link['active']) && request()->routeIs($link['active']);
-                            $href = isset($link['params'])
-                                ? route($link['route'], $link['params'])
-                                : route($link['route']);
-                            $isHome = ($link['label'] ?? '') === 'صفحه اصلی';
-                        @endphp
-                        <a
-                            href="{{ $href }}"
-                            @class(['nav-divider' => $isHome, 'is-active' => $isActive])
-                        >{{ $link['label'] }}</a>
-                    @endforeach
                 @endif
             </nav>
             @if ($headerCta ?? null)
