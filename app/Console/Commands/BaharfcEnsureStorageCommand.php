@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Support\FrameworkWritablePaths;
 use App\Support\PublicUploadStorage;
 use Illuminate\Console\Command;
 
@@ -13,6 +14,15 @@ class BaharfcEnsureStorageCommand extends Command
 
     public function handle(): int
     {
+        $pathStatus = FrameworkWritablePaths::ensurePresent();
+        foreach ($pathStatus as $relative => $writable) {
+            $this->components->info("{$relative}: ".($writable ? 'OK' : 'غیرقابل نوشتن'));
+        }
+
+        if (! FrameworkWritablePaths::isHealthy()) {
+            $this->components->warn(FrameworkWritablePaths::repairShellHint());
+        }
+
         $root = PublicUploadStorage::publicRoot();
         $this->components->info("دیسک public: {$root}");
 

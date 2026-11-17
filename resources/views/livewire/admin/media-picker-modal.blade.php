@@ -1,6 +1,6 @@
 <div>
     @if ($open ?? false)
-        <div class="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 p-4" wire:click.self="close">
+        <div class="fixed inset-0 z-[10050] flex items-center justify-center bg-black/50 p-4" wire:click.self="close">
             <div class="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-900" wire:click.stop dir="rtl">
                 <div class="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-gray-800">
                     <h2 class="text-lg font-bold">انتخاب از کتابخانه رسانه</h2>

@@ -1,14 +1,7 @@
 @php
-    use Illuminate\Support\Js;
-
     $statePath = $getStatePath();
     $state = $getState();
     $livewireId = $field->getLivewire()->getId();
-    $openMediaPickerClick = '$dispatchTo(\'admin.media-picker-modal\', \'open-media-picker\', '.Js::from([
-        'statePath' => $statePath,
-        'imagesOnly' => $field->acceptsImagesOnly(),
-        'componentId' => $livewireId,
-    ]).')';
     $previewUrl = null;
     if (filled($state) && \Illuminate\Support\Facades\Storage::disk('public')->exists($state)) {
         $previewUrl = \Illuminate\Support\Facades\Storage::disk('public')->url($state);
@@ -28,7 +21,10 @@
                 type="button"
                 size="sm"
                 color="primary"
-                wire:click="{{ $openMediaPickerClick }}"
+                data-baharfc-media-picker-open="1"
+                data-state-path="{{ $statePath }}"
+                data-component-id="{{ $livewireId }}"
+                data-images-only="{{ $field->acceptsImagesOnly() ? '1' : '0' }}"
             >
                 انتخاب از کتابخانه
             </x-filament::button>

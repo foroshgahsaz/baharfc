@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Support\FrameworkWritablePaths;
 use App\Support\PublicUploadStorage;
 use Illuminate\Console\Command;
 
@@ -13,6 +14,21 @@ class BaharfcPostDeployCommand extends Command
 
     public function handle(): int
     {
+        $this->components->info('بررسی bootstrap/cache و storage/framework...');
+        $pathStatus = FrameworkWritablePaths::ensurePresent();
+        foreach ($pathStatus as $relative => $writable) {
+            if ($writable) {
+                continue;
+            }
+
+            $this->components->error("پوشهٔ «{$relative}» قابل نوشتن نیست.");
+        }
+
+        if (! FrameworkWritablePaths::isHealthy()) {
+            $this->components->warn('دستور تعمیر مجوز (یک‌بار روی سرور با root):');
+            $this->line(FrameworkWritablePaths::repairShellHint());
+        }
+
         $this->components->info('اجرای migrate...');
         $this->call('migrate', ['--force' => true]);
 

@@ -25,7 +25,10 @@ class ImagesRelationManager extends RelationManager
             MediaPicker::make('path')
                 ->label('تصویر')
                 ->imagesOnly()
-                ->required(),
+                ->required()
+                ->validationMessages([
+                    'required' => 'لطفاً یک تصویر از کتابخانه انتخاب کنید.',
+                ]),
             TextInput::make('alt')->label('متن جایگزین'),
             TextInput::make('sort_order')->label('ترتیب')->numeric()->default(0),
         ]);
