@@ -53,7 +53,10 @@ class BaharfcPostDeployCommand extends Command
         }
 
         if (! PersistentLogStorage::ensureStorageLogsSymlink()) {
-            $this->components->warn('symlink storage/logs به APP_LOG_ROOT ساخته نشد — در .env مقدار APP_LOG_ROOT را تنظیم کنید.');
+            $this->components->warn('symlink storage/logs به دیسک پایدار ساخته نشد.');
+            $this->line(PersistentLogStorage::k8sHint());
+        } else {
+            $this->components->success('لاگ‌ها روی دیسک پایدار هستند: '.PersistentLogStorage::logsRoot());
         }
 
         $backups = PersistentBackupStorage::ensureBackupsDirectory();

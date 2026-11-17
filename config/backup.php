@@ -7,7 +7,8 @@ if (filled($explicit)) {
 } else {
     $publicRoot = env('FILESYSTEM_PUBLIC_ROOT');
     if (filled($publicRoot)) {
-        $root = rtrim(dirname(dirname((string) $publicRoot)), '/\\').'/backups';
+        // کنار public روی همان volume: .../storage/app/backups — نه .../storage/backups که معمولاً برای www-data قابل نوشتن نیست
+        $root = rtrim(dirname((string) $publicRoot), '/\\').'/backups';
     } else {
         $root = storage_path('app/backups');
     }

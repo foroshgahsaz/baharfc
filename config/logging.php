@@ -9,6 +9,9 @@ use Monolog\Processor\PsrLogMessageProcessor;
 
 return [
 
+    'persistent_root' => env('APP_LOG_ROOT'),
+
+
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
@@ -77,7 +80,7 @@ return [
 
         'monthly' => [
             'driver' => 'monthly',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => PersistentLogStorage::laravelLogPath(),
             'level' => env('LOG_LEVEL', 'debug'),
             'max_files' => 3,
             'replace_placeholders' => true,
@@ -134,7 +137,7 @@ return [
         ],
 
         'emergency' => [
-            'path' => storage_path('logs/laravel.log'),
+            'path' => PersistentLogStorage::laravelLogPath(),
         ],
 
     ],

@@ -18,17 +18,38 @@
    - یا دستی: `php artisan migrate --force` (شامل `show_on_home` / `image_path` بنرها پس از به‌روزرسانی صفحه اصلی)
 5. **`git pull` باید پوشه `public/build/` را هم بیاورد** یا روی سرور `npm ci && npm run build` بزنید — اگر Blade به entryای در Vite اشاره کند که در `manifest.json` نیست، **صفحه اصلی ۵۰۰** می‌دهد. برای مودال کتابخانه رسانه استایل در Blade هم هست؛ بعد از pull حتماً `php artisan view:clear` بزنید تا تصاویر بزرگ خام لود نشوند.
 6. `php artisan vendor:publish --tag=livewire:assets --force` و `php artisan filament:assets`
-6a. **لاگ پایدار (آرشیو خطاها):** در K8s مقدار `APP_LOG_ROOT=/data/baharfc/storage/logs` را در `.env` بگذارید؛ `baharfc:post-deploy` پوشه را می‌سازد و در صورت نیاز `storage/logs` را به آن symlink می‌کند تا بعد از هر deploy لاگ و آرشیو خطا **پاک نشود**.
+6a. **لاگ و بک‌آپ پایدار (نباید با دیپلوی پاک شوند):** روی همان volume تصاویر بگذارید. اگر `FILESYSTEM_PUBLIC_ROOT=/data/baharfc/storage/app/public` باشد، پیش‌فرض این است:
+
+- لاگ: `/data/baharfc/storage/app/logs` (و `storage/logs` به آن symlink می‌شود)
+- بک‌آپ: `/data/baharfc/storage/app/backups`
+
+**نه** `/data/baharfc/storage/backups` — آن پوشه معمولاً برای `www-data` قابل نوشتن نیست.
+
+```bash
+mkdir -p /data/baharfc/storage/app/{public,logs,backups}
+chown -R www-data:www-data /data/baharfc/storage/app
+chmod -R ug+rwx /data/baharfc/storage/app
+php artisan baharfc:post-deploy
+```
+
+اختیاری در `.env`:
+
+```env
+APP_LOG_ROOT=/data/baharfc/storage/app/logs
+APP_BACKUP_ROOT=/data/baharfc/storage/app/backups
+```
+
+اگر `storage/logs` پوشهٔ معمولی باشد، `post-deploy` فایل‌های قبلی را به دیسک پایدار کپی می‌کند و آن را symlink می‌کند.
 
 6a2. **بک‌آپ پایدار:** مسیر جدا از کد (مثل تصاویر). اگر `FILESYSTEM_PUBLIC_ROOT=/data/baharfc/storage/app/public` باشد، پیش‌فرض بک‌آپ `/data/baharfc/storage/backups` است. صریح:
 
 ```env
-APP_BACKUP_ROOT=/data/baharfc/storage/backups
+APP_BACKUP_ROOT=/data/baharfc/storage/app/backups
 ```
 
 ```bash
-mkdir -p /data/baharfc/storage/backups
-chown -R www-data:www-data /data/baharfc/storage/backups
+mkdir -p /data/baharfc/storage/app/backups
+chown -R www-data:www-data /data/baharfc/storage/app/backups
 ```
 
 از پنل: **تنظیمات → بک‌آپ**. حداکثر **۴ نسخه** و **۲ روز** نگهداری. کرون: `* * * * * php artisan schedule:run` (بک‌آپ روزانه ساعت ۰۳:۲۰).
