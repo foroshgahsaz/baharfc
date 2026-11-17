@@ -15,7 +15,14 @@
     @livewireStyles
     @stack('head')
 </head>
-<body class="lebasino-page min-h-full bg-white font-sans text-slate-800 antialiased">
+<body @class([
+    'lebasino-page min-h-full bg-white font-sans text-slate-800 antialiased',
+    'has-baharfc-admin-bar' => $adminBar ?? false,
+])>
+    @isset($adminBar)
+        <x-admin-bar :admin-bar="$adminBar" />
+    @endisset
+
     @include('components.shop.site-header')
 
     <main @if (! empty($mainClass)) class="{{ $mainClass }}" @endif>
