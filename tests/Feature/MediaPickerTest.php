@@ -6,6 +6,7 @@ use App\Livewire\Admin\MediaPickerModal;
 use App\Models\Media;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -49,6 +50,30 @@ class MediaPickerTest extends TestCase
         $this->assertStringContainsString('object-fit:cover', $contents);
         $this->assertStringContainsString('max-width:100%', $contents);
         $this->assertStringContainsString('width="160"', $contents);
+    }
+
+    public function test_picker_modal_has_upload_control(): void
+    {
+        $contents = file_get_contents(resource_path('views/livewire/admin/media-picker-modal.blade.php'));
+
+        $this->assertStringContainsString('بارگذاری تصویر', $contents);
+        $this->assertStringContainsString('wire:model="newFiles"', $contents);
+    }
+
+    public function test_upload_from_picker_stores_file_and_closes(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->create(['is_admin' => true]);
+        $file = UploadedFile::fake()->image('product.jpg', 80, 80);
+
+        Livewire::actingAs($admin)
+            ->test(MediaPickerModal::class)
+            ->call('openPicker', 'data.image_path', true, 'test-component')
+            ->set('newFiles', [$file])
+            ->assertSet('open', false);
+
+        $this->assertTrue(Media::query()->where('file_name', 'product.jpg')->exists());
+        Storage::disk('public')->assertExists(Media::query()->where('file_name', 'product.jpg')->value('path'));
     }
 
     public function test_modal_lists_media_and_sets_path_on_pick(): void
