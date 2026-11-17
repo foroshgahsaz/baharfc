@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Support\FrameworkWritablePaths;
+use App\Support\PersistentBackupStorage;
 use App\Support\PersistentLogStorage;
 use App\Support\PublicUploadStorage;
 use Illuminate\Console\Command;
@@ -53,6 +54,14 @@ class BaharfcPostDeployCommand extends Command
 
         if (! PersistentLogStorage::ensureStorageLogsSymlink()) {
             $this->components->warn('symlink storage/logs به APP_LOG_ROOT ساخته نشد — در .env مقدار APP_LOG_ROOT را تنظیم کنید.');
+        }
+
+        $backups = PersistentBackupStorage::ensureBackupsDirectory();
+        if ($backups['ok']) {
+            $this->components->success($backups['message']);
+        } else {
+            $this->components->warn($backups['message']);
+            $this->line(PersistentBackupStorage::k8sHint());
         }
 
         $storage = PublicUploadStorage::ensureUploadDirectories();

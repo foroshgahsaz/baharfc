@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Contracts\SmsSender;
 use App\Support\AdminBar\AdminBarBuilder;
 use App\Support\FrameworkWritablePaths;
+use App\Support\PersistentBackupStorage;
 use App\Support\PersistentLogStorage;
 use App\Support\PublicUploadStorage;
 use App\Support\ShopAppearance;
@@ -42,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
                 FrameworkWritablePaths::ensurePresent();
                 PersistentLogStorage::ensureLogsDirectory();
                 PersistentLogStorage::ensureStorageLogsSymlink();
+                PersistentBackupStorage::ensureBackupsDirectory();
                 PublicUploadStorage::ensurePublicSymlink();
             }
         }

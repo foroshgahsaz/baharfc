@@ -93,6 +93,7 @@ final class AdminPermissions
                 'payment_gateways.view' => 'مشاهده درگاه پرداخت',
                 'payment_gateways.update' => 'تنظیم درگاه پرداخت',
                 'system.logs' => 'آرشیو لاگ خطاها',
+                'settings.backups' => 'بک‌آپ دیتابیس و فایل‌ها',
             ],
         ];
     }
