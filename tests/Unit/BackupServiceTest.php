@@ -42,6 +42,15 @@ class BackupServiceTest extends TestCase
         $this->assertSame('addresses', $service->unqualifiedTableName('addresses'));
     }
 
+    public function test_mysql_dump_uses_native_show_tables(): void
+    {
+        $source = (string) file_get_contents((new \ReflectionClass(BackupService::class))->getFileName());
+
+        $this->assertStringContainsString("query('SHOW TABLES')", $source);
+        $this->assertStringContainsString('dumpMysqlWithPhp', $source);
+        $this->assertStringNotContainsString('getTableListing', $source);
+    }
+
     public function test_database_backup_writes_gzipped_sql(): void
     {
         $result = app(BackupService::class)->backupDatabase();

@@ -248,56 +248,100 @@ class BackupService
         $connection = DB::connection();
         $driver = $connection->getDriverName();
         $pdo = $connection->getPdo();
-        $pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-
-        $sql = "-- baharfc backup\nSET FOREIGN_KEY_CHECKS=0;\n";
 
         if ($driver === 'sqlite') {
-            $sql = "-- baharfc sqlite backup\nPRAGMA foreign_keys=OFF;\nBEGIN;\n";
-            $tables = $pdo->query("SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")->fetchAll();
-            foreach ($tables as $table) {
-                $name = (string) $table['name'];
-                $create = trim((string) ($table['sql'] ?? ''));
-                if ($create !== '') {
-                    $sql .= $create.";\n";
-                }
-                $sql .= $this->insertStatements($pdo, $name);
-            }
-            $sql .= "COMMIT;\nPRAGMA foreign_keys=ON;\n";
-
-            return $sql;
+            return $this->dumpSqliteWithPhp($pdo);
         }
 
-        $tables = $this->listConnectionTables($connection);
-        sort($tables);
+        if ($driver === 'mysql' || $driver === 'mariadb') {
+            return $this->dumpMysqlWithPhp($pdo);
+        }
+
+        throw new \RuntimeException('دامپ PHP برای درایور «'.$driver.'» پیاده نشده است.');
+    }
+
+    protected function dumpSqliteWithPhp(\PDO $pdo): string
+    {
+        $sql = "-- baharfc sqlite backup\nPRAGMA foreign_keys=OFF;\nBEGIN;\n";
+        $tables = $pdo->query("SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")
+            ->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($tables as $table) {
-            $quoted = $this->quoteIdentifier($driver, $table);
-            if ($driver === 'mysql' || $driver === 'mariadb') {
-                $create = $pdo->query('SHOW CREATE TABLE '.$quoted)->fetch();
+            $name = (string) $table['name'];
+            $create = trim((string) ($table['sql'] ?? ''));
+            if ($create !== '') {
+                $sql .= $create.";\n";
+            }
+            $sql .= $this->insertStatements($pdo, $name);
+        }
+
+        return $sql."COMMIT;\nPRAGMA foreign_keys=ON;\n";
+    }
+
+    protected function dumpMysqlWithPhp(\PDO $pdo): string
+    {
+        $sql = "-- baharfc mysql backup v2\nSET NAMES utf8mb4;\nSET FOREIGN_KEY_CHECKS=0;\n";
+
+        foreach ($this->mysqlTableNames($pdo) as $table) {
+            $quoted = $this->quoteIdentifier('mysql', $table);
+
+            try {
+                $create = $pdo->query('SHOW CREATE TABLE '.$quoted)?->fetch(\PDO::FETCH_ASSOC) ?: [];
                 $createSql = $create['Create Table'] ?? $create['Create View'] ?? null;
                 if (is_string($createSql)) {
                     $sql .= 'DROP TABLE IF EXISTS '.$quoted.";\n".$createSql.";\n";
                 }
+
+                $sql .= $this->insertStatements($pdo, $table, $quoted);
+            } catch (\Throwable $e) {
+                throw new \RuntimeException(
+                    'خطا در جدول «'.$table.'» (SQL: '.$quoted.'): '.$e->getMessage(),
+                    0,
+                    $e,
+                );
             }
-            $sql .= $this->insertStatements($pdo, $table, $quoted);
         }
 
-        $sql .= "SET FOREIGN_KEY_CHECKS=1;\n";
+        return $sql."SET FOREIGN_KEY_CHECKS=1;\n";
+    }
 
-        return $sql;
+    /**
+     * @return list<string>
+     */
+    protected function mysqlTableNames(\PDO $pdo): array
+    {
+        $statement = $pdo->query('SHOW TABLES');
+        if ($statement === false) {
+            throw new \RuntimeException('SHOW TABLES ناموفق بود.');
+        }
+
+        $names = [];
+        foreach ($statement->fetchAll(\PDO::FETCH_NUM) as $row) {
+            $name = $this->unqualifiedTableName((string) ($row[0] ?? ''));
+            if ($name !== '') {
+                $names[] = $name;
+            }
+        }
+
+        sort($names);
+
+        return array_values(array_unique($names));
     }
 
     protected function insertStatements(\PDO $pdo, string $table, ?string $quotedTable = null): string
     {
         $quotedTable ??= $this->quoteIdentifier(DB::connection()->getDriverName(), $table);
-        $sql = '';
-        $rows = $pdo->query('SELECT * FROM '.$quotedTable);
-        if ($rows === false) {
+        $statement = $pdo->query('SELECT * FROM '.$quotedTable);
+        if ($statement === false) {
             return '';
         }
 
-        foreach ($rows as $row) {
+        $sql = '';
+        while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            if (! is_array($row) || $row === []) {
+                continue;
+            }
+
             $columns = [];
             $values = [];
             foreach ($row as $column => $value) {
@@ -308,30 +352,6 @@ class BackupService
         }
 
         return $sql;
-    }
-
-    /**
-     * Laravel's getTableListing() defaults to schema-qualified names like
-     * "bahardbxhl_db.addresses". Quoting that as one identifier makes MySQL
-     * look for table bahardbxhl_db.addresses inside database bahardbxhl_db.
-     *
-     * @return list<string>
-     */
-    protected function listConnectionTables(\Illuminate\Database\Connection $connection): array
-    {
-        $builder = $connection->getSchemaBuilder();
-        $tables = $builder->getTableListing(null, false);
-
-        $names = [];
-        foreach ($tables as $table) {
-            $name = $this->unqualifiedTableName((string) $table);
-            if ($name === '' || str_starts_with($name, 'sqlite_')) {
-                continue;
-            }
-            $names[] = $name;
-        }
-
-        return array_values(array_unique($names));
     }
 
     public function unqualifiedTableName(string $name): string
