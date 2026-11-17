@@ -26,15 +26,26 @@ class MediaPickerModal extends Component
     public string $typeFilter = 'all';
 
     #[On('open-media-picker')]
-    public function openPicker(string $statePath, bool $imagesOnly = true, ?string $componentId = null): void
+    public function openPicker(mixed $statePath = null, mixed $imagesOnly = true, mixed $componentId = null): void
     {
+        if (is_array($statePath)) {
+            $payload = $statePath;
+            $statePath = $payload['statePath'] ?? null;
+            $imagesOnly = $payload['imagesOnly'] ?? true;
+            $componentId = $payload['componentId'] ?? null;
+        }
+
+        if (! is_string($statePath) || $statePath === '') {
+            return;
+        }
+
         if (! SchemaGuard::hasTable('media')) {
             return;
         }
 
         $this->targetStatePath = $statePath;
-        $this->targetComponentId = $componentId;
-        $this->imagesOnly = $imagesOnly;
+        $this->targetComponentId = is_string($componentId) ? $componentId : null;
+        $this->imagesOnly = filter_var($imagesOnly, FILTER_VALIDATE_BOOLEAN);
         $this->typeFilter = $imagesOnly ? 'image' : 'all';
         $this->search = '';
         $this->open = true;
