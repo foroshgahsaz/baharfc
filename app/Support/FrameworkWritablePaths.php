@@ -17,7 +17,6 @@ class FrameworkWritablePaths
             'storage/framework/cache/data',
             'storage/framework/sessions',
             'storage/framework/views',
-            'storage/logs',
         ];
     }
 
@@ -64,7 +63,6 @@ class FrameworkWritablePaths
             'storage/framework/cache/data',
             'storage/framework/sessions',
             'storage/framework/views',
-            'storage/logs',
             '&&',
             "chown -R {$webUser}:{$webUser}",
             'bootstrap/cache storage',

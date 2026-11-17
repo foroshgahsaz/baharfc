@@ -40,9 +40,9 @@ class AppServiceProvider extends ServiceProvider
             static $storageSymlinkChecked = false;
             if (! $storageSymlinkChecked) {
                 $storageSymlinkChecked = true;
-                FrameworkWritablePaths::ensurePresent();
                 PersistentLogStorage::ensureLogsDirectory();
                 PersistentLogStorage::ensureStorageLogsSymlink();
+                FrameworkWritablePaths::ensurePresent();
                 PersistentBackupStorage::ensureBackupsDirectory();
                 PublicUploadStorage::ensurePublicSymlink();
             }

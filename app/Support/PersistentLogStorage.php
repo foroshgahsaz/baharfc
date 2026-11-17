@@ -6,15 +6,27 @@ use Illuminate\Support\Facades\File;
 
 class PersistentLogStorage
 {
+    protected static ?string $resolvedRoot = null;
+
+    public static function flushResolved(): void
+    {
+        self::$resolvedRoot = null;
+    }
+
     public static function logsRoot(): string
     {
-        $configured = (string) env('APP_LOG_ROOT', '');
-
-        if ($configured !== '') {
-            return rtrim($configured, '/\\');
+        if (self::$resolvedRoot !== null) {
+            return self::$resolvedRoot;
         }
 
-        return storage_path('logs');
+        $preferred = (string) (config('logging.persistent_root') ?: env('APP_LOG_ROOT', ''));
+        $chosen = PersistentVolume::firstWritableDirectory(
+            PersistentVolume::logCandidates($preferred !== '' ? $preferred : null)
+        );
+
+        self::$resolvedRoot = $chosen ?: storage_path('logs');
+
+        return self::$resolvedRoot;
     }
 
     public static function laravelLogPath(): string
@@ -27,55 +39,58 @@ class PersistentLogStorage
      */
     public static function ensureLogsDirectory(): array
     {
+        self::flushResolved();
         $root = self::logsRoot();
 
-        try {
-            if (! File::isDirectory($root)) {
-                File::makeDirectory($root, 0775, true);
-            }
-
-            if (! is_writable($root)) {
-                return [
-                    'ok' => false,
-                    'message' => "مسیر لاگ «{$root}» قابل نوشتن نیست.",
-                ];
-            }
-
-            return ['ok' => true, 'message' => "مسیر لاگ آماده: {$root}"];
-        } catch (\Throwable $e) {
+        if (! PersistentVolume::canWrite($root)) {
             return [
                 'ok' => false,
-                'message' => "ساخت مسیر لاگ ناموفق: {$e->getMessage()}",
+                'message' => "مسیر لاگ «{$root}» قابل نوشتن نیست.",
             ];
         }
+
+        return ['ok' => true, 'message' => "مسیر لاگ پایدار آماده: {$root}"];
     }
 
     /**
-     * وقتی APP_LOG_ROOT خارج از storage/logs است، symlink می‌سازد تا Laravel و آرشیو یکسان بمانند.
+     * storage/logs را به دیسک پایدار لینک می‌کند و فایل‌های قبلی را منتقل می‌کند
+     * تا بعد از دیپلوی پاک نشوند.
      */
     public static function ensureStorageLogsSymlink(): bool
     {
         $target = self::logsRoot();
+        PersistentVolume::ensureWritableDirectory($target);
+
         $link = storage_path('logs');
+        $targetReal = realpath($target) ?: $target;
+        $linkReal = realpath($link) ?: null;
 
-        if (realpath($target) === realpath($link)) {
+        if ($linkReal !== null && $linkReal === $targetReal) {
             return true;
         }
 
-        if (file_exists($link) && ! is_link($link)) {
-            return false;
-        }
-
-        if (is_link($link) && realpath(readlink($link) ?: '') === realpath($target)) {
-            return true;
-        }
-
-        if (is_link($link) || file_exists($link)) {
+        if (is_link($link)) {
+            $current = realpath($link);
+            if ($current === $targetReal) {
+                return true;
+            }
+            @unlink($link);
+        } elseif (is_dir($link)) {
+            PersistentVolume::migrateFiles($link, $target);
+            $retired = $link.'.replaced-'.time();
+            if (! @rename($link, $retired)) {
+                try {
+                    File::deleteDirectory($link);
+                } catch (\Throwable) {
+                    return false;
+                }
+            }
+        } elseif (file_exists($link)) {
             @unlink($link);
         }
 
         if (! File::isDirectory($target)) {
-            File::makeDirectory($target, 0775, true);
+            PersistentVolume::ensureWritableDirectory($target);
         }
 
         try {
@@ -87,6 +102,9 @@ class PersistentLogStorage
 
     public static function k8sHint(): string
     {
-        return 'APP_LOG_ROOT=/data/baharfc/storage/logs و mkdir + chown مشابه دیسک آپلود؛ سپس php artisan baharfc:post-deploy';
+        $public = PersistentVolume::publicRoot() ?: '/data/baharfc/storage/app/public';
+
+        return 'لاگ باید روی همان volume تصاویر باشد. FILESYSTEM_PUBLIC_ROOT='.$public
+            .' — پوشهٔ '.dirname($public).'/logs یا APP_LOG_ROOT را mkdir+chown کنید؛ سپس php artisan baharfc:post-deploy';
     }
 }

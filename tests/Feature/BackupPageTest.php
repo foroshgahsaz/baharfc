@@ -6,6 +6,7 @@ use App\Filament\Pages\Backups;
 use App\Models\AdminRole;
 use App\Models\User;
 use App\Services\Admin\BackupService;
+use App\Support\PersistentBackupStorage;
 use Database\Seeders\AdminRoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
@@ -28,6 +29,7 @@ class BackupPageTest extends TestCase
             'backup.keep' => 4,
             'backup.retain_days' => 2,
         ]);
+        PersistentBackupStorage::flushResolved();
     }
 
     protected function tearDown(): void

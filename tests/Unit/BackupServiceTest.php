@@ -25,6 +25,7 @@ class BackupServiceTest extends TestCase
             'backup.keep' => 4,
             'backup.retain_days' => 2,
         ]);
+        PersistentBackupStorage::flushResolved();
     }
 
     protected function tearDown(): void

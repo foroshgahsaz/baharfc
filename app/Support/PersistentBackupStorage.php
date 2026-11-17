@@ -2,13 +2,29 @@
 
 namespace App\Support;
 
-use Illuminate\Support\Facades\File;
-
 class PersistentBackupStorage
 {
+    protected static ?string $resolvedRoot = null;
+
+    public static function flushResolved(): void
+    {
+        self::$resolvedRoot = null;
+    }
+
     public static function backupsRoot(): string
     {
-        return rtrim((string) config('backup.root', storage_path('app/backups')), '/\\');
+        if (self::$resolvedRoot !== null) {
+            return self::$resolvedRoot;
+        }
+
+        $preferred = (string) config('backup.root', '');
+        $chosen = PersistentVolume::firstWritableDirectory(
+            PersistentVolume::backupCandidates($preferred !== '' ? $preferred : null)
+        );
+
+        self::$resolvedRoot = $chosen ?: rtrim($preferred !== '' ? $preferred : storage_path('app/backups'), '/\\');
+
+        return self::$resolvedRoot;
     }
 
     public static function typeDirectory(string $type): string
@@ -23,23 +39,20 @@ class PersistentBackupStorage
      */
     public static function ensureBackupsDirectory(): array
     {
+        self::flushResolved();
         $root = self::backupsRoot();
 
         try {
             foreach ([$root, self::typeDirectory('database'), self::typeDirectory('files')] as $path) {
-                if (! File::isDirectory($path)) {
-                    File::makeDirectory($path, 0775, true);
+                if (! PersistentVolume::ensureWritableDirectory($path)) {
+                    return [
+                        'ok' => false,
+                        'message' => "مسیر بک‌آپ «{$path}» قابل نوشتن نیست. ".self::k8sHint(),
+                    ];
                 }
             }
 
-            if (! is_writable($root)) {
-                return [
-                    'ok' => false,
-                    'message' => "مسیر بک‌آپ «{$root}» قابل نوشتن نیست.",
-                ];
-            }
-
-            return ['ok' => true, 'message' => "مسیر بک‌آپ آماده: {$root}"];
+            return ['ok' => true, 'message' => "مسیر بک‌آپ پایدار آماده: {$root}"];
         } catch (\Throwable $e) {
             return [
                 'ok' => false,
@@ -50,8 +63,9 @@ class PersistentBackupStorage
 
     public static function k8sHint(): string
     {
-        $root = self::backupsRoot();
+        $public = PersistentVolume::publicRoot() ?: '/data/baharfc/storage/app/public';
+        $sibling = dirname($public).'/backups';
 
-        return "APP_BACKUP_ROOT={$root} — mkdir + chown مشابه دیسک آپلود؛ سپس php artisan baharfc:post-deploy";
+        return "بک‌آپ باید روی volume تصاویر باشد (نه داخل پاد). mkdir -p {$sibling} && chown -R www-data:www-data {$sibling} && chmod -R ug+rwx {$sibling}";
     }
 }
