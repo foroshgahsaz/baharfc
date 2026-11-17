@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Filament\Concerns\ChecksAdminPageAccess;
 use App\Models\ShopSetting;
+use App\Support\SchemaGuard;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
@@ -51,7 +52,20 @@ class ShopSettings extends Page implements HasSchemas
 
     public function mount(): void
     {
-        $this->form->fill(ShopSetting::current()->toArray());
+        $data = ShopSetting::current()->toArray();
+
+        foreach (array_keys($data) as $key) {
+            if (! SchemaGuard::hasColumn('shop_settings', $key)) {
+                unset($data[$key]);
+            }
+        }
+
+        $this->form->fill($data);
+    }
+
+    protected static function contactFormSettingsReady(): bool
+    {
+        return SchemaGuard::hasColumn('shop_settings', 'contact_form_enabled');
     }
 
     public function form(Schema $schema): Schema
@@ -74,24 +88,40 @@ class ShopSettings extends Page implements HasSchemas
                 Toggle::make('contact_form_enabled')
                     ->label('نمایش صفحه و فرم تماس در سایت')
                     ->default(true)
+                    ->visible(fn (): bool => static::contactFormSettingsReady())
                     ->columnSpanFull(),
                 TextInput::make('contact_form_title')
                     ->label('عنوان صفحه تماس')
                     ->default('تماس با ما')
                     ->maxLength(120)
+                    ->visible(fn (): bool => static::contactFormSettingsReady())
                     ->columnSpanFull(),
                 Textarea::make('contact_form_intro')
                     ->label('متن راهنما بالای فرم')
                     ->rows(3)
+                    ->visible(fn (): bool => static::contactFormSettingsReady())
                     ->columnSpanFull(),
                 TextInput::make('contact_form_success_message')
                     ->label('پیام پس از ارسال موفق')
                     ->maxLength(255)
+                    ->visible(fn (): bool => static::contactFormSettingsReady())
                     ->columnSpanFull(),
-                Toggle::make('contact_form_show_phone')->label('فیلد تلفن در فرم')->default(true),
-                Toggle::make('contact_form_require_phone')->label('تلفن اجباری')->default(false),
-                Toggle::make('contact_form_show_subject')->label('فیلد موضوع در فرم')->default(true),
-                Toggle::make('contact_form_require_subject')->label('موضوع اجباری')->default(false),
+                Toggle::make('contact_form_show_phone')
+                    ->label('فیلد تلفن در فرم')
+                    ->default(true)
+                    ->visible(fn (): bool => static::contactFormSettingsReady()),
+                Toggle::make('contact_form_require_phone')
+                    ->label('تلفن اجباری')
+                    ->default(false)
+                    ->visible(fn (): bool => static::contactFormSettingsReady()),
+                Toggle::make('contact_form_show_subject')
+                    ->label('فیلد موضوع در فرم')
+                    ->default(true)
+                    ->visible(fn (): bool => static::contactFormSettingsReady()),
+                Toggle::make('contact_form_require_subject')
+                    ->label('موضوع اجباری')
+                    ->default(false)
+                    ->visible(fn (): bool => static::contactFormSettingsReady()),
                 Textarea::make('footer_text')->label('متن فوتر')->rows(2)->columnSpanFull(),
                 Toggle::make('maintenance_enabled')->label('حالت در دست تعمیر')->columnSpanFull(),
                 Textarea::make('maintenance_message')
@@ -122,6 +152,11 @@ class ShopSettings extends Page implements HasSchemas
     {
         try {
             $state = $this->form->getState();
+            foreach (array_keys($state) as $key) {
+                if (! SchemaGuard::hasColumn('shop_settings', $key)) {
+                    unset($state[$key]);
+                }
+            }
             $setting = ShopSetting::current();
             if (! $setting->exists) {
                 $setting = new ShopSetting;

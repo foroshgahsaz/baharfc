@@ -43,6 +43,11 @@ class AdminRoleResource extends Resource
         return 'roles';
     }
 
+    protected static function requiredDatabaseTable(): ?string
+    {
+        return 'admin_roles';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
