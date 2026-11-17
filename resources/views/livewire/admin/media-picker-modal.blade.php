@@ -1,38 +1,59 @@
 <div>
     @if ($open ?? false)
-        <div class="fixed inset-0 z-[10050] flex items-center justify-center bg-black/50 p-4" wire:click.self="close">
-            <div class="flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-900" wire:click.stop dir="rtl">
-                <div class="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-gray-800">
-                    <h2 class="text-lg font-bold">انتخاب از کتابخانه رسانه</h2>
-                    <button type="button" wire:click="close" class="text-2xl leading-none text-gray-500">&times;</button>
+        <div
+            class="baharfc-media-picker-overlay"
+            style="position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.58);"
+            wire:click.self="close"
+            role="dialog"
+            aria-modal="true"
+            aria-label="انتخاب از کتابخانه رسانه"
+        >
+            <div
+                class="baharfc-media-picker-dialog"
+                style="display:flex;flex-direction:column;width:min(1120px,100%);height:min(86vh,780px);overflow:hidden;background:#fff;border-radius:18px;"
+                wire:click.stop
+                dir="rtl"
+            >
+                <div class="baharfc-media-picker-header">
+                    <h2 class="baharfc-media-picker-title">انتخاب از کتابخانه رسانه</h2>
+                    <button type="button" class="baharfc-media-picker-close" wire:click="close" aria-label="بستن">&times;</button>
                 </div>
-                <div class="border-b border-gray-100 px-4 py-3 dark:border-gray-800">
+                <div class="baharfc-media-picker-toolbar">
                     <input
                         type="search"
+                        class="baharfc-media-picker-search"
                         wire:model.live.debounce.300ms="search"
                         placeholder="جستجوی رسانه…"
-                        class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
                     >
                 </div>
-                <div class="flex-1 overflow-y-auto p-4">
-                    <div class="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
+                <div class="baharfc-media-picker-body">
+                    <div class="baharfc-media-grid">
                         @forelse ($items as $item)
                             <button
                                 type="button"
+                                class="baharfc-media-card"
                                 wire:click="pick({{ $item->id }})"
-                                class="overflow-hidden rounded-xl border border-gray-200 text-right transition hover:ring-2 hover:ring-primary-500 dark:border-gray-700"
+                                title="{{ $item->title ?: $item->file_name }}"
                             >
-                                <div class="flex aspect-square items-center justify-center bg-gray-50 dark:bg-gray-800">
+                                <div class="baharfc-media-thumb">
                                     @if ($item->isImage())
-                                        <img src="{{ $item->url() }}" alt="" class="h-full w-full object-cover" loading="lazy">
+                                        <img
+                                            src="{{ $item->url() }}"
+                                            alt="{{ $item->alt ?: ($item->title ?: $item->file_name) }}"
+                                            loading="lazy"
+                                            decoding="async"
+                                            width="160"
+                                            height="160"
+                                            style="width:100%;height:100%;max-width:100%;max-height:100%;object-fit:cover;position:absolute;inset:0;"
+                                        >
                                     @else
-                                        <span class="text-2xl">📄</span>
+                                        <span class="baharfc-media-thumb-fallback">📄</span>
                                     @endif
                                 </div>
-                                <p class="truncate p-2 text-[11px]">{{ $item->title ?: $item->file_name }}</p>
+                                <p class="baharfc-media-caption">{{ $item->title ?: $item->file_name }}</p>
                             </button>
                         @empty
-                            <p class="col-span-full py-8 text-center text-sm text-gray-500">رسانه‌ای یافت نشد. از منوی کتابخانهٔ رسانه آپلود کنید.</p>
+                            <p class="baharfc-media-empty">رسانه‌ای یافت نشد. از منوی کتابخانهٔ رسانه آپلود کنید.</p>
                         @endforelse
                     </div>
                     <div class="mt-4">{{ $items->links() }}</div>

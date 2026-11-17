@@ -44,37 +44,43 @@
         </div>
 
         @if ($viewMode === 'grid')
-            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            <div class="baharfc-media-grid">
                 @forelse ($this->mediaItems as $item)
                     <button
                         type="button"
+                        class="baharfc-media-card"
                         wire:click="openDetail({{ $item->id }})"
                         @class([
-                            'group relative overflow-hidden rounded-xl border bg-white text-right shadow-sm transition hover:shadow-md dark:bg-gray-900',
                             'ring-2 ring-primary-500' => in_array($item->id, $selectedIds, true),
-                            'border-gray-200 dark:border-gray-700' => ! in_array($item->id, $selectedIds, true),
                         ])
                     >
                         <input
                             type="checkbox"
                             class="absolute left-2 top-2 z-10 h-4 w-4 rounded border-gray-300"
+                            style="position:absolute;left:8px;top:8px;z-index:2;"
                             @checked(in_array($item->id, $selectedIds, true))
                             wire:click.stop="toggleSelection({{ $item->id }})"
                         >
-                        <div class="flex aspect-square items-center justify-center bg-gray-50 dark:bg-gray-800">
+                        <div class="baharfc-media-thumb">
                             @if ($item->isImage())
-                                <img src="{{ $item->url() }}" alt="" class="h-full w-full object-cover" loading="lazy">
+                                <img
+                                    src="{{ $item->url() }}"
+                                    alt="{{ $item->alt ?: ($item->title ?: $item->file_name) }}"
+                                    loading="lazy"
+                                    decoding="async"
+                                    width="160"
+                                    height="160"
+                                    style="width:100%;height:100%;max-width:100%;max-height:100%;object-fit:cover;position:absolute;inset:0;"
+                                >
                             @else
-                                <span class="text-3xl text-gray-400">📄</span>
+                                <span class="baharfc-media-thumb-fallback">📄</span>
                             @endif
                         </div>
-                        <div class="p-2">
-                            <p class="truncate text-xs font-medium">{{ $item->title ?: $item->file_name }}</p>
-                            <p class="text-[11px] text-gray-500">{{ $item->formattedSize() }}</p>
-                        </div>
+                        <p class="baharfc-media-caption">{{ $item->title ?: $item->file_name }}</p>
+                        <p class="baharfc-media-caption" style="padding-top:0;color:#9ca3af;">{{ $item->formattedSize() }}</p>
                     </button>
                 @empty
-                    <p class="col-span-full rounded-xl border border-dashed border-gray-300 p-8 text-center text-sm text-gray-500">رسانه‌ای نیست. «افزودن رسانه» را بزنید یا همگام‌سازی با دیسک.</p>
+                    <p class="baharfc-media-empty">رسانه‌ای نیست. «افزودن رسانه» را بزنید یا همگام‌سازی با دیسک.</p>
                 @endforelse
             </div>
         @else
@@ -98,7 +104,7 @@
                                 <td class="p-3">
                                     <button type="button" wire:click="openDetail({{ $item->id }})" class="flex items-center gap-2 text-right">
                                         @if ($item->isImage())
-                                            <img src="{{ $item->url() }}" alt="" class="h-10 w-10 rounded object-cover">
+                                            <img src="{{ $item->url() }}" alt="" width="40" height="40" style="width:40px;height:40px;object-fit:cover;border-radius:8px;flex-shrink:0;" loading="lazy">
                                         @endif
                                         <span class="font-medium">{{ $item->title ?: $item->file_name }}</span>
                                     </button>
@@ -130,7 +136,7 @@
                     </div>
                     <div class="p-4">
                         @if ($this->detailMedia->isImage())
-                            <img src="{{ $this->detailMedia->url() }}" alt="" class="mb-4 max-h-56 w-full rounded-lg bg-gray-50 object-contain">
+                            <img src="{{ $this->detailMedia->url() }}" alt="" class="mb-4 max-h-56 w-full rounded-lg bg-gray-50 object-contain" style="max-height:14rem;width:100%;object-fit:contain;">
                         @endif
                         <p class="mb-1 text-xs text-gray-500">آدرس فایل</p>
                         <p class="mb-4 break-all rounded-lg bg-gray-50 p-2 text-xs dark:bg-gray-800" dir="ltr">{{ $this->detailMedia->url() }}</p>
