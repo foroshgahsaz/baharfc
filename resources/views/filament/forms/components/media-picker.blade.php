@@ -1,7 +1,14 @@
 @php
+    use Illuminate\Support\Js;
+
     $statePath = $getStatePath();
     $state = $getState();
     $livewireId = $field->getLivewire()->getId();
+    $openMediaPickerClick = '$dispatchTo(\'admin.media-picker-modal\', \'open-media-picker\', '.Js::from([
+        'statePath' => $statePath,
+        'imagesOnly' => $field->acceptsImagesOnly(),
+        'componentId' => $livewireId,
+    ]).')';
     $previewUrl = null;
     if (filled($state) && \Illuminate\Support\Facades\Storage::disk('public')->exists($state)) {
         $previewUrl = \Illuminate\Support\Facades\Storage::disk('public')->url($state);
@@ -21,7 +28,7 @@
                 type="button"
                 size="sm"
                 color="primary"
-                wire:click="$dispatchTo('admin.media-picker-modal', 'open-media-picker', { statePath: @js($statePath), imagesOnly: @js($field->acceptsImagesOnly()), componentId: @js($livewireId) })"
+                wire:click="{{ $openMediaPickerClick }}"
             >
                 انتخاب از کتابخانه
             </x-filament::button>
