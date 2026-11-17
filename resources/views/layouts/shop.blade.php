@@ -23,7 +23,10 @@
         <x-admin-bar :admin-bar="$adminBar" />
     @endisset
 
-    @include('components.shop.site-header')
+    @include('components.shop.site-header', [
+        'headerMenuItems' => $headerMenuItems ?? collect(),
+        'headerCta' => $headerCta ?? null,
+    ])
 
     <main @if (! empty($mainClass)) class="{{ $mainClass }}" @endif>
         @hasSection('content')

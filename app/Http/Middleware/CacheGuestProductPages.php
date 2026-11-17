@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Services\Traffic\TrafficHitResolver;
 use App\Services\Traffic\TrafficStatsService;
+use App\Support\ShopMenu;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -17,7 +18,7 @@ class CacheGuestProductPages
             return $next($request);
         }
 
-        $key = 'guest_product_page:'.sha1($request->fullUrl());
+        $key = 'guest_product_page:v'.ShopMenu::pageCacheVersion().':'.sha1($request->fullUrl());
 
         if (Cache::has($key)) {
             $this->recordCachedProductView($request);

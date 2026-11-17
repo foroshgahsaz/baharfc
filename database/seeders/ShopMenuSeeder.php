@@ -2,15 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Menu;
 use App\Models\MenuItem;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class ShopMenuSeeder extends Seeder
 {
     public function run(): void
     {
-        if (! \Illuminate\Support\Facades\Schema::hasTable('menus')) {
+        if (! Schema::hasTable('menus')) {
             return;
         }
 
@@ -32,7 +34,7 @@ class ShopMenuSeeder extends Seeder
             ['label' => 'زنانه', 'item_type' => 'category', 'category_slug' => 'women'],
             ['label' => 'مردانه', 'item_type' => 'category', 'category_slug' => 'men'],
         ] as $row) {
-            $categoryId = \App\Models\Category::query()->where('slug', $row['category_slug'])->value('id');
+            $categoryId = Category::query()->where('slug', $row['category_slug'])->value('id');
             if ($categoryId) {
                 MenuItem::query()->create([
                     'menu_id' => $menu->id,
@@ -64,7 +66,7 @@ class ShopMenuSeeder extends Seeder
                 'page_key' => $pageKey,
                 'query_params' => $query,
                 'custom_url' => $pageKey ? null : route($link['route'], $link['params'] ?? []),
-                'show_divider_before' => ($link['label'] ?? '') === 'صفحه اصلی',
+                'show_divider_before' => false,
                 'sort_order' => $sort++,
                 'is_active' => true,
             ]);

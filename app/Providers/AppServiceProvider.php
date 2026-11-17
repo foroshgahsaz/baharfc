@@ -3,6 +3,11 @@
 namespace App\Providers;
 
 use App\Contracts\SmsSender;
+use App\Models\Order;
+use App\Observers\OrderObserver;
+use App\Services\CartService;
+use App\Services\LogSmsSender;
+use App\Services\Payment\PaymentConfiguration;
 use App\Support\AdminBar\AdminBarBuilder;
 use App\Support\FrameworkWritablePaths;
 use App\Support\PersistentBackupStorage;
@@ -10,17 +15,12 @@ use App\Support\PersistentLogStorage;
 use App\Support\PublicUploadStorage;
 use App\Support\ShopAppearance;
 use App\Support\ShopMenu;
-use App\Models\Order;
-use App\Observers\OrderObserver;
-use App\Services\CartService;
-use App\Services\LogSmsSender;
-use App\Services\Payment\PaymentConfiguration;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
@@ -76,7 +76,12 @@ class AppServiceProvider extends ServiceProvider
             $view->with('shopContactEnabled', (bool) ($settings->contact_form_enabled ?? true));
         });
 
-        View::composer('components.shop.site-header', function ($view): void {
+        $shareHeaderMenu = function ($view): void {
+            $data = $view->getData();
+            if (isset($data['headerMenuItems'])) {
+                return;
+            }
+
             try {
                 $view->with('headerMenuItems', ShopMenu::headerItems());
                 $view->with('headerCta', ShopMenu::headerCta());
@@ -84,9 +89,13 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('headerMenuItems', collect());
                 $view->with('headerCta', null);
             }
-        });
+        };
 
-        View::composer('layouts.shop', function ($view): void {
+        View::composer('components.shop.site-header', $shareHeaderMenu);
+
+        View::composer('layouts.shop', function ($view) use ($shareHeaderMenu): void {
+            $shareHeaderMenu($view);
+
             $cart = app(CartService::class);
             $view->with('cartItemCount', $cart->itemCount());
             $view->with('cartSubtotal', $cart->subtotal());
