@@ -1,8 +1,10 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 @import '../../admin-bar.css';
+@import '../media-library.css';
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
+@source '../../../../resources/views/livewire/admin/**/*';
 
 @font-face {
     font-family: 'Abar Mid FaNum';

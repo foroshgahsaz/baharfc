@@ -63,6 +63,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->renderHook(PanelsRenderHook::HEAD_END, fn () => view('filament.hooks.jalali-datepicker'))
+            ->renderHook(PanelsRenderHook::HEAD_END, fn () => view('filament.hooks.media-library-styles'))
             ->renderHook(PanelsRenderHook::BODY_START, fn () => view('filament.hooks.admin-bar'))
             ->renderHook(PanelsRenderHook::BODY_END, fn () => view('filament.hooks.media-picker-modal'));
     }

@@ -11,7 +11,7 @@
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div class="space-y-3">
         @if ($previewUrl && \Illuminate\Support\Str::startsWith((string) (\Illuminate\Support\Facades\Storage::disk('public')->mimeType($state) ?? ''), 'image/'))
-            <img src="{{ $previewUrl }}" alt="" class="max-h-36 rounded-lg border border-gray-200 object-contain dark:border-gray-700">
+            <img src="{{ $previewUrl }}" alt="" class="max-h-36 rounded-lg border border-gray-200 object-contain dark:border-gray-700" style="max-height:9rem;max-width:100%;object-fit:contain;">
         @elseif (filled($state))
             <p class="truncate text-sm text-gray-600 dark:text-gray-300" dir="ltr">{{ $state }}</p>
         @endif

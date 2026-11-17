@@ -16,7 +16,7 @@
    - از **فقط** `migrate` بدون `post-deploy` خودداری کنید — symlink `public/storage` معمولاً بعد از deploy می‌پاشد.
    - از نسخهٔ جدید: اپلیکیشن در **اولین درخواست وب** هم symlink را خودکار درست می‌کند (اگر `FILESYSTEM_PUBLIC_ROOT` درست باشد).
    - یا دستی: `php artisan migrate --force` (شامل `show_on_home` / `image_path` بنرها پس از به‌روزرسانی صفحه اصلی)
-5. **`git pull` باید پوشه `public/build/` را هم بیاورد** یا روی سرور `npm ci && npm run build` بزنید — اگر Blade به entryای در Vite اشاره کند که در `manifest.json` نیست، **صفحه اصلی ۵۰۰** می‌دهد
+5. **`git pull` باید پوشه `public/build/` را هم بیاورد** یا روی سرور `npm ci && npm run build` بزنید — اگر Blade به entryای در Vite اشاره کند که در `manifest.json` نیست، **صفحه اصلی ۵۰۰** می‌دهد. برای مودال کتابخانه رسانه استایل در Blade هم هست؛ بعد از pull حتماً `php artisan view:clear` بزنید تا تصاویر بزرگ خام لود نشوند.
 6. `php artisan vendor:publish --tag=livewire:assets --force` و `php artisan filament:assets`
 6a. **لاگ پایدار (آرشیو خطاها):** در K8s مقدار `APP_LOG_ROOT=/data/baharfc/storage/logs` را در `.env` بگذارید؛ `baharfc:post-deploy` پوشه را می‌سازد و در صورت نیاز `storage/logs` را به آن symlink می‌کند تا بعد از هر deploy لاگ و آرشیو خطا **پاک نشود**.
 

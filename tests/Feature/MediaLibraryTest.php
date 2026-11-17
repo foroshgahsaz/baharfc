@@ -14,6 +14,15 @@ class MediaLibraryTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_media_library_grid_uses_constrained_thumbnails(): void
+    {
+        $contents = file_get_contents(resource_path('views/filament/pages/media-library.blade.php'));
+
+        $this->assertStringContainsString('baharfc-media-grid', $contents);
+        $this->assertStringContainsString('object-fit:cover', $contents);
+        $this->assertStringContainsString('max-width:100%', $contents);
+    }
+
     public function test_admin_can_open_media_library_page(): void
     {
         $admin = User::factory()->create(['is_admin' => true]);

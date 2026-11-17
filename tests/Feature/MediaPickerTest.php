@@ -40,6 +40,17 @@ class MediaPickerTest extends TestCase
         $this->assertStringNotContainsString('wire:click="$dispatchTo', $contents);
     }
 
+    public function test_modal_view_constrains_thumbnails(): void
+    {
+        $contents = file_get_contents(resource_path('views/livewire/admin/media-picker-modal.blade.php'));
+
+        $this->assertStringContainsString('baharfc-media-grid', $contents);
+        $this->assertStringContainsString('baharfc-media-thumb', $contents);
+        $this->assertStringContainsString('object-fit:cover', $contents);
+        $this->assertStringContainsString('max-width:100%', $contents);
+        $this->assertStringContainsString('width="160"', $contents);
+    }
+
     public function test_modal_lists_media_and_sets_path_on_pick(): void
     {
         Storage::fake('public');
