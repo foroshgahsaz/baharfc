@@ -22,7 +22,7 @@ class PaymentsTable
                     ->formatStateUsing(fn (PaymentStatus $state): string => $state->label()),
                 TextColumn::make('amount')->label('مبلغ')->numeric()->suffix(' تومان'),
                 TextColumn::make('tracking_code')->label('پیگیری')->toggleable(),
-                TextColumn::make('created_at')->label('تاریخ')->dateTime('Y/m/d H:i')->sortable(),
+                TextColumn::make('created_at')->label('تاریخ')->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([

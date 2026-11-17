@@ -12,7 +12,7 @@ use App\Filament\Resources\BlogPosts\RelationManagers\CommentsRelationManager;
 use App\Models\BlogPost;
 use App\Models\User;
 use BackedEnum;
-use Filament\Forms\Components\DateTimePicker;
+use App\Filament\Forms\Components\JalaliDateTimePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -79,10 +79,9 @@ class BlogPostResource extends Resource
                     ->options(fn () => User::query()->orderBy('name')->pluck('name', 'id'))
                     ->searchable()
                     ->preload(),
-                DateTimePicker::make('published_at')
-                    ->label('تاریخ انتشار')
-                    ->seconds(false)
-                    ->helperText('برای «زمان‌بندی شده» تاریخ آینده انتخاب کنید'),
+                JalaliDateTimePicker::make('published_at')
+                    ->label('تاریخ انتشار (شمسی)')
+                    ->helperText('برای «زمان‌بندی شده» تاریخ آیندهٔ شمسی انتخاب کنید'),
                 MediaPicker::make('featured_image_path')
                     ->label('تصویر شاخص')
                     ->imagesOnly()
@@ -129,7 +128,7 @@ class BlogPostResource extends Resource
                     ->label('نظرات')
                     ->counts('comments')
                     ->sortable(),
-                TextColumn::make('published_at')->label('انتشار')->dateTime('Y/m/d H:i')->sortable(),
+                TextColumn::make('published_at')->label('انتشار')->sortable(),
             ])
             ->defaultSort('updated_at', 'desc')
             ->filters([

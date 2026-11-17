@@ -5,6 +5,8 @@ namespace App\Livewire\Admin;
 use App\Models\Media;
 use App\Services\Admin\MediaLibraryService;
 use App\Support\SchemaGuard;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Js;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -40,6 +42,12 @@ class MediaPickerModal extends Component
         }
 
         if (! SchemaGuard::hasTable('media')) {
+            Notification::make()
+                ->title('جدول رسانه وجود ندارد')
+                ->body('روی سرور: php artisan migrate --force')
+                ->warning()
+                ->send();
+
             return;
         }
 
@@ -67,11 +75,22 @@ class MediaPickerModal extends Component
             return;
         }
 
+        $statePath = (string) $this->targetStatePath;
+        $path = $media->path;
+        $componentId = $this->targetComponentId;
+
+        $this->js(sprintf(
+            'window.baharfcApplyMediaPick?.(%s, %s, %s)',
+            Js::from($statePath),
+            Js::from($path),
+            Js::from($componentId),
+        ));
+
         $this->dispatch(
             'media-picked',
-            statePath: (string) $this->targetStatePath,
-            path: $media->path,
-            componentId: $this->targetComponentId,
+            statePath: $statePath,
+            path: $path,
+            componentId: $componentId,
         );
 
         $this->close();

@@ -9,7 +9,7 @@ use App\Filament\Resources\Coupons\Pages\EditCoupon;
 use App\Filament\Resources\Coupons\Pages\ListCoupons;
 use App\Models\Coupon;
 use BackedEnum;
-use Filament\Forms\Components\DateTimePicker;
+use App\Filament\Forms\Components\JalaliDateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -83,8 +83,8 @@ class CouponResource extends Resource
                 ->default(0)
                 ->disabled()
                 ->dehydrated(false),
-            DateTimePicker::make('starts_at')->label('شروع اعتبار'),
-            DateTimePicker::make('ends_at')->label('پایان اعتبار'),
+            JalaliDateTimePicker::make('starts_at')->label('شروع اعتبار (شمسی)'),
+            JalaliDateTimePicker::make('ends_at')->label('پایان اعتبار (شمسی)'),
             Toggle::make('is_active')->label('فعال')->default(true),
         ]);
     }

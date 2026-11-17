@@ -44,7 +44,7 @@ class CommentsRelationManager extends RelationManager
                     ->label('وضعیت')
                     ->badge()
                     ->formatStateUsing(fn (BlogCommentStatus $state): string => $state->label()),
-                TextColumn::make('created_at')->label('تاریخ')->dateTime('Y/m/d H:i'),
+                TextColumn::make('created_at')->label('تاریخ'),
             ])
             ->defaultSort('created_at', 'desc')
             ->recordActions([

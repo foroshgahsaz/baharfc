@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Support\PersistentLogStorage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -84,7 +85,7 @@ class ApplicationErrorLogReader
      */
     protected function logPaths(): array
     {
-        $base = storage_path('logs');
+        $base = PersistentLogStorage::logsRoot();
         $paths = [];
 
         $single = $base.'/laravel.log';
@@ -192,7 +193,7 @@ class ApplicationErrorLogReader
     protected function pruneOlderThanArchiveWindow(): void
     {
         $cutoff = Carbon::today()->subDays(self::ARCHIVE_DAYS)->toDateString();
-        foreach (glob(storage_path('logs/laravel-*.log')) ?: [] as $file) {
+        foreach (glob(PersistentLogStorage::logsRoot().'/laravel-*.log') ?: [] as $file) {
             if (! preg_match('/laravel-(\d{4}-\d{2}-\d{2})\.log$/', $file, $m)) {
                 continue;
             }

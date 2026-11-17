@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Support\JalaliDate;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Blade;
@@ -41,9 +40,6 @@ class JalaliServiceProvider extends ServiceProvider
             $entry->formatStateUsing(fn ($state) => JalaliDate::dateTime($state) ?? '—');
         });
 
-        DateTimePicker::configureUsing(function (DateTimePicker $picker): void {
-            $picker->helperText('ذخیره میلادی؛ نمایش در لیست و گزارش‌ها شمسی است.');
-        });
     }
 
     protected function isDateAttribute(string $name): bool

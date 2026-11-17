@@ -21,7 +21,7 @@ class OrdersTable
                     ->badge()
                     ->formatStateUsing(fn (OrderStatus $state): string => $state->label()),
                 TextColumn::make('total')->label('مبلغ')->numeric()->suffix(' تومان')->sortable(),
-                TextColumn::make('created_at')->label('تاریخ')->dateTime('Y/m/d H:i')->sortable(),
+                TextColumn::make('created_at')->label('تاریخ')->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([

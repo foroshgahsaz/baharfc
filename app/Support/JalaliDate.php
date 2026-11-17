@@ -57,4 +57,37 @@ class JalaliDate
 
         return $jalali->ago();
     }
+
+    public static function fromFormString(?string $value, bool $withTime = true): ?\Illuminate\Support\Carbon
+    {
+        if ($value === null || trim($value) === '') {
+            return null;
+        }
+
+        $normalized = self::toEnglishDigits(trim($value));
+
+        $formats = $withTime
+            ? ['Y/m/d H:i', 'Y-m-d H:i', 'Y/m/d H:i:s', 'Y/m/d']
+            : ['Y/m/d', 'Y-m-d'];
+
+        foreach ($formats as $format) {
+            try {
+                $jalali = Jalalian::fromFormat($format, $normalized);
+
+                return \Illuminate\Support\Carbon::instance($jalali->toCarbon());
+            } catch (\Throwable) {
+                continue;
+            }
+        }
+
+        return null;
+    }
+
+    public static function toEnglishDigits(string $value): string
+    {
+        $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        $arabic = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+
+        return str_replace($persian, range(0, 9), str_replace($arabic, range(0, 9), $value));
+    }
 }

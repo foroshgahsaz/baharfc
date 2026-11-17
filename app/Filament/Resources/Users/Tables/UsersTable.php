@@ -47,7 +47,6 @@ class UsersTable
 
         $columns[] = TextColumn::make('created_at')
             ->label('عضویت')
-            ->dateTime()
             ->sortable();
 
         $filters = [

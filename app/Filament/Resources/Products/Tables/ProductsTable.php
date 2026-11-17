@@ -39,7 +39,6 @@ class ProductsTable
                     ->boolean(),
                 TextColumn::make('updated_at')
                     ->label('به‌روزرسانی')
-                    ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
