@@ -38,6 +38,36 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
+.baharfc-media-picker-toolbar {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.baharfc-media-upload-btn {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 0;
+    border-radius: 0.7rem;
+    background: #0d9488;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.55rem 0.95rem;
+    white-space: nowrap;
+}
+
+.baharfc-media-upload-btn:hover {
+    background: #0f766e;
+}
+
+.baharfc-media-upload-status {
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
 .dark .baharfc-media-picker-header,
 .dark .baharfc-media-picker-toolbar {
     border-color: #1f2937;
@@ -70,7 +100,9 @@
 }
 
 .baharfc-media-picker-search {
-    width: 100%;
+    flex: 1 1 220px;
+    min-width: 180px;
+    width: auto;
     border: 1px solid #e5e7eb;
     border-radius: 0.7rem;
     padding: 0.55rem 0.85rem;

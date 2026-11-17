@@ -19,12 +19,23 @@
                     <button type="button" class="baharfc-media-picker-close" wire:click="close" aria-label="بستن">&times;</button>
                 </div>
                 <div class="baharfc-media-picker-toolbar">
+                    <label class="baharfc-media-upload-btn">
+                        بارگذاری تصویر
+                        <input
+                            type="file"
+                            multiple
+                            accept="{{ $imagesOnly ?? true ? 'image/*' : 'image/*,video/*,audio/*,application/pdf' }}"
+                            wire:model="newFiles"
+                            style="display:none"
+                        >
+                    </label>
                     <input
                         type="search"
                         class="baharfc-media-picker-search"
                         wire:model.live.debounce.300ms="search"
                         placeholder="جستجوی رسانه…"
                     >
+                    <span wire:loading wire:target="newFiles" class="baharfc-media-upload-status">در حال بارگذاری…</span>
                 </div>
                 <div class="baharfc-media-picker-body">
                     <div class="baharfc-media-grid">
@@ -53,7 +64,7 @@
                                 <p class="baharfc-media-caption">{{ $item->title ?: $item->file_name }}</p>
                             </button>
                         @empty
-                            <p class="baharfc-media-empty">رسانه‌ای یافت نشد. از منوی کتابخانهٔ رسانه آپلود کنید.</p>
+                            <p class="baharfc-media-empty">رسانه‌ای یافت نشد. از دکمه «بارگذاری تصویر» فایل را همین‌جا اضافه کنید.</p>
                         @endforelse
                     </div>
                     <div class="mt-4">{{ $items->links() }}</div>

@@ -4,10 +4,14 @@
     .baharfc-media-picker-dialog{display:flex;flex-direction:column;width:min(1120px,100%);height:min(86vh,780px);overflow:hidden;background:#fff;border-radius:1.1rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.4)}
     .dark .baharfc-media-picker-dialog{background:#111827;color:#f9fafb}
     .baharfc-media-picker-header,.baharfc-media-picker-toolbar{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.9rem 1.1rem;border-bottom:1px solid #e5e7eb}
+    .baharfc-media-picker-toolbar{flex-wrap:wrap;justify-content:flex-start}
+    .baharfc-media-upload-btn{display:inline-flex;flex-shrink:0;align-items:center;justify-content:center;cursor:pointer;border:0;border-radius:.7rem;background:#0d9488;color:#fff;font-size:.875rem;font-weight:600;padding:.55rem .95rem;white-space:nowrap}
+    .baharfc-media-upload-btn:hover{background:#0f766e}
+    .baharfc-media-upload-status{font-size:.8rem;color:#6b7280}
     .dark .baharfc-media-picker-header,.dark .baharfc-media-picker-toolbar{border-color:#1f2937}
     .baharfc-media-picker-title{margin:0;font-size:1.05rem;font-weight:700}
     .baharfc-media-picker-close{display:inline-flex;align-items:center;justify-content:center;width:2rem;height:2rem;border:0;border-radius:999px;background:transparent;color:#6b7280;font-size:1.5rem;line-height:1;cursor:pointer}
-    .baharfc-media-picker-search{width:100%;border:1px solid #e5e7eb;border-radius:.7rem;padding:.55rem .85rem;font-size:.875rem;background:#fff}
+    .baharfc-media-picker-search{flex:1 1 220px;min-width:180px;border:1px solid #e5e7eb;border-radius:.7rem;padding:.55rem .85rem;font-size:.875rem;background:#fff}
     .dark .baharfc-media-picker-search{border-color:#374151;background:#111827;color:#f9fafb}
     .baharfc-media-picker-body{flex:1 1 auto;overflow:auto;padding:1rem}
     .baharfc-media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:.75rem}
