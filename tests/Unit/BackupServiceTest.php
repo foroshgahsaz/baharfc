@@ -33,6 +33,15 @@ class BackupServiceTest extends TestCase
         parent::tearDown();
     }
 
+    public function test_schema_qualified_mysql_names_are_stripped(): void
+    {
+        $service = app(BackupService::class);
+
+        $this->assertSame('addresses', $service->unqualifiedTableName('bahardbxhl_db.addresses'));
+        $this->assertSame('addresses', $service->unqualifiedTableName('`bahardbxhl_db`.`addresses`'));
+        $this->assertSame('addresses', $service->unqualifiedTableName('addresses'));
+    }
+
     public function test_database_backup_writes_gzipped_sql(): void
     {
         $result = app(BackupService::class)->backupDatabase();

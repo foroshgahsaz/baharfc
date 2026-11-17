@@ -268,7 +268,7 @@ class BackupService
             return $sql;
         }
 
-        $tables = $connection->getSchemaBuilder()->getTableListing();
+        $tables = $this->listConnectionTables($connection);
         sort($tables);
 
         foreach ($tables as $table) {
@@ -310,8 +310,45 @@ class BackupService
         return $sql;
     }
 
+    /**
+     * Laravel's getTableListing() defaults to schema-qualified names like
+     * "bahardbxhl_db.addresses". Quoting that as one identifier makes MySQL
+     * look for table bahardbxhl_db.addresses inside database bahardbxhl_db.
+     *
+     * @return list<string>
+     */
+    protected function listConnectionTables(\Illuminate\Database\Connection $connection): array
+    {
+        $builder = $connection->getSchemaBuilder();
+        $tables = $builder->getTableListing(null, false);
+
+        $names = [];
+        foreach ($tables as $table) {
+            $name = $this->unqualifiedTableName((string) $table);
+            if ($name === '' || str_starts_with($name, 'sqlite_')) {
+                continue;
+            }
+            $names[] = $name;
+        }
+
+        return array_values(array_unique($names));
+    }
+
+    public function unqualifiedTableName(string $name): string
+    {
+        $name = str_replace(['`', '"'], '', $name);
+
+        if (str_contains($name, '.')) {
+            return Str::afterLast($name, '.');
+        }
+
+        return $name;
+    }
+
     protected function quoteIdentifier(string $driver, string $name): string
     {
+        $name = $this->unqualifiedTableName($name);
+
         if ($driver === 'sqlite' || $driver === 'pgsql') {
             return '"'.str_replace('"', '""', $name).'"';
         }
