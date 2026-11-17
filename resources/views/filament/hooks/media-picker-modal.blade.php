@@ -1,6 +1,30 @@
 @livewire('admin.media-picker-modal')
 
 <script>
+    document.addEventListener('click', (event) => {
+        const trigger = event.target.closest('[data-baharfc-media-picker-open]');
+        if (! trigger) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const statePath = trigger.getAttribute('data-state-path');
+        const componentId = trigger.getAttribute('data-component-id');
+        const imagesOnly = trigger.getAttribute('data-images-only') === '1';
+
+        if (typeof Livewire === 'undefined' || ! statePath) {
+            return;
+        }
+
+        Livewire.dispatchTo('admin.media-picker-modal', 'open-media-picker', {
+            statePath,
+            imagesOnly,
+            componentId,
+        });
+    }, true);
+
     document.addEventListener('livewire:init', () => {
         Livewire.on('media-picked', (payload) => {
             const statePath = payload?.statePath;
