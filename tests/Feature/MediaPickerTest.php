@@ -31,6 +31,15 @@ class MediaPickerTest extends TestCase
             ->assertSet('targetComponentId', 'test-component');
     }
 
+    public function test_media_picker_blade_builds_dispatch_in_php_not_js_directive(): void
+    {
+        $contents = file_get_contents(resource_path('views/filament/forms/components/media-picker.blade.php'));
+
+        $this->assertStringNotContainsString('@js(', $contents);
+        $this->assertStringContainsString('Js::from', $contents);
+        $this->assertStringContainsString('$openMediaPickerClick', $contents);
+    }
+
     public function test_modal_lists_media_and_sets_path_on_pick(): void
     {
         Storage::fake('public');
