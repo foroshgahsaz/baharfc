@@ -7,6 +7,7 @@ use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\ContactMessages\Pages\EditContactMessage;
 use App\Filament\Resources\ContactMessages\Pages\ListContactMessages;
 use App\Models\ContactMessage;
+use App\Support\SchemaGuard;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -47,9 +48,16 @@ class ContactMessageResource extends Resource
         return 'contact_messages';
     }
 
+    protected static function requiredDatabaseTable(): ?string
+    {
+        return 'contact_messages';
+    }
+
     public static function getNavigationBadge(): ?string
     {
-        $count = ContactMessage::query()->where('status', ContactMessageStatus::New)->count();
+        $count = SchemaGuard::whenTable('contact_messages', fn () => ContactMessage::query()
+            ->where('status', ContactMessageStatus::New)
+            ->count(), 0);
 
         return $count > 0 ? (string) $count : null;
     }

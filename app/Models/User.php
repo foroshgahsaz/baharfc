@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
+use App\Support\SchemaGuard;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -50,18 +51,30 @@ class User extends Authenticatable implements FilamentUser
             return true;
         }
 
+        if (! $this->hasAdminRoleFeature()) {
+            return false;
+        }
+
         return $this->admin_role_id !== null && $this->canAdmin('panel.access');
     }
 
     public function hasAdminPanelAccess(): bool
     {
-        return $this->is_admin || $this->admin_role_id !== null;
+        if ($this->is_admin) {
+            return true;
+        }
+
+        return $this->hasAdminRoleFeature() && $this->admin_role_id !== null;
     }
 
     public function canAdmin(string $permission): bool
     {
         if ($this->is_admin) {
             return true;
+        }
+
+        if (! $this->hasAdminRoleFeature()) {
+            return false;
         }
 
         $permissions = $this->adminRole?->permissions ?? [];
@@ -86,6 +99,12 @@ class User extends Authenticatable implements FilamentUser
     public function adminRole(): BelongsTo
     {
         return $this->belongsTo(AdminRole::class, 'admin_role_id');
+    }
+
+    public function hasAdminRoleFeature(): bool
+    {
+        return SchemaGuard::hasColumn($this->getTable(), 'admin_role_id')
+            && SchemaGuard::hasTable('admin_roles');
     }
 
     public function hasPassword(): bool

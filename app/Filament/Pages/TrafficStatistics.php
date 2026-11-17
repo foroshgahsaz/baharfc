@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Actions\Reports\ExportTrafficStatsCsv;
 use App\Enums\TrafficEntityType;
 use App\Filament\Concerns\ChecksAdminPageAccess;
+use App\Support\SchemaGuard;
 use App\Services\Traffic\TrafficStatsService;
 use BackedEnum;
 use Carbon\Carbon;
@@ -32,6 +33,15 @@ class TrafficStatistics extends Page
     protected static string|UnitEnum|null $navigationGroup = 'گزارش‌ها';
 
     protected static ?int $navigationSort = 5;
+
+    public static function canAccess(): bool
+    {
+        if (! SchemaGuard::hasTable('traffic_daily_stats')) {
+            return false;
+        }
+
+        return auth()->user()?->canAdmin('analytics.view') ?? false;
+    }
 
     protected static ?string $slug = 'traffic-statistics';
 

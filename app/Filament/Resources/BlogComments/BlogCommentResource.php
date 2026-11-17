@@ -7,6 +7,7 @@ use App\Filament\Concerns\ChecksAdminPermissions;
 use App\Filament\Resources\BlogComments\Pages\EditBlogComment;
 use App\Filament\Resources\BlogComments\Pages\ListBlogComments;
 use App\Models\BlogComment;
+use App\Support\SchemaGuard;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -33,6 +34,11 @@ class BlogCommentResource extends Resource
         return 'blog_comments';
     }
 
+    protected static function requiredDatabaseTable(): ?string
+    {
+        return 'blog_comments';
+    }
+
     protected static ?string $model = BlogComment::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleLeftRight;
@@ -49,7 +55,9 @@ class BlogCommentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = BlogComment::query()->where('status', BlogCommentStatus::Pending)->count();
+        $count = SchemaGuard::whenTable('blog_comments', fn () => BlogComment::query()
+            ->where('status', BlogCommentStatus::Pending)
+            ->count(), 0);
 
         return $count > 0 ? (string) $count : null;
     }
