@@ -20,6 +20,19 @@
 6. `php artisan vendor:publish --tag=livewire:assets --force` و `php artisan filament:assets`
 6a. **لاگ پایدار (آرشیو خطاها):** در K8s مقدار `APP_LOG_ROOT=/data/baharfc/storage/logs` را در `.env` بگذارید؛ `baharfc:post-deploy` پوشه را می‌سازد و در صورت نیاز `storage/logs` را به آن symlink می‌کند تا بعد از هر deploy لاگ و آرشیو خطا **پاک نشود**.
 
+6a2. **بک‌آپ پایدار:** مسیر جدا از کد (مثل تصاویر). اگر `FILESYSTEM_PUBLIC_ROOT=/data/baharfc/storage/app/public` باشد، پیش‌فرض بک‌آپ `/data/baharfc/storage/backups` است. صریح:
+
+```env
+APP_BACKUP_ROOT=/data/baharfc/storage/backups
+```
+
+```bash
+mkdir -p /data/baharfc/storage/backups
+chown -R www-data:www-data /data/baharfc/storage/backups
+```
+
+از پنل: **تنظیمات → بک‌آپ**. حداکثر **۴ نسخه** و **۲ روز** نگهداری. کرون: `* * * * * php artisan schedule:run` (بک‌آپ روزانه ساعت ۰۳:۲۰).
+
 6b. **مجوزهای K8s / PHP-FPM:** پوشه `bootstrap/cache` باید وجود داشته باشد و برای کاربر وب‌سرور (مثلاً `www-data`) قابل نوشتن باشد؛ وگرنه در لاگ `The bootstrap/cache directory must be present and writable` و سایت **۵۰۰** می‌دهد (`artisan` به‌صورت root ممکن است سالم بماند):
 
 ```bash
