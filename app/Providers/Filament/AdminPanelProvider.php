@@ -33,8 +33,12 @@ class AdminPanelProvider extends PanelProvider
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
             ->brandName('مدیریت فروشگاه')
+            ->darkMode(false)
+            ->sidebarCollapsibleOnDesktop()
             ->colors([
-                'primary' => Color::Teal,
+                'primary' => Color::Blue,
+                'warning' => Color::Orange,
+                'success' => Color::Emerald,
             ])
             ->font(
                 family: 'Abar Mid FaNum',
