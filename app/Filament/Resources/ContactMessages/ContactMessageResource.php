@@ -101,7 +101,7 @@ class ContactMessageResource extends Resource
                     ->label('وضعیت')
                     ->badge()
                     ->formatStateUsing(fn (ContactMessageStatus $state): string => $state->label()),
-                TextColumn::make('created_at')->label('تاریخ')->dateTime('Y/m/d H:i')->sortable(),
+                TextColumn::make('created_at')->label('تاریخ')->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([

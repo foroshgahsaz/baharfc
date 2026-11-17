@@ -4,7 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "postinstall": "mkdir -p public/vendor/jalalidatepicker && cp node_modules/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js node_modules/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css public/vendor/jalalidatepicker/"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
@@ -15,5 +16,8 @@
     },
     "optionalDependencies": {
         "@laravel/multiplex": "^0.4.1"
+    },
+    "dependencies": {
+        "@majidh1/jalalidatepicker": "^1.0.0"
     }
 }

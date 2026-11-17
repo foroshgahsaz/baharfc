@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use App\Models\AdminRole;
 use App\Models\User;
-use Filament\Forms\Components\DateTimePicker;
+use App\Filament\Forms\Components\JalaliDateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -63,10 +63,10 @@ class UserForm
                     ->helperText('مثل وردپرس: نویسنده، مدیر فروشگاه و … — با «مدیر کل» خالی بماند')
                     ->visible(fn (callable $get): bool => ! $get('is_admin')
                         && optional(auth()->user())->hasAdminRoleFeature()),
-                DateTimePicker::make('phone_verified_at')
-                    ->label('تأیید موبایل'),
-                DateTimePicker::make('email_verified_at')
-                    ->label('تأیید ایمیل'),
+                JalaliDateTimePicker::make('phone_verified_at')
+                    ->label('تأیید موبایل (شمسی)'),
+                JalaliDateTimePicker::make('email_verified_at')
+                    ->label('تأیید ایمیل (شمسی)'),
             ]);
     }
 }

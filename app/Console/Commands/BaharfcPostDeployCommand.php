@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Support\FrameworkWritablePaths;
+use App\Support\PersistentLogStorage;
 use App\Support\PublicUploadStorage;
 use Illuminate\Console\Command;
 
@@ -40,6 +41,18 @@ class BaharfcPostDeployCommand extends Command
         if ($this->option('seed-menu')) {
             $this->components->info('Seed منوی فروشگاه (در صورت خالی بودن)...');
             $this->call('db:seed', ['--class' => 'Database\\Seeders\\ShopMenuSeeder', '--force' => true]);
+        }
+
+        $logs = PersistentLogStorage::ensureLogsDirectory();
+        if ($logs['ok']) {
+            $this->components->success($logs['message']);
+        } else {
+            $this->components->warn($logs['message']);
+            $this->line(PersistentLogStorage::k8sHint());
+        }
+
+        if (! PersistentLogStorage::ensureStorageLogsSymlink()) {
+            $this->components->warn('symlink storage/logs به APP_LOG_ROOT ساخته نشد — در .env مقدار APP_LOG_ROOT را تنظیم کنید.');
         }
 
         $storage = PublicUploadStorage::ensureUploadDirectories();

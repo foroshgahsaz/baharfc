@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Contracts\SmsSender;
 use App\Support\AdminBar\AdminBarBuilder;
 use App\Support\FrameworkWritablePaths;
+use App\Support\PersistentLogStorage;
 use App\Support\PublicUploadStorage;
 use App\Support\ShopAppearance;
 use App\Support\ShopMenu;
@@ -39,6 +40,8 @@ class AppServiceProvider extends ServiceProvider
             if (! $storageSymlinkChecked) {
                 $storageSymlinkChecked = true;
                 FrameworkWritablePaths::ensurePresent();
+                PersistentLogStorage::ensureLogsDirectory();
+                PersistentLogStorage::ensureStorageLogsSymlink();
                 PublicUploadStorage::ensurePublicSymlink();
             }
         }

@@ -14,4 +14,12 @@ class JalaliDateTest extends TestCase
 
         $this->assertSame('1405/01/01', $formatted);
     }
+
+    public function test_parses_jalali_form_string_back_to_gregorian(): void
+    {
+        $carbon = JalaliDate::fromFormString('1404/08/26 14:30');
+
+        $this->assertNotNull($carbon);
+        $this->assertSame('1404/08/26 14:30', JalaliDate::dateTime($carbon));
+    }
 }
