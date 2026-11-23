@@ -15,6 +15,12 @@ class JalaliDateTest extends TestCase
         $this->assertSame('1405/01/01', $formatted);
     }
 
+    public function test_converts_ascii_digits_to_persian(): void
+    {
+        $this->assertSame('۱۲+', JalaliDate::toPersianDigits('12').'+');
+        $this->assertSame('۸', JalaliDate::toPersianDigits(8));
+    }
+
     public function test_parses_jalali_form_string_back_to_gregorian(): void
     {
         $carbon = JalaliDate::fromFormString('1404/08/26 14:30');

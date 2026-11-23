@@ -36,8 +36,12 @@ class HomeController extends Controller
             $homeCategories = Category::query()
                 ->where('is_active', true)
                 ->where('show_on_home', true)
+                ->when(
+                    Schema::hasTable('products'),
+                    fn ($query) => $query->withCount(['products' => fn ($products) => $products->where('is_active', true)]),
+                )
                 ->orderBy('sort_order')
-                ->limit(12)
+                ->limit(8)
                 ->get();
         }
 

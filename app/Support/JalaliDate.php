@@ -4,6 +4,7 @@ namespace App\Support;
 
 use Carbon\CarbonInterface;
 use DateTimeInterface;
+use Illuminate\Support\Carbon;
 use Morilog\Jalali\Jalalian;
 
 class JalaliDate
@@ -16,7 +17,7 @@ class JalaliDate
 
         if (! $value instanceof DateTimeInterface) {
             try {
-                $value = \Illuminate\Support\Carbon::parse($value);
+                $value = Carbon::parse($value);
             } catch (\Throwable) {
                 return null;
             }
@@ -47,8 +48,8 @@ class JalaliDate
 
         try {
             $carbon = $value instanceof DateTimeInterface
-                ? \Illuminate\Support\Carbon::instance($value)
-                : \Illuminate\Support\Carbon::parse($value);
+                ? Carbon::instance($value)
+                : Carbon::parse($value);
         } catch (\Throwable) {
             return null;
         }
@@ -58,7 +59,7 @@ class JalaliDate
         return $jalali->ago();
     }
 
-    public static function fromFormString(?string $value, bool $withTime = true): ?\Illuminate\Support\Carbon
+    public static function fromFormString(?string $value, bool $withTime = true): ?Carbon
     {
         if ($value === null || trim($value) === '') {
             return null;
@@ -74,7 +75,7 @@ class JalaliDate
             try {
                 $jalali = Jalalian::fromFormat($format, $normalized);
 
-                return \Illuminate\Support\Carbon::instance($jalali->toCarbon());
+                return Carbon::instance($jalali->toCarbon());
             } catch (\Throwable) {
                 continue;
             }
@@ -89,5 +90,21 @@ class JalaliDate
         $arabic = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
 
         return str_replace($persian, range(0, 9), str_replace($arabic, range(0, 9), $value));
+    }
+
+    public static function toPersianDigits(int|string $value): string
+    {
+        return strtr((string) $value, [
+            '0' => '۰',
+            '1' => '۱',
+            '2' => '۲',
+            '3' => '۳',
+            '4' => '۴',
+            '5' => '۵',
+            '6' => '۶',
+            '7' => '۷',
+            '8' => '۸',
+            '9' => '۹',
+        ]);
     }
 }
