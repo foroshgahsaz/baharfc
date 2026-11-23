@@ -11,20 +11,22 @@ class HomeCategoryStripTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_homepage_renders_category_section_below_slider(): void
+    public function test_homepage_renders_fama_category_carousel_below_slider(): void
     {
         $html = $this->get(route('home'))->assertOk()->getContent();
 
         $hero = strpos($html, 'id="homeHero"');
-        $categories = strpos($html, 'home-product-categories');
+        $categories = strpos($html, 'fs-category-carousel');
 
         $this->assertNotFalse($hero);
         $this->assertNotFalse($categories);
         $this->assertLessThan($categories, $hero);
+        $this->assertStringContainsString('data-slider-track', $html);
+        $this->assertStringContainsString('fs-category-carousel-card', $html);
         $this->assertStringContainsString('دسته بندی محصولات', $html);
         $this->assertStringContainsString('مشاهده همه', $html);
         $this->assertStringNotContainsString('با جدیدها', $html);
-        $this->assertStringNotContainsString('category-promo', $html);
+        $this->assertStringNotContainsString('home-product-categories', $html);
     }
 
     public function test_home_categories_show_name_and_count_but_not_price(): void
@@ -47,14 +49,15 @@ class HomeCategoryStripTest extends TestCase
         $html = $this->get(route('home'))->assertOk()->getContent();
 
         $this->assertSame(1, preg_match(
-            '/<section class="home-product-categories".*?<\/section>/s',
+            '/<section class="fs-category-carousel".*?<\/section>/s',
             $html,
             $matches,
         ));
 
         $section = $matches[0];
         $this->assertStringContainsString('کفش ورزشی خانگی', $section);
-        $this->assertStringContainsString('دسته بندی محصولات', $section);
+        $this->assertStringContainsString('fs-category-carousel-art', $section);
+        $this->assertStringContainsString('fs-category-carousel-image', $section);
         $this->assertStringContainsString('۱+', $section);
         $this->assertStringContainsString('محصول', $section);
         $this->assertStringNotContainsString('تومان', $section);

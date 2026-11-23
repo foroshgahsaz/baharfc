@@ -241,176 +241,289 @@
     overflow: hidden;
 }
 
-.lebasino-page .home-product-categories {
+.lebasino-page .fs-category-carousel {
+    position: relative;
     width: 100%;
-    min-height: 0;
-    padding: 30px 0 24px;
+    margin-top: 47px;
     overflow: hidden;
 }
 
-.lebasino-page .hpc-topbar {
+.lebasino-page .fs-category-carousel-heading,
+.lebasino-page .fs-category-carousel-title {
     display: flex;
     align-items: center;
-    gap: 24px;
-    height: 43px;
-    white-space: nowrap;
 }
 
-.lebasino-page .hpc-heading {
+.lebasino-page .fs-category-carousel-heading {
+    gap: 27px;
+    min-height: 42px;
+    flex-wrap: wrap;
+}
+
+.lebasino-page .fs-category-carousel-title {
+    gap: 15px;
+    margin-inline-end: auto;
+}
+
+.lebasino-page .fs-category-carousel-title h2 {
     display: flex;
     align-items: center;
-    gap: 14px;
-    font-size: 16px;
-    font-weight: 700;
-    color: #171820;
+    gap: 15px;
+    margin: 0;
+    color: #040404;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 23px;
 }
 
-.lebasino-page .hpc-dash {
+.lebasino-page .fs-category-carousel-title h2::before {
+    content: '';
+    flex-shrink: 0;
     width: 34px;
     height: 5px;
-    border-radius: 8px;
+    border-radius: 99px;
     background: var(--lebasino-accent);
-    display: inline-block;
-    flex-shrink: 0;
 }
 
-.lebasino-page .hpc-updates {
+.lebasino-page .fs-category-carousel-title p {
+    margin: 0;
+    padding: 4px 23px 4px 8px;
+    border-inline-start: 1px dashed #a4a8ba;
+    color: #707486;
+    font-size: 16px;
+    line-height: 21px;
+}
+
+.lebasino-page .fs-category-carousel-arrows {
     display: flex;
+    gap: 2px;
+}
+
+.lebasino-page .fs-category-carousel-arrows .fs-slider-arrow {
+    display: inline-flex;
     align-items: center;
-    gap: 16px;
-    color: #7f8298;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #292d32;
+    cursor: pointer;
+}
+
+.lebasino-page .fs-category-carousel-arrows .fs-slider-arrow:enabled:is(:hover, :focus-visible) {
+    color: var(--lebasino-accent);
+}
+
+.lebasino-page .fs-category-carousel-arrows .fs-slider-arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.lebasino-page .fs-chevron-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.lebasino-page .fs-category-carousel-link {
+    display: grid;
+    gap: 4px;
+    order: 2;
+    white-space: nowrap;
+    text-decoration: none;
+    color: inherit;
+}
+
+.lebasino-page .fs-category-carousel-link strong {
+    color: var(--lebasino-accent);
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 20px;
+}
+
+.lebasino-page .fs-category-carousel-link:is(:hover, :focus-visible) strong {
+    font-weight: 800;
+}
+
+.lebasino-page .fs-category-carousel-link span {
+    color: #a4a8ba;
     font-size: 14px;
+    line-height: 18px;
 }
 
-.lebasino-page .hpc-arrows {
+.lebasino-page .fs-category-carousel-progress {
     display: flex;
-    gap: 14px;
-    align-items: center;
-    direction: ltr;
-    color: #222;
-}
-
-.lebasino-page .hpc-arrow {
-    font-family: Arial, sans-serif;
-    font-size: 25px;
-    font-weight: 300;
-    line-height: 1;
-}
-
-.lebasino-page .hpc-vline {
-    height: 31px;
-    border-right: 1px dashed #b8bbca;
-    flex-shrink: 0;
-}
-
-.lebasino-page .hpc-spacer {
-    flex: 1;
-}
-
-.lebasino-page .hpc-tools {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    direction: ltr;
-}
-
-.lebasino-page .hpc-dots {
-    display: flex;
-    align-items: center;
     gap: 4px;
 }
 
-.lebasino-page .hpc-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #d1d3da;
+.lebasino-page .fs-category-carousel-progress[hidden] {
+    display: none;
 }
 
-.lebasino-page .hpc-dot.is-active {
+.lebasino-page .fs-category-carousel-progress button {
+    position: relative;
+    width: 8px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.lebasino-page .fs-category-carousel-progress button::after {
+    content: '';
+    position: absolute;
+    inset: 8px 0;
+    border-radius: 99px;
+    background: #d3d5da;
+}
+
+.lebasino-page .fs-category-carousel-progress button[data-active] {
     width: 42px;
-    border-radius: 10px;
+}
+
+.lebasino-page .fs-category-carousel-progress button[data-active]::after {
     background: var(--lebasino-accent);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--lebasino-accent) 25%, transparent);
 }
 
-.lebasino-page .hpc-view-all {
+.lebasino-page .fs-category-carousel-track.rail {
+    --fs-category-card-width: 150.6px;
+
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: flex-start;
-    color: var(--lebasino-accent);
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 1;
+    flex-wrap: nowrap;
+    gap: 33px;
+    margin-top: 30px;
+    padding-inline: 4.5px;
+    scroll-padding-inline: 4.5px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
 }
 
-.lebasino-page .hpc-view-all small {
-    color: #a4a8bc;
-    font-size: 12px;
-    font-weight: 400;
+.lebasino-page .fs-category-carousel-track.rail::-webkit-scrollbar {
+    display: none;
 }
 
-.lebasino-page .hpc-grid {
-    display: grid;
-    grid-template-columns: repeat(8, minmax(0, 1fr));
-    gap: 10px;
-    margin-top: 27px;
-    width: 100%;
-    direction: rtl;
-}
-
-.lebasino-page .hpc-item {
+.lebasino-page .fs-category-carousel-track > .fs-category-carousel-card {
+    position: relative;
+    display: block;
+    flex: 0 0 var(--fs-category-card-width);
+    width: var(--fs-category-card-width);
+    height: 165.1px;
+    text-align: center;
     text-decoration: none;
     color: inherit;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 0;
+    isolation: isolate;
+    scroll-snap-align: start;
 }
 
-.lebasino-page .hpc-visual {
-    width: 100%;
+.lebasino-page .fs-category-carousel-art {
+    position: absolute;
+    inset: 0 0 auto;
     aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     border-radius: 50%;
-    overflow: hidden;
-    background: #f4f5f8;
 }
 
-.lebasino-page .hpc-visual img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.lebasino-page .fs-category-carousel-art::before,
+.lebasino-page .fs-category-carousel-art::after {
+    content: '';
+    position: absolute;
+    border-radius: inherit;
 }
 
-.lebasino-page .hpc-name {
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 20px;
-    margin-top: 1px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    color: #171820;
+.lebasino-page .fs-category-carousel-art::before {
+    inset: 8.333%;
+    background: linear-gradient(
+        color-mix(in srgb, var(--lebasino-accent) 10%, transparent),
+        color-mix(in srgb, var(--lebasino-accent) 0%, transparent)
+    );
 }
 
-.lebasino-page .hpc-count {
+.lebasino-page .fs-category-carousel-art::after {
+    inset: 0;
+    border: 1px solid var(--lebasino-accent);
+    mask-image: linear-gradient(#000, #0000 50%);
+    -webkit-mask-image: linear-gradient(#000, #0000 50%);
+}
+
+.lebasino-page .fs-category-carousel-image {
+    position: absolute;
+    inset: 24.15% auto auto 26.45%;
+    width: 47.1%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    transform: rotate(15.05deg);
+    transition: scale 0.18s ease;
+}
+
+.lebasino-page .fs-category-carousel-card:is(:hover, :focus-visible) .fs-category-carousel-image {
+    scale: 1.05;
+}
+
+.lebasino-page .fs-category-carousel-name,
+.lebasino-page .fs-category-carousel-count {
+    position: absolute;
+    inset-inline: 0;
+}
+
+.lebasino-page .fs-category-carousel-name {
+    top: 122.6px;
+    color: #1c1c25;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 18px;
+}
+
+.lebasino-page .fs-category-carousel-count {
+    top: 149.5px;
+    color: #a4a8ba;
     font-size: 12px;
-    color: #a1a5ba;
-    line-height: 20px;
-    margin-top: 5px;
+    line-height: 16px;
 }
 
-.lebasino-page .hpc-number {
+.lebasino-page .fs-category-carousel-count bdi {
     color: var(--lebasino-accent);
-    font-weight: 700;
-    direction: ltr;
-    unicode-bidi: embed;
+    font-weight: 600;
+}
+
+.lebasino-page .fs-mobile-slider-dots {
+    display: none;
+    justify-content: flex-start;
+    gap: 4px;
+    margin-top: 10px;
+}
+
+.lebasino-page .fs-mobile-slider-dots > button {
+    position: relative;
+    width: 14px;
+    min-height: 24px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.lebasino-page .fs-mobile-slider-dots > button::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 6px;
+    border-radius: 99px;
+    background: #d3d5da;
+    transform: translateY(-50%);
+}
+
+.lebasino-page .fs-mobile-slider-dots > button[data-active] {
+    width: 30px;
+}
+
+.lebasino-page .fs-mobile-slider-dots > button[data-active]::after {
+    background: var(--lebasino-accent);
 }
 
 .lebasino-page .hero {
@@ -500,23 +613,6 @@
 
     .lebasino-page .user-links a .link-text {
         display: none;
-    }
-
-    .lebasino-page .home-product-categories {
-        padding: 24px 0;
-    }
-
-    .lebasino-page .hpc-topbar {
-        gap: 14px;
-    }
-
-    .lebasino-page .hpc-updates {
-        font-size: 12px;
-    }
-
-    .lebasino-page .hpc-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        row-gap: 22px;
     }
 
     .lebasino-page .main-nav {
@@ -641,34 +737,94 @@
         padding-top: 18px;
     }
 
-    .lebasino-page .home-product-categories {
-        padding: 22px 0;
+    .lebasino-page .fs-category-carousel {
+        margin-top: 24px;
     }
 
-    .lebasino-page .hpc-topbar {
-        height: auto;
-        flex-wrap: wrap;
-        gap: 16px;
+    .lebasino-page .fs-category-carousel-heading {
+        gap: 8px;
+        min-height: 45px;
     }
 
-    .lebasino-page .hpc-spacer {
+    .lebasino-page .fs-category-carousel-title {
+        flex-direction: column-reverse;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .lebasino-page .fs-category-carousel-title h2 {
+        gap: 8px;
+        font-size: 16px;
+        line-height: 21px;
+    }
+
+    .lebasino-page .fs-category-carousel-title h2::before {
+        width: 23px;
+        height: 4px;
+    }
+
+    .lebasino-page .fs-category-carousel-title p {
+        padding: 0;
+        border: 0;
+        font-size: 14px;
+        line-height: 18px;
+    }
+
+    .lebasino-page .fs-category-carousel-link :is(strong, span) {
+        font-size: 13px;
+        line-height: 17px;
+    }
+
+    .lebasino-page .fs-category-carousel-arrows,
+    .lebasino-page .fs-category-carousel-progress {
         display: none;
     }
 
-    .lebasino-page .hpc-tools {
-        margin-right: auto;
+    .lebasino-page .fs-category-carousel-track.rail {
+        --fs-category-card-width: 88.34px;
+
+        gap: 24px;
+        margin: 24px -24px 0;
+        padding-inline: 30px 24px;
+        scroll-padding-inline-start: 30px;
     }
 
-    .lebasino-page .hpc-updates {
-        order: 3;
-        width: 100%;
-        justify-content: flex-start;
+    .lebasino-page .fs-category-carousel-track > .fs-category-carousel-card {
+        height: 107px;
     }
 
-    .lebasino-page .hpc-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        margin-top: 24px;
-        gap: 20px 8px;
+    .lebasino-page .fs-category-carousel-image {
+        top: 17.5%;
+    }
+
+    .lebasino-page .fs-category-carousel-name {
+        top: 76px;
+        font-size: 11px;
+        line-height: 14px;
+    }
+
+    .lebasino-page .fs-category-carousel-count {
+        top: 94px;
+        font-size: 10px;
+        line-height: 13px;
+    }
+
+    .lebasino-page .fs-category-carousel .fs-mobile-slider-dots {
+        display: flex;
+        gap: 4px;
+        margin-top: 16px;
+    }
+
+    .lebasino-page .fs-category-carousel .fs-mobile-slider-dots > button {
+        width: 8px;
+    }
+
+    .lebasino-page .fs-category-carousel .fs-mobile-slider-dots > button[data-active] {
+        width: 42px;
+    }
+
+    .lebasino-page .fs-category-carousel .fs-mobile-slider-dots > button::after {
+        height: 8px;
     }
 
     .lebasino-page .hero {
