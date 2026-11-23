@@ -452,12 +452,15 @@
 
 .lebasino-page .fs-category-carousel-image {
     position: absolute;
-    inset: 24.15% auto auto 26.45%;
-    width: 47.1%;
+    top: 14%;
+    left: 0;
+    right: 0;
+    width: 58%;
+    margin-inline: auto;
     aspect-ratio: 1;
-    object-fit: contain;
+    object-fit: cover;
+    border-radius: 50%;
     mix-blend-mode: multiply;
-    transform: rotate(15.05deg);
     transition: scale 0.18s ease;
 }
 
@@ -528,6 +531,7 @@
 
 .lebasino-page .hero {
     position: relative;
+    margin-top: 50px;
     border-radius: 30px;
     overflow: hidden;
     line-height: 0;
@@ -794,7 +798,8 @@
     }
 
     .lebasino-page .fs-category-carousel-image {
-        top: 17.5%;
+        top: 12%;
+        width: 62%;
     }
 
     .lebasino-page .fs-category-carousel-name {
