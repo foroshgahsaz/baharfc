@@ -196,8 +196,12 @@ class AdminBarBuilder
      */
     private function appendHomeLinks(array &$links, User $user): void
     {
+        if ($user->canAdmin('home_sections.view')) {
+            $links[] = new AdminBarItem('کاروسل صفحه اصلی', \App\Filament\Resources\HomeSections\HomeSectionResource::getUrl('index'), highlight: true);
+        }
+
         if ($user->canAdmin('settings.shop')) {
-            $links[] = new AdminBarItem('تنظیمات صفحه اصلی', ShopSettings::getUrl());
+            $links[] = new AdminBarItem('تنظیمات فروشگاه', ShopSettings::getUrl());
         }
     }
 

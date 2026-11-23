@@ -1,9 +1,13 @@
 @extends('layouts.shop')
 
 @section('content')
+    <x-shop.home-carousels-after anchor="start" :grouped="$homeCarousels" />
     <x-shop.home-hero :banners="$banners" />
+    <x-shop.home-carousels-after anchor="hero" :grouped="$homeCarousels" />
     <x-shop.home-category-strip :home-categories="$homeCategories" />
+    <x-shop.home-carousels-after anchor="category_strip" :grouped="$homeCarousels" />
     <x-shop.home-special-deals :special-deal-products="$specialDealProducts" />
+    <x-shop.home-carousels-after anchor="special_deals" :grouped="$homeCarousels" />
 
     <section id="products" class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div class="mb-8 flex items-end justify-between gap-4">
@@ -23,6 +27,8 @@
         </div>
     </section>
 
+    <x-shop.home-carousels-after anchor="featured" :grouped="$homeCarousels" />
+
     @if ($latestProducts->isNotEmpty())
         <section class="border-t border-slate-200 bg-white">
             <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
@@ -36,9 +42,13 @@
         </section>
     @endif
 
+    <x-shop.home-carousels-after anchor="latest" :grouped="$homeCarousels" />
+
     <section class="border-t border-slate-200 bg-white">
         <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <livewire:shop.newsletter-subscribe />
         </div>
     </section>
+
+    <x-shop.home-carousels-after anchor="newsletter" :grouped="$homeCarousels" />
 @endsection

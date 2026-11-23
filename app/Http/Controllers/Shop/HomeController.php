@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\HomePageCarousels;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
@@ -62,6 +63,7 @@ class HomeController extends Controller
             'featuredProducts' => $featuredProducts,
             'latestProducts' => $latestProducts,
             'specialDealProducts' => $specialDealProducts,
+            'homeCarousels' => HomePageCarousels::groupedByAnchor(),
             'mainClass' => 'container',
         ]);
     }
