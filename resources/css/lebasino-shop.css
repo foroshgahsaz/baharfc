@@ -9,6 +9,7 @@
 .lebasino-page {
     --red: var(--lebasino-accent);
     color: var(--lebasino-ink);
+    overflow-x: clip;
 }
 
 .lebasino-page a {
@@ -539,11 +540,12 @@
     position: relative;
     display: flex;
     align-items: center;
-    width: 100vw;
-    max-width: 100vw;
-    height: 360px;
+    width: 100%;
+    max-width: none;
+    height: 410px;
     margin-top: 47px;
     margin-inline: calc(50% - 50vw);
+    padding-inline: calc(50vw - 50%);
     overflow: hidden;
 }
 
@@ -551,10 +553,11 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 38%;
+    width: max(340px, 36%);
     height: 100%;
     border-radius: 28px 0 0 28px;
-    background: linear-gradient(135deg, var(--amazing-brand) 0%, var(--amazing-brand-deep) 100%);
+    background-color: var(--amazing-brand);
+    background-image: linear-gradient(160deg, var(--amazing-brand) 15%, var(--amazing-brand-deep) 100%);
     z-index: 1;
     overflow: hidden;
 }
@@ -586,10 +589,11 @@
     position: absolute;
     right: 0;
     top: 0;
-    width: 55px;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.08);
-    z-index: 2;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .lebasino-page .amazing-banner {
@@ -727,7 +731,7 @@
     flex: 0 0 222px;
     width: 222px;
     min-width: 222px;
-    height: 315px;
+    height: 340px;
     padding: 14px 16px;
     border: 1px solid #f1f1f1;
     border-radius: 22px;
@@ -891,16 +895,22 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 85px;
+    width: 120px;
     height: 100%;
-    background: linear-gradient(to right, rgba(255, 255, 255, 0.95) 20%, rgba(255, 255, 255, 0) 100%);
-    z-index: 5;
+    z-index: 8;
     pointer-events: none;
     opacity: 0;
+    background: linear-gradient(
+        to right,
+        #fff 0%,
+        rgba(255, 255, 255, 0.96) 28px,
+        rgba(255, 255, 255, 0.55) 72px,
+        rgba(255, 255, 255, 0) 100%
+    );
     transition: opacity 0.2s ease;
 }
 
-.lebasino-page .amazing-section--scrollable .amazing-products-fade {
+.lebasino-page .amazing-section--scrollable.amazing-section--fade-left .amazing-products-fade {
     opacity: 1;
 }
 
