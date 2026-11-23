@@ -55,10 +55,12 @@ const initAmazingDeals = () => {
         const sync = () => {
             const max = maxScroll();
             const current = position();
+            const canScroll = max > 1;
 
             prev?.toggleAttribute('disabled', current <= 1);
             next?.toggleAttribute('disabled', current >= max - 1);
-            section.classList.toggle('amazing-section--scrollable', max > 1);
+            section.classList.toggle('amazing-section--scrollable', canScroll);
+            section.classList.toggle('amazing-section--fade-left', canScroll);
         };
 
         track.addEventListener('scroll', sync, { passive: true });
