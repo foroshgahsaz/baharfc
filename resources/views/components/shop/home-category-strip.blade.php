@@ -3,40 +3,41 @@
 @php
     $items = $homeCategories->isNotEmpty()
         ? $homeCategories
-        : collect(config('shop.demo_category_icons', []))->take(8);
+        : collect(config('shop.demo_category_icons', []));
+    $progressSections = 5;
 @endphp
 
-<section class="home-product-categories" aria-label="دسته‌بندی محصولات">
-    <header class="hpc-topbar">
-        <div class="hpc-heading">
-            <span class="hpc-dash" aria-hidden="true"></span>
-            <span>دسته بندی محصولات</span>
-        </div>
-        <span class="hpc-vline" aria-hidden="true"></span>
-        <div class="hpc-updates">
-            <span>با محصولات ما بروز باشید</span>
-            <div class="hpc-arrows" aria-hidden="true">
-                <span class="hpc-arrow">‹</span>
-                <span class="hpc-arrow">›</span>
+<section class="fs-category-carousel" data-slider aria-label="دسته‌بندی محصولات">
+    <header class="fs-category-carousel-heading">
+        <div class="fs-category-carousel-title">
+            <h2>دسته بندی محصولات</h2>
+            <p>با محصولات ما بروز باشید</p>
+            <div class="fs-category-carousel-arrows">
+                <button type="button" data-slider-prev aria-label="قبلی" class="fs-slider-arrow">
+                    <svg class="fs-chevron-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button type="button" data-slider-next aria-label="بعدی" class="fs-slider-arrow">
+                    <svg class="fs-chevron-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
             </div>
         </div>
-        <div class="hpc-spacer"></div>
-        <div class="hpc-tools">
-            <div class="hpc-dots" aria-hidden="true">
-                <span class="hpc-dot"></span>
-                <span class="hpc-dot"></span>
-                <span class="hpc-dot is-active"></span>
-                <span class="hpc-dot"></span>
-                <span class="hpc-dot"></span>
-            </div>
-            <a class="hpc-view-all" href="{{ route('products.index') }}">
-                محصولات
-                <small>مشاهده همه</small>
-            </a>
+        <a href="{{ route('products.index') }}" class="fs-category-carousel-link">
+            <strong>محـصــــولات</strong>
+            <span>مشاهده همه</span>
+        </a>
+        <div class="fs-category-carousel-progress" data-slider-progress>
+            @for ($i = 0; $i < $progressSections; $i++)
+                <button
+                    type="button"
+                    data-slider-dot
+                    aria-label="بخش {{ $i + 1 }} اسلایدر"
+                    @if ($i === 0) data-active aria-current="true" @endif
+                ></button>
+            @endfor
         </div>
     </header>
 
-    <div class="hpc-grid">
+    <div class="rail fs-category-carousel-track" data-slider-track>
         @foreach ($items as $item)
             @php
                 $isModel = $item instanceof \App\Models\Category;
@@ -48,18 +49,36 @@
                     : asset($item['image'] ?? $fallbackImage);
                 $count = $isModel ? (int) ($item->products_count ?? 0) : null;
             @endphp
-            <a class="hpc-item" href="{{ $href }}" aria-label="{{ $label }}">
-                <div class="hpc-visual">
-                    <img src="{{ $image }}" alt="" width="152" height="152" loading="lazy" decoding="async">
-                </div>
-                <div class="hpc-name">{{ $label }}</div>
+            <a class="fs-category-carousel-card" href="{{ $href }}" aria-label="{{ $label }}">
+                <span class="fs-category-carousel-art" aria-hidden="true"></span>
+                <img
+                    src="{{ $image }}"
+                    alt=""
+                    width="152"
+                    height="152"
+                    loading="lazy"
+                    decoding="async"
+                    class="fs-category-carousel-image"
+                >
+                <span class="fs-category-carousel-name">{{ $label }}</span>
                 @if ($count !== null)
-                    <div class="hpc-count">
-                        <span class="hpc-number">{{ \App\Support\JalaliDate::toPersianDigits($count) }}+</span>
+                    <span class="fs-category-carousel-count">
+                        <bdi>{{ \App\Support\JalaliDate::toPersianDigits($count) }}+</bdi>
                         محصول
-                    </div>
+                    </span>
                 @endif
             </a>
         @endforeach
+    </div>
+
+    <div class="fs-mobile-slider-dots">
+        @for ($i = 0; $i < $progressSections; $i++)
+            <button
+                type="button"
+                data-slider-dot
+                aria-label="بخش {{ $i + 1 }} اسلایدر"
+                @if ($i === 0) data-active aria-current="true" @endif
+            ></button>
+        @endfor
     </div>
 </section>

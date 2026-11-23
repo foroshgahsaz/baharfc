@@ -41,7 +41,7 @@ class HomeController extends Controller
                     fn ($query) => $query->withCount(['products' => fn ($products) => $products->where('is_active', true)]),
                 )
                 ->orderBy('sort_order')
-                ->limit(8)
+                ->limit(24)
                 ->get();
         }
 
