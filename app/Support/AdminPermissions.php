@@ -81,6 +81,10 @@ final class AdminPermissions
                 'menus.create' => 'ایجاد منو',
                 'menus.update' => 'ویرایش منو',
                 'menus.delete' => 'حذف منو',
+                'home_sections.view' => 'مشاهده کاروسل صفحه اصلی',
+                'home_sections.create' => 'ایجاد کاروسل صفحه اصلی',
+                'home_sections.update' => 'ویرایش کاروسل صفحه اصلی',
+                'home_sections.delete' => 'حذف کاروسل صفحه اصلی',
             ],
             'رسانه' => [
                 'media.view' => 'مشاهده کتابخانه رسانه',
@@ -176,6 +180,10 @@ final class AdminPermissions
                 'media.view',
                 'media.upload',
                 'analytics.view',
+                'home_sections.view',
+                'home_sections.create',
+                'home_sections.update',
+                'home_sections.delete',
             ],
         ];
     }
