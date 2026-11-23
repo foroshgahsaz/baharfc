@@ -1,33 +1,65 @@
 @props(['homeCategories' => collect()])
 
-<section class="categories" aria-label="دسته‌بندی‌های محبوب">
-    <a class="category-promo" href="{{ route('products.index', ['sort' => 'newest']) }}">
-        <strong>با جدیدها</strong>
-        <b>{{ $shopWordmark ?? config('shop.logo_wordmark', 'BAHARFC') }}</b>
-        <span aria-hidden="true">‹‹‹</span>
-    </a>
+@php
+    $items = $homeCategories->isNotEmpty()
+        ? $homeCategories
+        : collect(config('shop.demo_category_icons', []))->take(8);
+@endphp
 
-    <div class="category-list" id="categoryList">
-        @forelse ($homeCategories as $category)
-            <a
-                class="category"
-                href="{{ route('products.index', ['category' => $category->slug]) }}"
-                data-name="{{ $category->name }}"
-            >
-                @if ($category->imageUrl())
-                    <img src="{{ $category->imageUrl() }}" alt="" width="82" height="82" loading="lazy" decoding="async">
-                @else
-                    <img src="{{ asset('images/lebasino/categories/cat-1.jpg') }}" alt="" width="82" height="82" loading="lazy">
-                @endif
-                <span>{!! nl2br(e($category->home_caption ?: $category->name)) !!}</span>
+<section class="home-product-categories" aria-label="دسته‌بندی محصولات">
+    <header class="hpc-topbar">
+        <div class="hpc-heading">
+            <span class="hpc-dash" aria-hidden="true"></span>
+            <span>دسته بندی محصولات</span>
+        </div>
+        <span class="hpc-vline" aria-hidden="true"></span>
+        <div class="hpc-updates">
+            <span>با محصولات ما بروز باشید</span>
+            <div class="hpc-arrows" aria-hidden="true">
+                <span class="hpc-arrow">‹</span>
+                <span class="hpc-arrow">›</span>
+            </div>
+        </div>
+        <div class="hpc-spacer"></div>
+        <div class="hpc-tools">
+            <div class="hpc-dots" aria-hidden="true">
+                <span class="hpc-dot"></span>
+                <span class="hpc-dot"></span>
+                <span class="hpc-dot is-active"></span>
+                <span class="hpc-dot"></span>
+                <span class="hpc-dot"></span>
+            </div>
+            <a class="hpc-view-all" href="{{ route('products.index') }}">
+                محصولات
+                <small>مشاهده همه</small>
             </a>
-        @empty
-            @foreach (config('shop.demo_category_icons', []) as $item)
-                <a class="category" href="{{ route('products.index', ['category' => $item['slug']]) }}" data-name="{{ $item['label'] }}">
-                    <img src="{{ asset($item['image']) }}" alt="" width="82" height="82" loading="lazy">
-                    <span>{!! nl2br(e($item['label'])) !!}</span>
-                </a>
-            @endforeach
-        @endforelse
+        </div>
+    </header>
+
+    <div class="hpc-grid">
+        @foreach ($items as $item)
+            @php
+                $isModel = $item instanceof \App\Models\Category;
+                $label = $isModel ? ($item->home_caption ?: $item->name) : ($item['label'] ?? '');
+                $href = route('products.index', ['category' => $isModel ? $item->slug : ($item['slug'] ?? null)]);
+                $fallbackImage = 'images/lebasino/categories/cat-'.(($loop->index % 10) + 1).'.jpg';
+                $image = $isModel
+                    ? ($item->imageUrl() ?: asset($fallbackImage))
+                    : asset($item['image'] ?? $fallbackImage);
+                $count = $isModel ? (int) ($item->products_count ?? 0) : null;
+            @endphp
+            <a class="hpc-item" href="{{ $href }}" aria-label="{{ $label }}">
+                <div class="hpc-visual">
+                    <img src="{{ $image }}" alt="" width="152" height="152" loading="lazy" decoding="async">
+                </div>
+                <div class="hpc-name">{{ $label }}</div>
+                @if ($count !== null)
+                    <div class="hpc-count">
+                        <span class="hpc-number">{{ \App\Support\JalaliDate::toPersianDigits($count) }}+</span>
+                        محصول
+                    </div>
+                @endif
+            </a>
+        @endforeach
     </div>
 </section>
