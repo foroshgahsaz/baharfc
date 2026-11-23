@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Enums\ProductType;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\Category;
@@ -31,6 +32,16 @@ class HomeController extends Controller
             ->orderBy('sort_order')
             ->get();
 
+        $specialDealProducts = Product::query()
+            ->where('is_active', true)
+            ->where('type', ProductType::Simple)
+            ->whereNotNull('compare_at_price')
+            ->whereColumn('compare_at_price', '>', 'price')
+            ->orderByRaw('((compare_at_price - price) / compare_at_price) DESC')
+            ->orderBy('sort_order')
+            ->limit(12)
+            ->get();
+
         $homeCategories = collect();
         if (Schema::hasColumn('categories', 'show_on_home')) {
             $homeCategories = Category::query()
@@ -50,6 +61,7 @@ class HomeController extends Controller
             'homeCategories' => $homeCategories,
             'featuredProducts' => $featuredProducts,
             'latestProducts' => $latestProducts,
+            'specialDealProducts' => $specialDealProducts,
             'mainClass' => 'container',
         ]);
     }

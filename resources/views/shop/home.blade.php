@@ -3,6 +3,7 @@
 @section('content')
     <x-shop.home-hero :banners="$banners" />
     <x-shop.home-category-strip :home-categories="$homeCategories" />
+    <x-shop.home-special-deals :special-deal-products="$specialDealProducts" />
 
     <section id="products" class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div class="mb-8 flex items-end justify-between gap-4">
