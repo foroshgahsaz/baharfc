@@ -6,32 +6,6 @@
 
 @if ($specialDealProducts->isNotEmpty())
     <section class="amazing-section" data-amazing-deals aria-label="پیشنهاد شگفت‌انگیز">
-        <div class="amazing-bg" aria-hidden="true">
-            <span class="amazing-bg-strip"></span>
-        </div>
-
-        <div class="amazing-banner">
-            <div class="amazing-banner-title">
-                <h2>پیشنهاد</h2>
-                <p>شگفت انگیز</p>
-            </div>
-
-            <div class="amazing-percent-badge" aria-hidden="true">
-                <span class="amazing-percent-shape">
-                    <span class="amazing-percent-symbol">%</span>
-                </span>
-                <span class="amazing-fire-icon">🔥</span>
-            </div>
-
-            <a href="{{ route('products.index', ['sort' => 'price_desc']) }}" class="amazing-view-more">
-                <span>مشاهده بیشتر</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-            </a>
-        </div>
-
         <div class="amazing-products">
             <div class="amazing-products-track rail" data-amazing-deals-track>
                 @foreach ($specialDealProducts as $product)
@@ -109,6 +83,30 @@
                     </svg>
                 </button>
             </div>
+        </div>
+
+        <div class="amazing-banner">
+            <div class="amazing-bg" aria-hidden="true"></div>
+
+            <div class="amazing-banner-title">
+                <h2>پیشنهاد</h2>
+                <p>شگفت انگیز</p>
+            </div>
+
+            <div class="amazing-percent-badge" aria-hidden="true">
+                <span class="amazing-percent-shape">
+                    <span class="amazing-percent-symbol">%</span>
+                </span>
+                <span class="amazing-fire-icon">🔥</span>
+            </div>
+
+            <a href="{{ route('products.index', ['sort' => 'price_desc']) }}" class="amazing-view-more">
+                <span>مشاهده بیشتر</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+            </a>
         </div>
     </section>
 @endif

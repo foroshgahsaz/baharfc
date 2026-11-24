@@ -539,10 +539,11 @@
 
     position: relative;
     display: flex;
-    align-items: center;
+    flex-direction: row-reverse;
+    align-items: stretch;
     width: 100%;
     max-width: none;
-    height: 410px;
+    min-height: 410px;
     margin-top: 47px;
     margin-inline: calc(50% - 50vw);
     padding-inline: calc(50vw - 50%);
@@ -551,14 +552,13 @@
 
 .lebasino-page .amazing-bg {
     position: absolute;
-    top: 0;
-    right: 0;
-    width: max(340px, 36%);
+    inset: 0;
+    width: 100%;
     height: 100%;
-    border-radius: 28px 0 0 28px;
+    border-radius: inherit;
     background-color: var(--amazing-brand);
     background-image: linear-gradient(160deg, var(--amazing-brand) 15%, var(--amazing-brand-deep) 100%);
-    z-index: 1;
+    z-index: 0;
     overflow: hidden;
 }
 
@@ -598,20 +598,27 @@
 
 .lebasino-page .amazing-banner {
     position: relative;
-    z-index: 3;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
+    isolation: isolate;
     width: 310px;
     min-width: 310px;
-    height: 100%;
     padding-top: 32px;
     padding-bottom: 28px;
     padding-inline-end: 45px;
+    border-radius: 28px 0 0 28px;
+    overflow: hidden;
     color: #fff;
     text-align: center;
+}
+
+.lebasino-page .amazing-banner > :not(.amazing-bg) {
+    position: relative;
+    z-index: 1;
 }
 
 .lebasino-page .amazing-banner-title h2 {
@@ -696,23 +703,28 @@
 
 .lebasino-page .amazing-products {
     position: relative;
-    z-index: 4;
-    flex: 1;
+    z-index: 1;
+    flex: 1 1 0;
     display: flex;
     align-items: center;
-    height: 100%;
-    overflow: hidden;
-    padding-block: 18px;
+    align-self: center;
     min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    padding-block: 22px;
+    padding-inline-start: 8px;
+    padding-inline-end: 20px;
 }
 
 .lebasino-page .amazing-products-track {
     display: flex;
     flex-wrap: nowrap;
+    align-items: stretch;
     gap: 14px;
     width: 100%;
-    height: 100%;
-    padding-inline-start: 20px;
+    min-height: 340px;
+    padding-inline-start: 8px;
+    padding-inline-end: 4px;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
@@ -895,9 +907,9 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 120px;
+    width: 88px;
     height: 100%;
-    z-index: 8;
+    z-index: 3;
     pointer-events: none;
     opacity: 0;
     background: linear-gradient(
@@ -916,9 +928,9 @@
 
 .lebasino-page .amazing-slider-nav {
     position: absolute;
-    left: 48px;
+    left: 12px;
     top: 50%;
-    z-index: 6;
+    z-index: 4;
     display: flex;
     flex-direction: column;
     overflow: hidden;
