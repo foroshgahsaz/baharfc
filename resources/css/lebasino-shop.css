@@ -1917,11 +1917,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
     border-radius: 14px;
-    background: color-mix(in srgb, #22c55e 14%, #fff);
-    color: #16a34a;
+    background: #e9f4ff;
+    color: #5b9fd8;
 }
 
 .lebasino-page .home-carousel-style-1-title h2 {
@@ -1940,29 +1941,31 @@
 .lebasino-page .home-carousel-style-1-more {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 18px;
-    border: 1px solid #22c55e;
+    gap: 10px;
+    padding: 7px 6px 7px 18px;
+    border: 1px solid #2cb65a;
     border-radius: 999px;
-    color: #16a34a;
+    background: #fff;
+    color: #2cb65a;
     font-size: 13px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .lebasino-page .home-carousel-style-1-more-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    background: #22c55e;
+    background: #2cb65a;
     color: #fff;
-    font-size: 11px;
 }
 
 .lebasino-page .home-carousel-style-1-shell {
     position: relative;
+    padding-inline: 34px;
 }
 
 .lebasino-page .home-carousel-style-1-track,
@@ -1984,20 +1987,22 @@
 
 .lebasino-page .home-carousel-style-1-card {
     position: relative;
-    flex: 0 0 232px;
-    width: 232px;
-    min-height: 340px;
-    padding: 14px 16px 16px;
-    border: 1px solid #eef0f4;
-    border-radius: 22px;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 248px;
+    width: 248px;
+    min-height: 392px;
+    padding: 16px 18px 18px;
+    border: 1px solid #edf0f5;
+    border-radius: 24px;
     background: #fff;
-    box-shadow: 0 8px 24px rgba(30, 35, 50, 0.05);
+    box-shadow: 0 10px 30px rgba(30, 35, 50, 0.04);
 }
 
 .lebasino-page .home-carousel-style-1-card-colors {
     position: absolute;
-    top: 14px;
-    left: 14px;
+    top: 16px;
+    right: 16px;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -2027,8 +2032,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 168px;
-    margin-bottom: 10px;
+    height: 196px;
+    margin-bottom: 14px;
 }
 
 .lebasino-page .home-carousel-style-1-image img {
@@ -2039,10 +2044,10 @@
 
 .lebasino-page .home-carousel-style-1-name {
     margin: 0;
-    min-height: 42px;
+    min-height: 44px;
     font-size: 13px;
     font-weight: 600;
-    line-height: 1.55;
+    line-height: 1.65;
     text-align: center;
 }
 
@@ -2050,36 +2055,45 @@
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 8px;
+    gap: 10px;
     margin-top: auto;
-    padding-top: 12px;
+    padding-top: 14px;
 }
 
 .lebasino-page .home-carousel-style-1-cart {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
     border-radius: 12px;
-    background: color-mix(in srgb, #22c55e 12%, #fff);
-    color: #16a34a;
+    background: #e9f4ff;
+    color: #5b9fd8;
 }
 
 .lebasino-page .home-carousel-style-1-price {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 2px;
+    gap: 4px;
+    text-align: end;
+}
+
+.lebasino-page .home-carousel-style-1-discount-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .lebasino-page .home-carousel-style-1-discount {
-    padding: 2px 8px;
+    padding: 2px 7px;
     border-radius: 8px;
-    background: #22c55e;
+    background: #2cb65a;
     color: #fff;
     font-size: 11px;
     font-weight: 700;
+    line-height: 1.2;
 }
 
 .lebasino-page .home-carousel-style-1-old {
@@ -2089,9 +2103,10 @@
 }
 
 .lebasino-page .home-carousel-style-1-final {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 800;
     color: #1c1c25;
+    line-height: 1.3;
 }
 
 .lebasino-page .home-carousel-style-1-side-arrow {
@@ -2101,24 +2116,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     padding: 0;
     border: 0;
-    border-radius: 12px;
-    background: #fff;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-    color: #555;
+    border-radius: 50%;
+    background: #e9f4ff;
+    box-shadow: 0 4px 14px rgba(91, 159, 216, 0.18);
+    color: #5b9fd8;
     transform: translateY(-50%);
     cursor: pointer;
 }
 
 .lebasino-page .home-carousel-style-1-side-arrow--prev {
-    left: 8px;
+    left: 0;
 }
 
 .lebasino-page .home-carousel-style-1-side-arrow--next {
-    right: 8px;
+    right: 0;
 }
 
 .lebasino-page .home-carousel-style-2-title-wrap h2 {
@@ -2312,6 +2327,10 @@
 }
 
 @media (max-width: 768px) {
+    .lebasino-page .home-carousel-style-1-shell {
+        padding-inline: 0;
+    }
+
     .lebasino-page .home-carousel-style-1-side-arrow {
         display: none;
     }
