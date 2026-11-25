@@ -71,7 +71,7 @@ class ProductController extends Controller
             ->where('is_active', true)
             ->where('id', '!=', $product->id)
             ->when($product->category_id, fn ($q) => $q->where('category_id', $product->category_id))
-            ->limit(4)
+            ->limit(12)
             ->get();
 
         return view('shop.products.show', [
