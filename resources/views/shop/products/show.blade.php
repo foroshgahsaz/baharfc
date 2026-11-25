@@ -12,7 +12,15 @@
     $specGroups = $presenter->specGroups();
     $colors = $presenter->colorSwatches();
     $optionPills = $presenter->optionPills();
+    $optionGroupLabel = $presenter->optionGroupLabel();
     $shopName = ShopAppearance::siteName();
+    $categoryTrail = collect();
+    $trailCategory = $product->category;
+    while ($trailCategory) {
+        $categoryTrail->prepend($trailCategory);
+        $trailCategory = $trailCategory->parent;
+    }
+    $skuCode = strtoupper($product->slug);
 @endphp
 
 @push('head')
@@ -42,18 +50,21 @@
     <div class="fs-product-page">
         <nav class="fs-product-breadcrumb wrap" aria-label="مسیر">
             <a href="{{ route('home') }}">خانه</a>
-            <span aria-hidden="true">›</span>
-            <a href="{{ route('products.index') }}">محصولات</a>
-            @if ($product->category)
+            @foreach ($categoryTrail as $cat)
                 <span aria-hidden="true">›</span>
-                <a href="{{ route('products.index', ['category' => $product->category->slug]) }}">{{ $product->category->name }}</a>
+                <a href="{{ route('products.index', ['category' => $cat->slug]) }}">{{ $cat->name }}</a>
+            @endforeach
+            @if ($categoryTrail->isEmpty())
+                <span aria-hidden="true">›</span>
+                <a href="{{ route('products.index') }}">محصولات</a>
             @endif
             <span aria-hidden="true">›</span>
             <span>{{ $product->name }}</span>
         </nav>
 
         <section class="fs-product-hero wrap">
-            <div class="fs-product-gallery pcard" data-product-gallery>
+            <div class="fs-product-hero-shell">
+            <div class="fs-product-gallery" data-product-gallery>
                 <div class="fs-product-gallery-main">
                     @if ($mainImage)
                         <img src="{{ $mainImage }}" alt="{{ $product->name }}" data-product-main-img width="520" height="520">
@@ -91,21 +102,27 @@
                     @if ($product->brand)
                         <a href="{{ route('products.index', ['brand' => $product->brand->slug]) }}" class="fs-product-pill">{{ $product->brand->name }}</a>
                     @endif
+                    @if ($product->category?->parent)
+                        <a href="{{ route('products.index', ['category' => $product->category->parent->slug]) }}" class="fs-product-pill">{{ $product->category->parent->name }}</a>
+                    @endif
                     @if ($product->category)
                         <a href="{{ route('products.index', ['category' => $product->category->slug]) }}" class="fs-product-pill">{{ $product->category->name }}</a>
                     @endif
                 </div>
 
                 <h1 class="fs-product-title">{{ $product->name }}</h1>
+                <p class="fs-product-sku">{{ $skuCode }}</p>
 
                 <div class="fs-product-meta">
-                    <span class="fs-product-rating">
+                    <span class="fs-product-meta-item">
                         <span class="fs-product-star">★</span>
                         <span>۰</span>
+                        <span class="fs-product-meta-muted">(۰ دیدگاه)</span>
                     </span>
                     <a href="#product-qa" class="fs-product-meta-link">۰ پرسش و پاسخ</a>
-                    <a href="#product-reviews" class="fs-product-meta-link">۰ دیدگاه</a>
                 </div>
+
+                <hr class="fs-product-divider" />
 
                 @if ($colors !== [])
                     <div class="fs-product-variants">
@@ -128,7 +145,7 @@
 
                 @if ($optionPills !== [])
                     <div class="fs-product-variants">
-                        <p class="fs-product-variant-label">گزینه</p>
+                        <p class="fs-product-variant-label">{{ $optionGroupLabel }}</p>
                         <div class="fs-product-options" data-options>
                             @foreach ($optionPills as $i => $pill)
                                 <button type="button" class="fs-product-option" @if ($i === 0) data-active @endif>{{ $pill['label'] }}</button>
@@ -136,32 +153,27 @@
                         </div>
                     </div>
                 @endif
-
-                @if ($keySpecs !== [])
-                    <dl class="fs-product-keyspecs">
-                        @foreach ($keySpecs as $row)
-                            <div>
-                                <dt>{{ $row['label'] }}</dt>
-                                <dd>{{ $row['value'] }}</dd>
-                            </div>
-                        @endforeach
-                    </dl>
-                @endif
             </div>
 
             <aside class="fs-product-buyaside">
                 <div class="fs-product-buybox pcard">
                     <ul class="fs-product-seller">
                         <li>
-                            <span class="fs-product-seller-icon">🏪</span>
+                            <span class="fs-product-seller-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/><path d="M3 9l2-5h14l2 5"/></svg>
+                            </span>
                             <span>فروشنده: <strong>{{ $shopName }}</strong></span>
                         </li>
                         <li>
-                            <span class="fs-product-seller-icon">🛡️</span>
+                            <span class="fs-product-seller-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+                            </span>
                             <span>۱۸ ماه گارانتی شرکتی</span>
                         </li>
                         <li>
-                            <span class="fs-product-seller-icon">↩️</span>
+                            <span class="fs-product-seller-icon" aria-hidden="true">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10h13v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8Z"/><path d="M16 13V6a2 2 0 0 1 2-2h3v9"/></svg>
+                            </span>
                             <span>ضمانت ۷ روزه بازگشت کالا</span>
                         </li>
                     </ul>
@@ -179,16 +191,32 @@
                     </div>
 
                     <div class="fs-product-buybox-actions">
-                        <livewire:shop.add-to-cart :product-id="$product->id" :key="'add-'.$product->id" />
+                        <livewire:shop.add-to-cart :product-id="$product->id" ui="product-page" :key="'add-'.$product->id" />
                     </div>
+                </div>
 
-                    <div class="fs-product-trust">
-                        <div><span>۲۴</span><small>پشتیبانی</small></div>
-                        <div><span>💳</span><small>پرداخت در محل</small></div>
-                        <div><span>✓</span><small>ضمانت اصالت</small></div>
+                <div class="fs-product-trust-row">
+                    <div class="fs-product-trust-card pcard">
+                        <span class="fs-product-trust-icon" aria-hidden="true">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
+                        </span>
+                        <span>پشتیبانی ۲۴ ساعته</span>
+                    </div>
+                    <div class="fs-product-trust-card pcard">
+                        <span class="fs-product-trust-icon" aria-hidden="true">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                        </span>
+                        <span>پرداخت در محل</span>
+                    </div>
+                    <div class="fs-product-trust-card pcard">
+                        <span class="fs-product-trust-icon" aria-hidden="true">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+                        </span>
+                        <span>ضمانت اصالت کالا</span>
                     </div>
                 </div>
             </aside>
+            </div>
         </section>
 
         <nav class="fs-product-tabnav wrap" data-product-tabnav aria-label="بخش‌های محصول">

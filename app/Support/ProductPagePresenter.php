@@ -90,6 +90,27 @@ final class ProductPagePresenter
             ?: $this->variantOptionValues('volume');
     }
 
+    public function optionGroupLabel(): string
+    {
+        return match ($this->primaryOptionKey()) {
+            'storage' => 'حافظه داخلی',
+            'size' => 'سایز',
+            'volume' => 'حجم',
+            default => 'گزینه',
+        };
+    }
+
+    public function primaryOptionKey(): ?string
+    {
+        foreach (['storage', 'size', 'volume'] as $key) {
+            if ($this->variantOptionValues($key) !== []) {
+                return $key;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @return list<array{label: string, value: string, color?: string}>
      */

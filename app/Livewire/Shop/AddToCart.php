@@ -14,8 +14,11 @@ class AddToCart extends Component
 
     public ?int $productVariantId = null;
 
-    public function mount(int $productId): void
+    public string $ui = 'default';
+
+    public function mount(int $productId, string $ui = 'default'): void
     {
+        $this->ui = $ui;
         $this->productId = $productId;
         $product = Product::query()->with('activeVariants')->findOrFail($productId);
         if ($product->isVariable() && $product->activeVariants->isNotEmpty()) {
@@ -37,6 +40,16 @@ class AddToCart extends Component
 
         $this->dispatch('cart-updated', productId: $this->productId);
         $this->dispatch('cart-header-refresh');
+    }
+
+    public function incrementQuantity(): void
+    {
+        $this->quantity = min(99, $this->quantity + 1);
+    }
+
+    public function decrementQuantity(): void
+    {
+        $this->quantity = max(1, $this->quantity - 1);
     }
 
     public function render()
