@@ -25,7 +25,9 @@ class ProductPriceBox extends Component
     #[On('product-variant-selected')]
     public function applyVariant(?int $variantId = null): void
     {
-        $this->productVariantId = $variantId;
+        if ($variantId !== null) {
+            $this->productVariantId = $variantId;
+        }
     }
 
     public function render()

@@ -17,18 +17,18 @@
             <button type="button" class="cart-drawer-close" wire:click="close" aria-label="بستن">×</button>
         </header>
 
-        @if ($highlight)
+        @if ($highlightItem)
             <div class="cart-drawer-added">
                 <p class="cart-drawer-added-label">به سبد اضافه شد</p>
                 <div class="cart-drawer-added-row">
                     <div class="cart-drawer-thumb">
-                        @if ($highlight->imageUrl())
-                            <img src="{{ $highlight->imageUrl() }}" alt="">
+                        @if ($highlightItem->product->imageUrl())
+                            <img src="{{ $highlightItem->product->imageUrl() }}" alt="">
                         @endif
                     </div>
                     <div>
-                        <p class="cart-drawer-item-title">{{ $highlight->name }}</p>
-                        <p class="cart-drawer-item-price">{{ $highlight->formattedPrice() }}</p>
+                        <p class="cart-drawer-item-title">{{ $highlightItem->displayName() }}</p>
+                        <p class="cart-drawer-item-price">{{ number_format($highlightItem->unitPrice()) }} تومان</p>
                     </div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                         @endif
                     </div>
                     <div class="cart-drawer-item-body">
-                        <p class="cart-drawer-item-title">{{ $item->product->name }}</p>
+                        <p class="cart-drawer-item-title">{{ $item->displayName() }}</p>
                         <p class="cart-drawer-item-meta">تعداد: {{ $item->quantity }}</p>
                         <p class="cart-drawer-item-price">{{ number_format($item->lineTotal()) }} تومان</p>
                     </div>

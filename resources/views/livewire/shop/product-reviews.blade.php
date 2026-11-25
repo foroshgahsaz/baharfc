@@ -47,14 +47,22 @@
                 </label>
                 @error('authorEmail')<span class="fs-product-ugc-error">{{ $message }}</span>@enderror
             @endguest
-            <label>
-                امتیاز
-                <select wire:model="rating">
-                    @foreach (range(5, 1) as $value)
-                        <option value="{{ $value }}">{{ JalaliDate::toPersianDigits((string) $value) }}</option>
+            <fieldset class="fs-product-star-field">
+                <legend>امتیاز</legend>
+                <div class="fs-product-star-input" role="radiogroup" aria-label="امتیاز از ۱ تا ۵">
+                    @foreach (range(1, 5) as $value)
+                        <button
+                            type="button"
+                            class="fs-product-star-input-btn"
+                            wire:click="setRating({{ $value }})"
+                            aria-label="{{ JalaliDate::toPersianDigits((string) $value) }} ستاره"
+                            @if ($value <= $rating) data-active @endif
+                        >
+                            <span aria-hidden="true">★</span>
+                        </button>
                     @endforeach
-                </select>
-            </label>
+                </div>
+            </fieldset>
             <label>
                 متن دیدگاه
                 <textarea wire:model="body" rows="4"></textarea>

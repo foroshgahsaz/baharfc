@@ -76,7 +76,7 @@ class CartService
         $item->quantity = ($item->exists ? $item->quantity : 0) + $quantity;
         $item->save();
 
-        return $item->load('product');
+        return $item->load(['product', 'variant']);
     }
 
     public function updateQuantity(CartItem $item, int $quantity): void

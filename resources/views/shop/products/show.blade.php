@@ -119,8 +119,16 @@
 
                 <div class="fs-product-meta">
                     <span class="fs-product-meta-item">
-                        <span class="fs-product-star">★</span>
-                        <span>{{ JalaliDate::toPersianDigits((string) $reviewAverage) }}</span>
+                        @php
+                            $avgRating = (float) $reviewAverage;
+                            $filledStars = (int) min(5, round($avgRating));
+                        @endphp
+                        <span class="fs-product-rating-stars" role="img" aria-label="امتیاز {{ JalaliDate::toPersianDigits((string) $reviewAverage) }} از ۵">
+                            @for ($star = 1; $star <= 5; $star++)
+                                <span @class(['fs-product-rating-star', 'is-filled' => $star <= $filledStars]) aria-hidden="true">★</span>
+                            @endfor
+                        </span>
+                        <span class="fs-product-rating-score">{{ JalaliDate::toPersianDigits(number_format($avgRating, 1)) }}</span>
                         <span class="fs-product-meta-muted">({{ JalaliDate::toPersianDigits((string) $reviewCount) }} دیدگاه)</span>
                     </span>
                     <a href="#product-qa" class="fs-product-meta-link">{{ JalaliDate::toPersianDigits((string) $questionCount) }} پرسش و پاسخ</a>
@@ -272,21 +280,23 @@
             </div>
         </section>
 
-        <section id="product-reviews" class="fs-product-section wrap scroll-mt-24">
-            <header class="fs-product-section-head">
-                <span class="fs-product-section-bar"></span>
-                <h2>دیدگاه خریداران</h2>
-            </header>
-            <livewire:shop.product-reviews :product="$product" :key="'reviews-'.$product->id" />
-        </section>
+        <div class="fs-product-ugc-grid wrap">
+            <section id="product-reviews" class="fs-product-section fs-product-ugc-col scroll-mt-24">
+                <header class="fs-product-section-head">
+                    <span class="fs-product-section-bar"></span>
+                    <h2>دیدگاه خریداران</h2>
+                </header>
+                <livewire:shop.product-reviews :product="$product" :key="'reviews-'.$product->id" />
+            </section>
 
-        <section id="product-qa" class="fs-product-section wrap scroll-mt-24">
-            <header class="fs-product-section-head">
-                <span class="fs-product-section-bar"></span>
-                <h2>پرسش و پاسخ</h2>
-            </header>
-            <livewire:shop.product-questions :product="$product" :key="'questions-'.$product->id" />
-        </section>
+            <section id="product-qa" class="fs-product-section fs-product-ugc-col scroll-mt-24">
+                <header class="fs-product-section-head">
+                    <span class="fs-product-section-bar"></span>
+                    <h2>پرسش و پاسخ</h2>
+                </header>
+                <livewire:shop.product-questions :product="$product" :key="'questions-'.$product->id" />
+            </section>
+        </div>
 
         @if ($related->isNotEmpty())
             <section class="fs-product-related wrap" data-slider aria-label="محصولات مشابه">
