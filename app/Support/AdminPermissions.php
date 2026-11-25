@@ -38,6 +38,8 @@ final class AdminPermissions
                 'brands.create' => 'ایجاد برند',
                 'brands.update' => 'ویرایش برند',
                 'brands.delete' => 'حذف برند',
+                'product_reviews.moderate' => 'مدیریت دیدگاه محصول',
+                'product_questions.moderate' => 'مدیریت پرسش محصول',
             ],
             'گزارش‌ها' => [
                 'analytics.view' => 'مشاهده آمار بازدید داخلی',
@@ -184,6 +186,8 @@ final class AdminPermissions
                 'home_sections.create',
                 'home_sections.update',
                 'home_sections.delete',
+                'product_reviews.moderate',
+                'product_questions.moderate',
             ],
         ];
     }

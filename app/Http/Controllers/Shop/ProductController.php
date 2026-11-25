@@ -78,12 +78,31 @@ class ProductController extends Controller
             ->where('is_active', true)
             ->where('id', '!=', $product->id)
             ->when($product->category_id, fn ($q) => $q->where('category_id', $product->category_id))
+            ->orderBy('sort_order')
             ->limit(12)
             ->get();
+
+        if ($related->count() < 8) {
+            $exclude = $related->pluck('id')->push($product->id);
+            $fallback = Product::query()
+                ->where('is_active', true)
+                ->whereNotIn('id', $exclude)
+                ->orderBy('sort_order')
+                ->limit(12 - $related->count())
+                ->get();
+            $related = $related->concat($fallback);
+        }
+
+        $reviewCount = $product->approvedReviews()->count();
+        $reviewAverage = $reviewCount > 0 ? round((float) $product->approvedReviews()->avg('rating'), 1) : 0;
+        $questionCount = $product->approvedQuestions()->count();
 
         return view('shop.products.show', [
             'product' => $product,
             'related' => $related,
+            'reviewCount' => $reviewCount,
+            'reviewAverage' => $reviewAverage,
+            'questionCount' => $questionCount,
         ]);
     }
 }

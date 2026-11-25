@@ -4,6 +4,7 @@ namespace App\Livewire\Shop;
 
 use App\Models\Product;
 use App\Services\CartService;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class AddToCart extends Component
@@ -50,6 +51,12 @@ class AddToCart extends Component
     public function decrementQuantity(): void
     {
         $this->quantity = max(1, $this->quantity - 1);
+    }
+
+    #[On('product-variant-selected')]
+    public function applyVariant(?int $variantId = null): void
+    {
+        $this->productVariantId = $variantId;
     }
 
     public function render()

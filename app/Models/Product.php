@@ -76,6 +76,26 @@ class Product extends Model
         return $this->variants()->where('is_active', true);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function approvedReviews(): HasMany
+    {
+        return $this->reviews()->approved();
+    }
+
+    public function questions(): HasMany
+    {
+        return $this->hasMany(ProductQuestion::class);
+    }
+
+    public function approvedQuestions(): HasMany
+    {
+        return $this->questions()->approved();
+    }
+
     public function isVariable(): bool
     {
         return $this->type === ProductType::Variable;

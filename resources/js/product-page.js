@@ -4,6 +4,13 @@ const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const COMPARE_KEY = 'baharfc_compare_ids';
 const COMPARE_MAX = 4;
 
+const optionAliases = {
+    color: ['color', 'رنگ'],
+    storage: ['storage', 'حافظه', 'حافظه داخلی'],
+    size: ['size', 'سایز'],
+    volume: ['volume', 'حجم'],
+};
+
 const readCompare = () => {
     try {
         const raw = localStorage.getItem(COMPARE_KEY);
@@ -17,6 +24,54 @@ const readCompare = () => {
 
 const writeCompare = (ids) => {
     localStorage.setItem(COMPARE_KEY, JSON.stringify(ids.slice(0, COMPARE_MAX)));
+};
+
+const parseVariants = (root) => {
+    const raw = root.getAttribute('data-product-variants');
+    if (! raw) {
+        return [];
+    }
+
+    try {
+        const parsed = JSON.parse(raw);
+
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
+};
+
+const optionMatches = (options, key, value) => {
+    const keys = optionAliases[key] || [key];
+    const target = String(value);
+
+    return keys.some((candidate) => String(options?.[candidate] ?? '') === target);
+};
+
+const matchVariantId = (variants, selected) => {
+    if (variants.length === 0) {
+        return null;
+    }
+
+    const entries = Object.entries(selected).filter(([, value]) => value !== undefined && value !== null && value !== '');
+
+    if (entries.length === 0) {
+        return variants[0].id ?? null;
+    }
+
+    const match = variants.find((variant) =>
+        entries.every(([key, value]) => optionMatches(variant.options, key, value)),
+    );
+
+    return match?.id ?? variants[0].id ?? null;
+};
+
+const dispatchVariant = (variantId) => {
+    if (typeof Livewire === 'undefined') {
+        return;
+    }
+
+    Livewire.dispatch('product-variant-selected', { variantId });
 };
 
 const initGallery = (root) => {
@@ -77,30 +132,56 @@ const initGallery = (root) => {
     mainImg?.addEventListener('click', openZoom);
 };
 
-const initSwatches = (root) => {
-    const label = $('[data-color-label]', root);
-
-    $$('[data-swatch]', root).forEach((swatch) => {
-        swatch.addEventListener('click', () => {
-            $$('[data-swatch]', root).forEach((s) => s.toggleAttribute('data-active', s === swatch));
-            if (label) {
-                label.textContent = swatch.getAttribute('data-name') || '';
-            }
-        });
-    });
-};
-
-const initOptions = (root) => {
-    const container = $('[data-options]', root);
-    if (! container) {
+const initVariantOptions = (root) => {
+    if (! root.hasAttribute('data-variant-options')) {
         return;
     }
 
-    $$('.fs-product-option', container).forEach((option) => {
-        option.addEventListener('click', () => {
-            $$('.fs-product-option', container).forEach((o) => o.toggleAttribute('data-active', o === option));
+    const variants = parseVariants(root);
+    const selected = {};
+
+    const apply = () => {
+        dispatchVariant(matchVariantId(variants, selected));
+    };
+
+    const register = (element) => {
+        element.addEventListener('click', () => {
+            const key = element.getAttribute('data-option-key');
+            const value = element.getAttribute('data-option-value');
+            if (! key || value == null) {
+                return;
+            }
+
+            selected[key] = value;
+
+            if (element.hasAttribute('data-swatch')) {
+                $$('[data-swatch]', root).forEach((item) => item.toggleAttribute('data-active', item === element));
+                const label = $('[data-color-label]', root);
+                if (label) {
+                    label.textContent = element.getAttribute('data-name') || '';
+                }
+            } else {
+                const container = element.closest('[data-options]');
+                if (container) {
+                    $$('.fs-product-option', container).forEach((item) => item.toggleAttribute('data-active', item === element));
+                }
+            }
+
+            apply();
         });
+    };
+
+    $$('[data-swatch][data-option-key]', root).forEach(register);
+    $$('.fs-product-option[data-option-key]', root).forEach(register);
+
+    $$('[data-swatch][data-active]', root).forEach((element) => {
+        selected[element.getAttribute('data-option-key')] = element.getAttribute('data-option-value');
     });
+    $$('.fs-product-option[data-active]', root).forEach((element) => {
+        selected[element.getAttribute('data-option-key')] = element.getAttribute('data-option-value');
+    });
+
+    apply();
 };
 
 const initCompare = (root) => {
@@ -147,7 +228,7 @@ const initTabNav = (root) => {
                 return null;
             }
 
-            return $(href, root);
+            return $(href, document);
         })
         .filter(Boolean);
 
@@ -163,7 +244,13 @@ const initTabNav = (root) => {
             event.preventDefault();
             const href = tab.getAttribute('href');
             const target = href ? $(href, document) : null;
-            target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const offset = nav.offsetHeight + 72;
+            if (! target) {
+                return;
+            }
+
+            const top = target.getBoundingClientRect().top + window.scrollY - offset;
+            window.scrollTo({ top, behavior: 'smooth' });
         });
     });
 
@@ -181,14 +268,13 @@ const initTabNav = (root) => {
                 setActive(visible.target.id);
             }
         },
-        { rootMargin: '-40% 0px -45% 0px', threshold: [0, 0.15, 0.4] },
+        { rootMargin: '-120px 0px -55% 0px', threshold: [0, 0.12, 0.35] },
     );
 
     sections.forEach((section) => observer.observe(section));
 };
 
 const initMobileBar = (root) => {
-    const bar = $('.fs-product-mobile-bar', root);
     const buyAnchor = $('.fs-product-buybox-actions button[type="button"]', root);
 
     $('[href="#product-intro"].fs-product-mobile-buy', root)?.addEventListener('click', (event) => {
@@ -206,8 +292,7 @@ const initProductPage = () => {
 
     page._productPageInit = true;
     initGallery(page);
-    initSwatches(page);
-    initOptions(page);
+    initVariantOptions(page);
     initCompare(page);
     initTabNav(page);
     initMobileBar(page);

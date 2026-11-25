@@ -112,6 +112,28 @@ final class ProductPagePresenter
     }
 
     /**
+     * @return list<array{id: int, options: array<string, mixed>, price: int, compare_at_price: int|null}>
+     */
+    public function variantsForClient(): array
+    {
+        return $this->product->activeVariants
+            ->map(fn ($variant) => [
+                'id' => $variant->id,
+                'options' => is_array($variant->options) ? $variant->options : [],
+                'price' => (int) $variant->price,
+                'compare_at_price' => $variant->compare_at_price !== null ? (int) $variant->compare_at_price : null,
+            ])
+            ->values()
+            ->all();
+    }
+
+    public function hasConfigurableVariants(): bool
+    {
+        return $this->product->activeVariants->isNotEmpty()
+            && ($this->colorSwatches() !== [] || $this->optionPills() !== []);
+    }
+
+    /**
      * @return list<array{label: string, value: string, color?: string}>
      */
     private function variantOptionValues(string $key, bool $withColor = false): array

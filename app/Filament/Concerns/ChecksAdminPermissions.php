@@ -31,8 +31,10 @@ trait ChecksAdminPermissions
             return false;
         }
 
+        $moderatePrefixes = ['blog_comments', 'product_reviews', 'product_questions'];
+
         return static::userCanAdmin('view')
-            || (static::adminPermissionPrefix() === 'blog_comments' && static::userCanAdmin('moderate'));
+            || (in_array(static::adminPermissionPrefix(), $moderatePrefixes, true) && static::userCanAdmin('moderate'));
     }
 
     public static function canCreate(): bool
@@ -50,8 +52,10 @@ trait ChecksAdminPermissions
             return false;
         }
 
+        $moderatePrefixes = ['blog_comments', 'product_reviews', 'product_questions'];
+
         return static::userCanAdmin('update')
-            || (static::adminPermissionPrefix() === 'blog_comments' && static::userCanAdmin('moderate'));
+            || (in_array(static::adminPermissionPrefix(), $moderatePrefixes, true) && static::userCanAdmin('moderate'));
     }
 
     public static function canDelete($record): bool
@@ -60,7 +64,9 @@ trait ChecksAdminPermissions
             return false;
         }
 
+        $moderatePrefixes = ['blog_comments', 'product_reviews', 'product_questions'];
+
         return static::userCanAdmin('delete')
-            || (static::adminPermissionPrefix() === 'blog_comments' && static::userCanAdmin('moderate'));
+            || (in_array(static::adminPermissionPrefix(), $moderatePrefixes, true) && static::userCanAdmin('moderate'));
     }
 }

@@ -47,7 +47,11 @@
 @endpush
 
 @section('content')
-    <div class="fs-product-page">
+    <div
+        class="fs-product-page"
+        data-product-variants='@json($presenter->variantsForClient())'
+        @if ($presenter->hasConfigurableVariants()) data-variant-options @endif
+    >
         <nav class="fs-product-breadcrumb wrap" aria-label="مسیر">
             <a href="{{ route('home') }}">خانه</a>
             @foreach ($categoryTrail as $cat)
@@ -116,10 +120,10 @@
                 <div class="fs-product-meta">
                     <span class="fs-product-meta-item">
                         <span class="fs-product-star">★</span>
-                        <span>۰</span>
-                        <span class="fs-product-meta-muted">(۰ دیدگاه)</span>
+                        <span>{{ JalaliDate::toPersianDigits((string) $reviewAverage) }}</span>
+                        <span class="fs-product-meta-muted">({{ JalaliDate::toPersianDigits((string) $reviewCount) }} دیدگاه)</span>
                     </span>
-                    <a href="#product-qa" class="fs-product-meta-link">۰ پرسش و پاسخ</a>
+                    <a href="#product-qa" class="fs-product-meta-link">{{ JalaliDate::toPersianDigits((string) $questionCount) }} پرسش و پاسخ</a>
                 </div>
 
                 <hr class="fs-product-divider" />
@@ -134,6 +138,8 @@
                                     class="fs-product-swatch"
                                     style="--swatch: {{ $swatch['color'] ?? '#ccc' }}"
                                     data-swatch
+                                    data-option-key="color"
+                                    data-option-value="{{ $swatch['value'] }}"
                                     data-name="{{ $swatch['label'] }}"
                                     @if ($i === 0) data-active @endif
                                     aria-label="{{ $swatch['label'] }}"
@@ -148,7 +154,13 @@
                         <p class="fs-product-variant-label">{{ $optionGroupLabel }}</p>
                         <div class="fs-product-options" data-options>
                             @foreach ($optionPills as $i => $pill)
-                                <button type="button" class="fs-product-option" @if ($i === 0) data-active @endif>{{ $pill['label'] }}</button>
+                                <button
+                                    type="button"
+                                    class="fs-product-option"
+                                    data-option-key="{{ $presenter->primaryOptionKey() ?? 'storage' }}"
+                                    data-option-value="{{ $pill['value'] }}"
+                                    @if ($i === 0) data-active @endif
+                                >{{ $pill['label'] }}</button>
                             @endforeach
                         </div>
                     </div>
@@ -178,17 +190,7 @@
                         </li>
                     </ul>
 
-                    <div class="fs-product-price-block">
-                        <span class="fs-product-price-label">قیمت</span>
-                        <div class="fs-product-price">
-                            @if ($product->hasDiscount())
-                                <span class="fs-product-price-old">{{ JalaliDate::toPersianDigits(number_format($product->compare_at_price)) }}</span>
-                                <span class="fs-product-discount-pill">٪{{ JalaliDate::toPersianDigits($product->discountPercent()) }}</span>
-                            @endif
-                            <span class="fs-product-price-final">{{ JalaliDate::toPersianDigits(number_format($product->sellablePrice())) }}</span>
-                            <span class="fs-product-toman">تومان</span>
-                        </div>
-                    </div>
+                    <livewire:shop.product-price-box :product-id="$product->id" :key="'price-'.$product->id" />
 
                     <div class="fs-product-buybox-actions">
                         <livewire:shop.add-to-cart :product-id="$product->id" ui="product-page" :key="'add-'.$product->id" />
@@ -233,13 +235,12 @@
             </header>
             <div class="fs-product-intro-grid">
                 <div class="fs-product-prose prose-fs">
-                    @if ($product->description)
+                    @if (filled($product->description))
                         {!! $product->description !!}
-                    @elseif ($product->short_description)
+                    @elseif (filled($product->short_description))
                         <p>{{ $product->short_description }}</p>
                     @else
-                        <p>نگاهی دقیق‌تر به {{ $product->name }}</p>
-                        <p>این کالا با گارانتی معتبر و ضمانت اصالت ارائه می‌شود. تمام مشخصات فنی در بخش مشخصات همین صفحه آمده است.</p>
+                        <p class="fs-product-empty-muted">توضیحات این محصول در پنل مدیریت ثبت نشده است.</p>
                     @endif
                 </div>
                 <aside class="fs-product-intro-highlight">
@@ -276,11 +277,7 @@
                 <span class="fs-product-section-bar"></span>
                 <h2>دیدگاه خریداران</h2>
             </header>
-            <div class="fs-product-empty pcard">
-                <p><strong>۰</strong> دیدگاه ثبت شده</p>
-                <p class="fs-product-empty-muted">هنوز دیدگاهی ثبت نشده است.</p>
-                <button type="button" class="fs-product-outline-btn" disabled>ثبت دیدگاه</button>
-            </div>
+            <livewire:shop.product-reviews :product="$product" :key="'reviews-'.$product->id" />
         </section>
 
         <section id="product-qa" class="fs-product-section wrap scroll-mt-24">
@@ -288,10 +285,7 @@
                 <span class="fs-product-section-bar"></span>
                 <h2>پرسش و پاسخ</h2>
             </header>
-            <div class="fs-product-empty pcard">
-                <p class="fs-product-empty-muted">هنوز پرسشی ثبت نشده است.</p>
-                <button type="button" class="fs-product-outline-btn" disabled>ثبت پرسش</button>
-            </div>
+            <livewire:shop.product-questions :product="$product" :key="'questions-'.$product->id" />
         </section>
 
         @if ($related->isNotEmpty())
