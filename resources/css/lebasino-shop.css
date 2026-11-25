@@ -536,17 +536,23 @@
     --amazing-brand-deep: #351d52;
     --amazing-brand-hover: #2d1845;
     --amazing-brand-shadow: #2a1640;
+    --amazing-banner-width: 310px;
+    --amazing-card-gap: 14px;
+    --amazing-visible-cards: 4;
+    --amazing-card-width: calc(
+        (100% - (var(--amazing-visible-cards) - 1) * var(--amazing-card-gap)) / var(--amazing-visible-cards)
+    );
 
     position: relative;
     display: flex;
     flex-direction: row-reverse;
     align-items: stretch;
-    width: 100%;
-    max-width: none;
+    width: 100vw;
+    max-width: 100vw;
     min-height: 410px;
     margin-top: 47px;
     margin-inline: calc(50% - 50vw);
-    padding-inline: calc(50vw - 50%);
+    padding-inline: 0;
     overflow: hidden;
 }
 
@@ -605,8 +611,9 @@
     justify-content: space-between;
     flex-shrink: 0;
     isolation: isolate;
-    width: 310px;
-    min-width: 310px;
+    width: var(--amazing-banner-width);
+    min-width: var(--amazing-banner-width);
+    max-width: var(--amazing-banner-width);
     padding-top: 32px;
     padding-bottom: 28px;
     padding-inline-end: 45px;
@@ -704,27 +711,26 @@
 .lebasino-page .amazing-products {
     position: relative;
     z-index: 1;
-    flex: 1 1 0;
+    flex: 1 1 auto;
     display: flex;
     align-items: center;
-    align-self: center;
+    align-self: stretch;
+    width: calc(100vw - var(--amazing-banner-width));
+    max-width: calc(100vw - var(--amazing-banner-width));
     min-width: 0;
-    max-width: 100%;
     overflow: hidden;
     padding-block: 22px;
-    padding-inline-start: 8px;
-    padding-inline-end: 20px;
+    padding-inline: 24px 12px;
 }
 
 .lebasino-page .amazing-products-track {
     display: flex;
     flex-wrap: nowrap;
     align-items: stretch;
-    gap: 14px;
+    gap: var(--amazing-card-gap);
     width: 100%;
     min-height: 340px;
-    padding-inline-start: 8px;
-    padding-inline-end: 4px;
+    padding-inline: 0;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
@@ -740,9 +746,10 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    flex: 0 0 222px;
-    width: 222px;
-    min-width: 222px;
+    flex: 0 0 var(--amazing-card-width);
+    width: var(--amazing-card-width);
+    min-width: var(--amazing-card-width);
+    max-width: var(--amazing-card-width);
     height: 340px;
     padding: 14px 16px;
     border: 1px solid #f1f1f1;
@@ -907,7 +914,7 @@
     position: absolute;
     left: 0;
     top: 0;
-    width: 88px;
+    width: 120px;
     height: 100%;
     z-index: 3;
     pointer-events: none;
@@ -915,8 +922,9 @@
     background: linear-gradient(
         to right,
         #fff 0%,
-        rgba(255, 255, 255, 0.96) 28px,
-        rgba(255, 255, 255, 0.55) 72px,
+        #fff 12px,
+        rgba(255, 255, 255, 0.92) 40px,
+        rgba(255, 255, 255, 0.45) 85px,
         rgba(255, 255, 255, 0) 100%
     );
     transition: opacity 0.2s ease;
@@ -924,6 +932,19 @@
 
 .lebasino-page .amazing-section--scrollable.amazing-section--fade-left .amazing-products-fade {
     opacity: 1;
+}
+
+@media (max-width: 1280px) {
+    .lebasino-page .amazing-section {
+        --amazing-visible-cards: 3;
+    }
+}
+
+@media (max-width: 1024px) {
+    .lebasino-page .amazing-section {
+        --amazing-visible-cards: 2;
+        --amazing-banner-width: 260px;
+    }
 }
 
 .lebasino-page .amazing-slider-nav {
@@ -1275,11 +1296,23 @@
     }
 
     .lebasino-page .amazing-section {
+        --amazing-visible-cards: 2;
+        --amazing-banner-width: 100%;
+
         flex-direction: column;
-        height: auto;
+        width: 100%;
+        max-width: 100%;
+        margin-inline: 0;
+        min-height: 0;
         margin-top: 32px;
         padding: 15px 0;
         gap: 16px;
+    }
+
+    .lebasino-page .amazing-products {
+        width: 100%;
+        max-width: 100%;
+        padding-inline: 16px;
     }
 
     .lebasino-page .amazing-bg {
