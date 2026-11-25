@@ -27,8 +27,12 @@ class AddToCart extends Component
         }
     }
 
-    public function add(CartService $cart): void
+    public function add(CartService $cart, ?int $selectedVariantId = null): void
     {
+        if ($selectedVariantId !== null) {
+            $this->productVariantId = $selectedVariantId;
+        }
+
         $product = Product::query()->where('is_active', true)->findOrFail($this->productId);
 
         if ($product->isVariable() && $this->productVariantId === null) {
@@ -65,10 +69,14 @@ class AddToCart extends Component
     }
 
     #[On('product-variant-selected')]
-    public function applyVariant(?int $variantId = null): void
+    public function applyVariant(mixed $variantId = null): void
     {
+        if (is_array($variantId)) {
+            $variantId = $variantId['variantId'] ?? null;
+        }
+
         if ($variantId !== null) {
-            $this->productVariantId = $variantId;
+            $this->productVariantId = (int) $variantId;
         }
     }
 

@@ -41,7 +41,6 @@
             </div>
             <button
                 type="button"
-                wire:click="add"
                 wire:loading.attr="disabled"
                 class="fs-product-add-btn"
                 data-add-to-cart-trigger
@@ -97,13 +96,19 @@
             }
         });
 
-        $wire.el.querySelector('[data-add-to-cart-trigger]')?.addEventListener('click', () => {
-            const page = document.querySelector('.fs-product-page');
-            const id = page?.dataset?.selectedVariantId;
-            if (id) {
-                $wire.set('productVariantId', Number(id));
-            }
-        }, { capture: true });
+        const triggerAdd = (btn) => {
+            btn?.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                const page = document.querySelector('.fs-product-page');
+                const raw = page?.dataset?.selectedVariantId;
+                const variantId = raw ? Number(raw) : null;
+
+                $wire.call('add', variantId);
+            });
+        };
+
+        triggerAdd($wire.el.querySelector('[data-add-to-cart-trigger]'));
     </script>
     @endscript
 @endif

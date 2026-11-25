@@ -23,10 +23,14 @@ class ProductPriceBox extends Component
     }
 
     #[On('product-variant-selected')]
-    public function applyVariant(?int $variantId = null): void
+    public function applyVariant(mixed $variantId = null): void
     {
+        if (is_array($variantId)) {
+            $variantId = $variantId['variantId'] ?? null;
+        }
+
         if ($variantId !== null) {
-            $this->productVariantId = $variantId;
+            $this->productVariantId = (int) $variantId;
         }
     }
 

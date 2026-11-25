@@ -93,59 +93,148 @@ const syncProductStickyTop = () => {
     document.documentElement.style.setProperty('--fs-product-sticky-top', `${top}px`);
 };
 
+const galleryUrls = (root) => {
+    const raw = root.querySelector('[data-product-gallery]')?.getAttribute('data-gallery-urls');
+    if (raw) {
+        try {
+            const parsed = JSON.parse(raw);
+
+            return Array.isArray(parsed) ? parsed.filter(Boolean) : [];
+        } catch {
+            return [];
+        }
+    }
+
+    return $$('[data-product-thumb]', root)
+        .map((thumb) => thumb.getAttribute('data-product-thumb'))
+        .filter(Boolean);
+};
+
 const initGallery = (root) => {
+    const galleryRoot = $('[data-product-gallery]', root);
     const mainImg = $('[data-product-main-img]', root);
     const zoomBtn = $('[data-product-zoom]', root);
+    const urls = galleryUrls(root);
+    let index = Math.max(
+        0,
+        urls.findIndex((url) => url === mainImg?.getAttribute('src') || url === mainImg?.src),
+    );
 
-    $$('[data-product-thumb]', root).forEach((thumb) => {
-        thumb.addEventListener('click', () => {
-            const url = thumb.getAttribute('data-product-thumb');
-            if (! url || ! mainImg) {
-                return;
-            }
+    const showIndex = (nextIndex) => {
+        if (urls.length === 0 || ! mainImg) {
+            return;
+        }
 
-            mainImg.src = url;
-            $$('[data-product-thumb]', root).forEach((t) => {
-                t.toggleAttribute('data-active', t === thumb);
-                t.setAttribute('aria-current', t === thumb ? 'true' : 'false');
-            });
+        index = (nextIndex + urls.length) % urls.length;
+        mainImg.src = urls[index];
+
+        $$('[data-product-thumb]', root).forEach((thumb, thumbIndex) => {
+            const match = urls[thumbIndex] === urls[index];
+            thumb.toggleAttribute('data-active', match);
+            thumb.setAttribute('aria-current', match ? 'true' : 'false');
         });
+    };
+
+    const step = (delta) => {
+        if (urls.length < 2) {
+            return;
+        }
+
+        showIndex(index + delta);
+    };
+
+    $$('[data-product-thumb]', root).forEach((thumb, thumbIndex) => {
+        thumb.addEventListener('click', () => showIndex(thumbIndex));
+    });
+
+    $('[data-gallery-prev]', root)?.addEventListener('click', (event) => {
+        event.preventDefault();
+        step(-1);
+    });
+    $('[data-gallery-next]', root)?.addEventListener('click', (event) => {
+        event.preventDefault();
+        step(1);
     });
 
     const openZoom = () => {
-        if (! mainImg?.src) {
+        if (! mainImg?.src || urls.length === 0) {
             return;
         }
+
+        let zoomIndex = index;
 
         const overlay = document.createElement('div');
         overlay.className = 'fs-product-zoom-overlay';
         overlay.setAttribute('role', 'dialog');
         overlay.setAttribute('aria-label', 'بزرگنمایی تصویر');
-        overlay.innerHTML = `
-            <button type="button" class="fs-product-zoom-close" aria-label="بستن">×</button>
-            <img src="${mainImg.src}" alt="${mainImg.alt || ''}" />
-        `;
 
-        const close = () => overlay.remove();
+        const render = () => {
+            const hasMany = urls.length > 1;
+            overlay.innerHTML = `
+                <button type="button" class="fs-product-zoom-close" aria-label="بستن">×</button>
+                ${hasMany ? '<button type="button" class="fs-product-zoom-nav fs-product-zoom-nav--prev" aria-label="تصویر قبلی">‹</button>' : ''}
+                <img src="${urls[zoomIndex]}" alt="${mainImg.alt || ''}" />
+                ${hasMany ? '<button type="button" class="fs-product-zoom-nav fs-product-zoom-nav--next" aria-label="تصویر بعدی">›</button>' : ''}
+            `;
+
+            overlay.querySelector('.fs-product-zoom-close')?.addEventListener('click', close);
+            overlay.querySelector('.fs-product-zoom-nav--prev')?.addEventListener('click', (event) => {
+                event.stopPropagation();
+                zoomIndex = (zoomIndex - 1 + urls.length) % urls.length;
+                render();
+            });
+            overlay.querySelector('.fs-product-zoom-nav--next')?.addEventListener('click', (event) => {
+                event.stopPropagation();
+                zoomIndex = (zoomIndex + 1) % urls.length;
+                render();
+            });
+        };
+
+        const close = () => {
+            showIndex(zoomIndex);
+            overlay.remove();
+        };
+
+        const onKey = (event) => {
+            if (event.key === 'Escape') {
+                close();
+                document.removeEventListener('keydown', onKey);
+            }
+            if (urls.length > 1 && event.key === 'ArrowRight') {
+                zoomIndex = (zoomIndex + 1) % urls.length;
+                render();
+            }
+            if (urls.length > 1 && event.key === 'ArrowLeft') {
+                zoomIndex = (zoomIndex - 1 + urls.length) % urls.length;
+                render();
+            }
+        };
 
         overlay.addEventListener('click', (event) => {
-            if (event.target === overlay || event.target.closest('.fs-product-zoom-close')) {
+            if (event.target === overlay) {
                 close();
             }
         });
 
-        document.addEventListener(
-            'keydown',
-            (event) => {
-                if (event.key === 'Escape') {
-                    close();
-                }
-            },
-            { once: true },
-        );
-
+        document.addEventListener('keydown', onKey);
+        render();
         document.body.appendChild(overlay);
     };
+
+    galleryRoot?.addEventListener('keydown', (event) => {
+        if (urls.length < 2) {
+            return;
+        }
+
+        if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            step(1);
+        }
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            step(-1);
+        }
+    });
 
     zoomBtn?.addEventListener('click', openZoom);
     mainImg?.addEventListener('click', openZoom);
@@ -233,11 +322,59 @@ const initCompare = (root) => {
     });
 };
 
+const initStickyTabNav = (root) => {
+    const shell = $('[data-product-tabnav-shell]', root);
+    const nav = $('[data-product-tabnav]', root);
+    const sentinel = $('[data-product-tabnav-sentinel]', root);
+    const placeholder = $('[data-product-tabnav-placeholder]', root);
+    if (! shell || ! nav || ! sentinel || ! placeholder) {
+        return;
+    }
+
+    const syncHeight = () => {
+        placeholder.style.height = `${nav.offsetHeight}px`;
+    };
+
+    syncHeight();
+    window.addEventListener('resize', syncHeight, { passive: true });
+
+    const observePin = () => {
+        syncProductStickyTop();
+        const top = getComputedStyle(document.documentElement).getPropertyValue('--fs-product-sticky-top').trim() || '0px';
+
+        return new IntersectionObserver(
+            ([entry]) => {
+                const pinned = ! entry.isIntersecting;
+                shell.classList.toggle('is-pinned', pinned);
+                nav.classList.toggle('is-pinned', pinned);
+                if (pinned) {
+                    syncHeight();
+                }
+            },
+            {
+                threshold: [0, 1],
+                rootMargin: `-${top} 0px 0px 0px`,
+            },
+        );
+    };
+
+    let pinObserver = observePin();
+    pinObserver.observe(sentinel);
+
+    window.addEventListener('resize', () => {
+        pinObserver.disconnect();
+        pinObserver = observePin();
+        pinObserver.observe(sentinel);
+    }, { passive: true });
+};
+
 const initTabNav = (root) => {
     const nav = $('[data-product-tabnav]', root);
     if (! nav) {
         return;
     }
+
+    initStickyTabNav(root);
 
     const tabs = $$('.fs-product-tab', nav);
     const sections = tabs
@@ -263,7 +400,11 @@ const initTabNav = (root) => {
             event.preventDefault();
             const href = tab.getAttribute('href');
             const target = href ? $(href, document) : null;
-            const offset = nav.offsetHeight + 72;
+            const stickyTop = parseInt(
+                getComputedStyle(document.documentElement).getPropertyValue('--fs-product-sticky-top'),
+                10,
+            ) || 0;
+            const offset = nav.offsetHeight + stickyTop + 12;
             if (! target) {
                 return;
             }
@@ -319,8 +460,17 @@ const initProductPage = () => {
     initMobileBar(page);
 };
 
-document.addEventListener('DOMContentLoaded', initProductPage);
-document.addEventListener('livewire:navigated', initProductPage);
+const bootProductPage = () => {
+    const page = $('.lebasino-page .fs-product-page');
+    if (page) {
+        page._productPageInit = false;
+    }
+
+    initProductPage();
+};
+
+document.addEventListener('DOMContentLoaded', bootProductPage);
+document.addEventListener('livewire:navigated', bootProductPage);
 document.addEventListener('livewire:init', () => {
     const page = $('.lebasino-page .fs-product-page');
     if (page) {

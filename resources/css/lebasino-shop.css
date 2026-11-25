@@ -2654,6 +2654,35 @@
     overflow: hidden;
 }
 
+.lebasino-page .fs-product-gallery-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 6px 18px rgba(20, 24, 40, 0.12);
+    color: #273044;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.lebasino-page .fs-product-gallery-nav--prev {
+    inset-inline-start: 12px;
+}
+
+.lebasino-page .fs-product-gallery-nav--next {
+    inset-inline-end: 12px;
+}
+
 .lebasino-page .fs-product-gallery-main img {
     width: 100%;
     height: 100%;
@@ -3148,22 +3177,56 @@
 .lebasino-page .fs-product-tabnav {
     position: sticky;
     top: var(--fs-product-sticky-top, 0);
-    z-index: 25;
+    z-index: 45;
     display: flex;
     flex-wrap: nowrap;
     gap: 4px;
     overflow-x: auto;
     padding: 12px 0;
-    margin-bottom: 8px;
     background: #fff;
     border-block: 1px solid #eef0f4;
     box-shadow: 0 6px 18px rgba(20, 24, 40, 0.05);
     scrollbar-width: none;
 }
 
+.lebasino-page .fs-product-tabnav.is-pinned {
+    position: fixed;
+    inset-inline: 0;
+    top: var(--fs-product-sticky-top, 0);
+    z-index: 55;
+    padding-inline: max(16px, calc(50vw - 694px));
+    box-shadow: 0 8px 24px rgba(20, 24, 40, 0.1);
+}
+
 .lebasino-page:has(.fs-product-page) {
     --fs-product-sticky-top: 56px;
     overflow-x: visible;
+}
+
+.lebasino-page:has(.fs-product-page) .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: #fff;
+}
+
+.lebasino-page .fs-product-tabnav-shell {
+    margin-bottom: 8px;
+}
+
+.lebasino-page .fs-product-tabnav-sentinel {
+    height: 1px;
+    margin: 0;
+    pointer-events: none;
+}
+
+.lebasino-page .fs-product-tabnav-placeholder {
+    display: none;
+    height: 0;
+}
+
+.lebasino-page .fs-product-tabnav-shell.is-pinned .fs-product-tabnav-placeholder {
+    display: block;
 }
 
 @media (min-width: 701px) {
@@ -3173,12 +3236,11 @@
 }
 
 @media (max-width: 700px) {
-    .lebasino-page:has(.fs-product-page) .fs-product-tabnav {
+    .lebasino-page:has(.fs-product-page) .fs-product-tabnav.is-pinned {
         margin-inline: calc(50% - 50vw);
         padding-inline: 16px;
         width: 100vw;
         max-width: 100vw;
-        z-index: 40;
     }
 }
 
@@ -3466,6 +3528,33 @@
     font-size: 28px;
     line-height: 1;
     cursor: pointer;
+}
+
+.fs-product-zoom-nav {
+    position: absolute;
+    top: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: 0;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    color: #111827;
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.fs-product-zoom-nav--prev {
+    inset-inline-start: 16px;
+}
+
+.fs-product-zoom-nav--next {
+    inset-inline-end: 16px;
 }
 
 .maintenance-page {

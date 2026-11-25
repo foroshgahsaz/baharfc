@@ -68,12 +68,16 @@
 
         <section class="fs-product-hero wrap">
             <div class="fs-product-hero-shell">
-            <div class="fs-product-gallery" data-product-gallery>
+            <div class="fs-product-gallery" data-product-gallery @if (count($gallery) > 1) data-gallery-urls='@json($gallery)' @endif>
                 <div class="fs-product-gallery-main">
                     @if ($mainImage)
                         <img src="{{ $mainImage }}" alt="{{ $product->name }}" data-product-main-img width="520" height="520">
                     @else
                         <span class="fs-product-gallery-placeholder">📦</span>
+                    @endif
+                    @if (count($gallery) > 1)
+                        <button type="button" class="fs-product-gallery-nav fs-product-gallery-nav--prev" data-gallery-prev aria-label="تصویر قبلی">‹</button>
+                        <button type="button" class="fs-product-gallery-nav fs-product-gallery-nav--next" data-gallery-next aria-label="تصویر بعدی">›</button>
                     @endif
                     <div class="fs-product-gallery-actions">
                         <livewire:shop.product-wishlist-toggle :product-id="$product->id" :key="'wish-gallery-'.$product->id" />
@@ -229,12 +233,16 @@
             </div>
         </section>
 
-        <nav class="fs-product-tabnav wrap" data-product-tabnav aria-label="بخش‌های محصول">
-            <a href="#product-intro" class="fs-product-tab" data-active>معرفی محصول</a>
-            <a href="#product-specs" class="fs-product-tab">مشخصات فنی</a>
-            <a href="#product-reviews" class="fs-product-tab">دیدگاه خریداران</a>
-            <a href="#product-qa" class="fs-product-tab">پرسش و پاسخ</a>
-        </nav>
+        <div class="fs-product-tabnav-shell wrap" data-product-tabnav-shell>
+            <div class="fs-product-tabnav-sentinel" data-product-tabnav-sentinel aria-hidden="true"></div>
+            <div class="fs-product-tabnav-placeholder" data-product-tabnav-placeholder aria-hidden="true"></div>
+            <nav class="fs-product-tabnav" data-product-tabnav aria-label="بخش‌های محصول">
+                <a href="#product-intro" class="fs-product-tab" data-active>معرفی محصول</a>
+                <a href="#product-specs" class="fs-product-tab">مشخصات فنی</a>
+                <a href="#product-reviews" class="fs-product-tab">دیدگاه خریداران</a>
+                <a href="#product-qa" class="fs-product-tab">پرسش و پاسخ</a>
+            </nav>
+        </div>
 
         <section id="product-intro" class="fs-product-section wrap scroll-mt-24">
             <header class="fs-product-section-head">

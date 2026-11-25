@@ -127,8 +127,9 @@ class CartTest extends TestCase
         ]);
 
         Livewire::test(AddToCart::class, ['productId' => $product->id, 'ui' => 'product-page'])
-            ->set('productVariantId', $cheap->id)
-            ->call('add')
+            ->call('add', $cheap->id)
             ->assertHasNoErrors();
+
+        $this->assertSame(3, app(CartService::class)->itemCount());
     }
 }
