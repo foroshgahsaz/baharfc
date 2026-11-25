@@ -19,6 +19,16 @@
                     <button type="button" class="baharfc-media-picker-close" wire:click="close" aria-label="بستن">&times;</button>
                 </div>
                 <div class="baharfc-media-picker-toolbar">
+                    @if ($multiSelect ?? false)
+                        <button
+                            type="button"
+                            class="baharfc-media-upload-btn"
+                            wire:click="confirmMultiSelect"
+                            @disabled(count($selectedIds ?? []) === 0)
+                        >
+                            افزودن انتخاب‌شده‌ها ({{ count($selectedIds ?? []) }})
+                        </button>
+                    @endif
                     <label class="baharfc-media-upload-btn">
                         بارگذاری تصویر
                         <input
@@ -42,7 +52,10 @@
                         @forelse ($items as $item)
                             <button
                                 type="button"
-                                class="baharfc-media-card"
+                                @class([
+                                    'baharfc-media-card',
+                                    'baharfc-media-card--selected' => ($multiSelect ?? false) && in_array($item->id, $selectedIds ?? [], true),
+                                ])
                                 wire:click="pick({{ $item->id }})"
                                 title="{{ $item->title ?: $item->file_name }}"
                             >

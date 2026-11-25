@@ -44,6 +44,7 @@
                 wire:click="add"
                 wire:loading.attr="disabled"
                 class="fs-product-add-btn"
+                data-add-to-cart-trigger
             >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
@@ -86,3 +87,23 @@
         @endif
     @endif
 </div>
+
+@if ($ui === 'product-page')
+    @script
+    <script>
+        $wire.on('product-variant-selected', ({ variantId }) => {
+            if (variantId != null) {
+                $wire.set('productVariantId', variantId);
+            }
+        });
+
+        $wire.el.querySelector('[data-add-to-cart-trigger]')?.addEventListener('click', () => {
+            const page = document.querySelector('.fs-product-page');
+            const id = page?.dataset?.selectedVariantId;
+            if (id) {
+                $wire.set('productVariantId', Number(id));
+            }
+        }, { capture: true });
+    </script>
+    @endscript
+@endif

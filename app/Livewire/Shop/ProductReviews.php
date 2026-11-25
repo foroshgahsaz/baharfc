@@ -22,6 +22,11 @@ class ProductReviews extends Component
 
     public ?string $statusMessage = null;
 
+    public function setRating(int $rating): void
+    {
+        $this->rating = max(1, min(5, $rating));
+    }
+
     public function mount(Product $product): void
     {
         $this->product = $product;

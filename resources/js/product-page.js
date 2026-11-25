@@ -66,12 +66,31 @@ const matchVariantId = (variants, selected) => {
     return match?.id ?? variants[0].id ?? null;
 };
 
-const dispatchVariant = (variantId) => {
+const dispatchVariant = (variantId, root) => {
+    if (root && variantId != null) {
+        root.dataset.selectedVariantId = String(variantId);
+    }
+
     if (typeof Livewire === 'undefined') {
         return;
     }
 
     Livewire.dispatch('product-variant-selected', { variantId });
+};
+
+const syncSelectedVariantFromPage = (root) => {
+    const id = root?.dataset.selectedVariantId;
+    if (! id || typeof Livewire === 'undefined') {
+        return;
+    }
+
+    Livewire.dispatch('product-variant-selected', { variantId: Number(id) });
+};
+
+const syncProductStickyTop = () => {
+    const header = document.querySelector('.lebasino-page .site-header');
+    const top = header ? Math.ceil(header.getBoundingClientRect().height) : 0;
+    document.documentElement.style.setProperty('--fs-product-sticky-top', `${top}px`);
 };
 
 const initGallery = (root) => {
@@ -141,7 +160,7 @@ const initVariantOptions = (root) => {
     const selected = {};
 
     const apply = () => {
-        dispatchVariant(matchVariantId(variants, selected));
+        dispatchVariant(matchVariantId(variants, selected), root);
     };
 
     const register = (element) => {
@@ -291,8 +310,10 @@ const initProductPage = () => {
     }
 
     page._productPageInit = true;
+    syncProductStickyTop();
     initGallery(page);
     initVariantOptions(page);
+    syncSelectedVariantFromPage(page);
     initCompare(page);
     initTabNav(page);
     initMobileBar(page);
@@ -300,3 +321,10 @@ const initProductPage = () => {
 
 document.addEventListener('DOMContentLoaded', initProductPage);
 document.addEventListener('livewire:navigated', initProductPage);
+document.addEventListener('livewire:init', () => {
+    const page = $('.lebasino-page .fs-product-page');
+    if (page) {
+        syncSelectedVariantFromPage(page);
+    }
+});
+window.addEventListener('resize', syncProductStickyTop, { passive: true });

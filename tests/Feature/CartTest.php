@@ -3,9 +3,11 @@
 namespace Tests\Feature;
 
 use App\Enums\CouponType;
+use App\Enums\ProductType;
 use App\Livewire\Shop\AddToCart;
 use App\Models\Coupon;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\User;
 use App\Services\CartService;
 use Database\Seeders\CartCatalogSeeder;
@@ -83,5 +85,50 @@ class CartTest extends TestCase
             ->assertHasNoErrors();
 
         $this->assertSame(1, app(CartService::class)->itemCount());
+    }
+
+    public function test_variable_product_uses_variant_price_in_cart(): void
+    {
+        $product = Product::factory()->create([
+            'type' => ProductType::Variable,
+            'price' => 100000,
+        ]);
+
+        $cheap = ProductVariant::query()->create([
+            'product_id' => $product->id,
+            'name' => 'کوچک',
+            'sku' => 'VAR-S',
+            'options' => ['size' => 'S'],
+            'price' => 120000,
+            'stock' => 10,
+            'is_active' => true,
+            'sort_order' => 1,
+        ]);
+
+        ProductVariant::query()->create([
+            'product_id' => $product->id,
+            'name' => 'بزرگ',
+            'sku' => 'VAR-L',
+            'options' => ['size' => 'L'],
+            'price' => 150000,
+            'stock' => 5,
+            'is_active' => true,
+            'sort_order' => 2,
+        ]);
+
+        $cart = app(CartService::class);
+        $cart->add($product, 2, $cheap->id);
+
+        $this->assertSame(240000, $cart->subtotal());
+        $this->assertDatabaseHas('cart_items', [
+            'product_id' => $product->id,
+            'product_variant_id' => $cheap->id,
+            'quantity' => 2,
+        ]);
+
+        Livewire::test(AddToCart::class, ['productId' => $product->id, 'ui' => 'product-page'])
+            ->set('productVariantId', $cheap->id)
+            ->call('add')
+            ->assertHasNoErrors();
     }
 }

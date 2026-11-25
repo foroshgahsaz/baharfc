@@ -2,11 +2,14 @@
 
 namespace App\Filament\Resources\Products\RelationManagers;
 
+use App\Filament\Forms\Components\MediaPicker;
+use App\Filament\Forms\Components\MultiMediaPicker;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use App\Filament\Forms\Components\MediaPicker;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
@@ -45,6 +48,39 @@ class ImagesRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make()->label('افزودن تصویر'),
+                Action::make('bulkAdd')
+                    ->label('افزودن چند تصویر')
+                    ->icon('heroicon-o-photo')
+                    ->modalHeading('افزودن چند تصویر به گالری')
+                    ->modalSubmitActionLabel('افزودن به گالری')
+                    ->form([
+                        MultiMediaPicker::make('paths')
+                            ->label('تصاویر')
+                            ->imagesOnly()
+                            ->required(),
+                    ])
+                    ->action(function (array $data): void {
+                        $product = $this->getOwnerRecord();
+                        $paths = array_values(array_filter((array) ($data['paths'] ?? [])));
+
+                        if ($paths === []) {
+                            return;
+                        }
+
+                        $sort = ((int) $product->images()->max('sort_order')) + 1;
+
+                        foreach ($paths as $path) {
+                            $product->images()->create([
+                                'path' => $path,
+                                'sort_order' => $sort++,
+                            ]);
+                        }
+
+                        Notification::make()
+                            ->title(count($paths).' تصویر به گالری اضافه شد')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->recordActions([
                 EditAction::make(),

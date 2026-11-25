@@ -23,6 +23,8 @@ class ProductPageLayoutTest extends TestCase
             ->assertSee('fs-product-tabnav', false)
             ->assertSee('fs-product-cart-row', false)
             ->assertSee('data-product-gallery', false)
-            ->assertSee('معرفی محصول', false);
+            ->assertSee('معرفی محصول', false)
+            ->assertSee('fs-product-ugc-grid', false)
+            ->assertSee('fs-product-star-input', false);
     }
 }

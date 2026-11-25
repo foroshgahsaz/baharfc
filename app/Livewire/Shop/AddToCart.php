@@ -31,6 +31,13 @@ class AddToCart extends Component
     {
         $product = Product::query()->where('is_active', true)->findOrFail($this->productId);
 
+        if ($product->isVariable() && $this->productVariantId === null) {
+            $product->loadMissing('activeVariants');
+            if ($product->activeVariants->isNotEmpty()) {
+                $this->productVariantId = $product->activeVariants->first()->id;
+            }
+        }
+
         try {
             $cart->add($product, $this->quantity, $this->productVariantId);
         } catch (\InvalidArgumentException $e) {
@@ -39,7 +46,11 @@ class AddToCart extends Component
             return;
         }
 
-        $this->dispatch('cart-updated', productId: $this->productId);
+        $this->dispatch(
+            'cart-updated',
+            productId: $this->productId,
+            productVariantId: $this->productVariantId,
+        );
         $this->dispatch('cart-header-refresh');
     }
 
@@ -56,7 +67,9 @@ class AddToCart extends Component
     #[On('product-variant-selected')]
     public function applyVariant(?int $variantId = null): void
     {
-        $this->productVariantId = $variantId;
+        if ($variantId !== null) {
+            $this->productVariantId = $variantId;
+        }
     }
 
     public function render()

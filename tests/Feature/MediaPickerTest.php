@@ -15,6 +15,40 @@ class MediaPickerTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_media_picker_multi_select_stores_multiple_ids(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->create(['is_admin' => true]);
+        $first = Media::query()->create([
+            'disk' => 'public',
+            'path' => 'library/a.jpg',
+            'file_name' => 'a.jpg',
+            'mime_type' => 'image/jpeg',
+            'size' => 10,
+        ]);
+        $second = Media::query()->create([
+            'disk' => 'public',
+            'path' => 'library/b.jpg',
+            'file_name' => 'b.jpg',
+            'mime_type' => 'image/jpeg',
+            'size' => 10,
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(MediaPickerModal::class)
+            ->dispatch('open-media-picker', [
+                'statePath' => 'mountedActions.0.data.paths',
+                'imagesOnly' => true,
+                'multiple' => true,
+            ])
+            ->assertSet('multiSelect', true)
+            ->call('pick', $first->id)
+            ->call('pick', $second->id)
+            ->assertSet('selectedIds', [$first->id, $second->id])
+            ->call('confirmMultiSelect')
+            ->assertSet('open', false);
+    }
+
     public function test_open_media_picker_event_accepts_payload_array(): void
     {
         Storage::fake('public');
