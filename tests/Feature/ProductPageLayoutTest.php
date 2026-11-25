@@ -19,8 +19,9 @@ class ProductPageLayoutTest extends TestCase
 
         $this->get(route('products.show', $product->slug))
             ->assertOk()
-            ->assertSee('fs-product-hero', false)
+            ->assertSee('fs-product-hero-shell', false)
             ->assertSee('fs-product-tabnav', false)
+            ->assertSee('fs-product-cart-row', false)
             ->assertSee('data-product-gallery', false)
             ->assertSee('معرفی محصول', false);
     }
