@@ -1,5 +1,20 @@
 @extends('layouts.shop')
 
+@php
+    use App\Support\JalaliDate;
+    use App\Support\ProductPagePresenter;
+    use App\Support\ShopAppearance;
+
+    $presenter = new ProductPagePresenter($product);
+    $gallery = $presenter->galleryUrls();
+    $mainImage = $gallery[0] ?? null;
+    $keySpecs = $presenter->keySpecs();
+    $specGroups = $presenter->specGroups();
+    $colors = $presenter->colorSwatches();
+    $optionPills = $presenter->optionPills();
+    $shopName = ShopAppearance::siteName();
+@endphp
+
 @push('head')
     @php
         $jsonLd = [
@@ -11,109 +26,269 @@
             'offers' => [
                 '@type' => 'Offer',
                 'priceCurrency' => 'IRR',
-                'price' => $product->price,
+                'price' => $product->sellablePrice(),
                 'availability' => $product->is_active ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
                 'url' => route('products.show', $product->slug),
             ],
         ];
-        if ($product->imageUrl()) {
-            $jsonLd['image'] = $product->imageUrl();
+        if ($mainImage) {
+            $jsonLd['image'] = $mainImage;
         }
     @endphp
     <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
 @endpush
 
 @section('content')
-    @php
-        $gallery = $product->images->isNotEmpty()
-            ? $product->images->map(fn ($img) => $img->url())->all()
-            : ($product->imageUrl() ? [$product->imageUrl()] : []);
-        $mainImage = $gallery[0] ?? null;
-    @endphp
-    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <nav class="mb-6 text-sm text-slate-500">
-            <a href="{{ route('home') }}" class="hover:text-brand-600">خانه</a>
-            <span class="mx-2">/</span>
-            <a href="{{ route('products.index') }}" class="hover:text-brand-600">محصولات</a>
+    <div class="fs-product-page">
+        <nav class="fs-product-breadcrumb wrap" aria-label="مسیر">
+            <a href="{{ route('home') }}">خانه</a>
+            <span aria-hidden="true">›</span>
+            <a href="{{ route('products.index') }}">محصولات</a>
             @if ($product->category)
-                <span class="mx-2">/</span>
-                <a href="{{ route('products.index', ['category' => $product->category->slug]) }}" class="hover:text-brand-600">{{ $product->category->name }}</a>
+                <span aria-hidden="true">›</span>
+                <a href="{{ route('products.index', ['category' => $product->category->slug]) }}">{{ $product->category->name }}</a>
             @endif
-            <span class="mx-2">/</span>
-            <span class="text-slate-800">{{ $product->name }}</span>
+            <span aria-hidden="true">›</span>
+            <span>{{ $product->name }}</span>
         </nav>
 
-        <div class="grid gap-10 lg:grid-cols-2">
-            <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white">
-                <div class="aspect-square bg-slate-100">
+        <section class="fs-product-hero wrap">
+            <div class="fs-product-gallery pcard" data-product-gallery>
+                <div class="fs-product-gallery-main">
                     @if ($mainImage)
-                        <img src="{{ $mainImage }}" alt="{{ $product->name }}" class="h-full w-full object-cover" id="product-main-image" />
+                        <img src="{{ $mainImage }}" alt="{{ $product->name }}" data-product-main-img width="520" height="520">
                     @else
-                        <div class="flex h-full items-center justify-center text-6xl text-slate-300">📦</div>
+                        <span class="fs-product-gallery-placeholder">📦</span>
                     @endif
+                    <div class="fs-product-gallery-actions">
+                        <livewire:shop.product-wishlist-toggle :product-id="$product->id" :key="'wish-gallery-'.$product->id" />
+                        <button type="button" class="fs-product-icon-btn" data-product-zoom aria-label="بزرگنمایی تصویر">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg>
+                        </button>
+                        <button type="button" class="fs-product-icon-btn" data-product-compare="{{ $product->id }}" aria-label="افزودن به مقایسه">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+                        </button>
+                    </div>
                 </div>
                 @if (count($gallery) > 1)
-                    <div class="flex gap-2 overflow-x-auto p-3">
-                        @foreach ($gallery as $url)
-                            <button type="button" data-gallery-thumb="{{ $url }}" class="size-16 shrink-0 overflow-hidden rounded-lg border-2 border-transparent hover:border-brand-400">
-                                <img src="{{ $url }}" alt="" class="h-full w-full object-cover" />
+                    <div class="fs-product-gallery-thumbs">
+                        @foreach ($gallery as $index => $url)
+                            <button
+                                type="button"
+                                class="fs-product-thumb"
+                                data-product-thumb="{{ $url }}"
+                                @if ($index === 0) data-active aria-current="true" @endif
+                            >
+                                <img src="{{ $url }}" alt="" width="72" height="72" loading="lazy">
                             </button>
                         @endforeach
                     </div>
                 @endif
             </div>
 
-            <div>
-                @if ($product->brand)
-                    <p class="text-sm font-medium text-brand-600">{{ $product->brand->name }}</p>
-                @endif
-                <h1 class="mt-2 text-3xl font-bold text-slate-900">{{ $product->name }}</h1>
-                @if ($product->short_description)
-                    <p class="mt-4 text-slate-600">{{ $product->short_description }}</p>
-                @endif
-
-                <div class="mt-6 flex flex-wrap items-end gap-3">
-                    <p class="text-3xl font-bold text-brand-700">{{ $product->formattedPrice() }}</p>
-                    @if ($product->hasDiscount())
-                        <p class="text-lg text-slate-400 line-through">{{ number_format($product->compare_at_price) }} تومان</p>
-                        <span class="rounded-lg bg-red-100 px-2 py-1 text-xs font-semibold text-red-700">{{ $product->discountPercent() }}٪</span>
+            <div class="fs-product-info">
+                <div class="fs-product-pills">
+                    @if ($product->brand)
+                        <a href="{{ route('products.index', ['brand' => $product->brand->slug]) }}" class="fs-product-pill">{{ $product->brand->name }}</a>
+                    @endif
+                    @if ($product->category)
+                        <a href="{{ route('products.index', ['category' => $product->category->slug]) }}" class="fs-product-pill">{{ $product->category->name }}</a>
                     @endif
                 </div>
 
-                <div class="mt-8 flex flex-wrap items-center gap-4">
-                    <livewire:shop.add-to-cart :product-id="$product->id" :key="'add-'.$product->id" />
-                    <livewire:shop.product-wishlist-toggle :product-id="$product->id" :key="'wish-'.$product->id" />
+                <h1 class="fs-product-title">{{ $product->name }}</h1>
+
+                <div class="fs-product-meta">
+                    <span class="fs-product-rating">
+                        <span class="fs-product-star">★</span>
+                        <span>۰</span>
+                    </span>
+                    <a href="#product-qa" class="fs-product-meta-link">۰ پرسش و پاسخ</a>
+                    <a href="#product-reviews" class="fs-product-meta-link">۰ دیدگاه</a>
                 </div>
 
-                @if ($product->description)
-                    <div class="prose prose-slate mt-10 max-w-none text-sm leading-relaxed">
-                        {!! $product->description !!}
+                @if ($colors !== [])
+                    <div class="fs-product-variants">
+                        <p class="fs-product-variant-label">رنگ: <span data-color-label>{{ $colors[0]['label'] }}</span></p>
+                        <div class="fs-product-swatches">
+                            @foreach ($colors as $i => $swatch)
+                                <button
+                                    type="button"
+                                    class="fs-product-swatch"
+                                    style="--swatch: {{ $swatch['color'] ?? '#ccc' }}"
+                                    data-swatch
+                                    data-name="{{ $swatch['label'] }}"
+                                    @if ($i === 0) data-active @endif
+                                    aria-label="{{ $swatch['label'] }}"
+                                ></button>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
+
+                @if ($optionPills !== [])
+                    <div class="fs-product-variants">
+                        <p class="fs-product-variant-label">گزینه</p>
+                        <div class="fs-product-options" data-options>
+                            @foreach ($optionPills as $i => $pill)
+                                <button type="button" class="fs-product-option" @if ($i === 0) data-active @endif>{{ $pill['label'] }}</button>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                @if ($keySpecs !== [])
+                    <dl class="fs-product-keyspecs">
+                        @foreach ($keySpecs as $row)
+                            <div>
+                                <dt>{{ $row['label'] }}</dt>
+                                <dd>{{ $row['value'] }}</dd>
+                            </div>
+                        @endforeach
+                    </dl>
+                @endif
             </div>
-        </div>
+
+            <aside class="fs-product-buyaside">
+                <div class="fs-product-buybox pcard">
+                    <ul class="fs-product-seller">
+                        <li>
+                            <span class="fs-product-seller-icon">🏪</span>
+                            <span>فروشنده: <strong>{{ $shopName }}</strong></span>
+                        </li>
+                        <li>
+                            <span class="fs-product-seller-icon">🛡️</span>
+                            <span>۱۸ ماه گارانتی شرکتی</span>
+                        </li>
+                        <li>
+                            <span class="fs-product-seller-icon">↩️</span>
+                            <span>ضمانت ۷ روزه بازگشت کالا</span>
+                        </li>
+                    </ul>
+
+                    <div class="fs-product-price-block">
+                        <span class="fs-product-price-label">قیمت</span>
+                        <div class="fs-product-price">
+                            @if ($product->hasDiscount())
+                                <span class="fs-product-price-old">{{ JalaliDate::toPersianDigits(number_format($product->compare_at_price)) }}</span>
+                                <span class="fs-product-discount-pill">٪{{ JalaliDate::toPersianDigits($product->discountPercent()) }}</span>
+                            @endif
+                            <span class="fs-product-price-final">{{ JalaliDate::toPersianDigits(number_format($product->sellablePrice())) }}</span>
+                            <span class="fs-product-toman">تومان</span>
+                        </div>
+                    </div>
+
+                    <div class="fs-product-buybox-actions">
+                        <livewire:shop.add-to-cart :product-id="$product->id" :key="'add-'.$product->id" />
+                    </div>
+
+                    <div class="fs-product-trust">
+                        <div><span>۲۴</span><small>پشتیبانی</small></div>
+                        <div><span>💳</span><small>پرداخت در محل</small></div>
+                        <div><span>✓</span><small>ضمانت اصالت</small></div>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <nav class="fs-product-tabnav wrap" data-product-tabnav aria-label="بخش‌های محصول">
+            <a href="#product-intro" class="fs-product-tab" data-active>معرفی محصول</a>
+            <a href="#product-specs" class="fs-product-tab">مشخصات فنی</a>
+            <a href="#product-reviews" class="fs-product-tab">دیدگاه خریداران</a>
+            <a href="#product-qa" class="fs-product-tab">پرسش و پاسخ</a>
+        </nav>
+
+        <section id="product-intro" class="fs-product-section wrap scroll-mt-24">
+            <header class="fs-product-section-head">
+                <span class="fs-product-section-bar"></span>
+                <h2>معرفی محصول</h2>
+            </header>
+            <div class="fs-product-intro-grid">
+                <div class="fs-product-prose prose-fs">
+                    @if ($product->description)
+                        {!! $product->description !!}
+                    @elseif ($product->short_description)
+                        <p>{{ $product->short_description }}</p>
+                    @else
+                        <p>نگاهی دقیق‌تر به {{ $product->name }}</p>
+                        <p>این کالا با گارانتی معتبر و ضمانت اصالت ارائه می‌شود. تمام مشخصات فنی در بخش مشخصات همین صفحه آمده است.</p>
+                    @endif
+                </div>
+                <aside class="fs-product-intro-highlight">
+                    <h3>{{ $product->name }}</h3>
+                    <p>خرید مطمئن از {{ $shopName }}</p>
+                </aside>
+            </div>
+        </section>
+
+        <section id="product-specs" class="fs-product-section wrap scroll-mt-24">
+            <header class="fs-product-section-head">
+                <span class="fs-product-section-bar"></span>
+                <h2>مشخصات فنی</h2>
+            </header>
+            <div class="fs-product-spec-grid">
+                @foreach ($specGroups as $group)
+                    <div class="fs-product-spec-group pcard">
+                        <h3>{{ $group['title'] }}</h3>
+                        <dl>
+                            @foreach ($group['rows'] as $row)
+                                <div>
+                                    <dt>{{ $row['label'] }}</dt>
+                                    <dd>{{ $row['value'] }}</dd>
+                                </div>
+                            @endforeach
+                        </dl>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+
+        <section id="product-reviews" class="fs-product-section wrap scroll-mt-24">
+            <header class="fs-product-section-head">
+                <span class="fs-product-section-bar"></span>
+                <h2>دیدگاه خریداران</h2>
+            </header>
+            <div class="fs-product-empty pcard">
+                <p><strong>۰</strong> دیدگاه ثبت شده</p>
+                <p class="fs-product-empty-muted">هنوز دیدگاهی ثبت نشده است.</p>
+                <button type="button" class="fs-product-outline-btn" disabled>ثبت دیدگاه</button>
+            </div>
+        </section>
+
+        <section id="product-qa" class="fs-product-section wrap scroll-mt-24">
+            <header class="fs-product-section-head">
+                <span class="fs-product-section-bar"></span>
+                <h2>پرسش و پاسخ</h2>
+            </header>
+            <div class="fs-product-empty pcard">
+                <p class="fs-product-empty-muted">هنوز پرسشی ثبت نشده است.</p>
+                <button type="button" class="fs-product-outline-btn" disabled>ثبت پرسش</button>
+            </div>
+        </section>
 
         @if ($related->isNotEmpty())
-            <section class="mt-16 border-t border-slate-200 pt-12">
-                <h2 class="mb-6 text-xl font-bold text-slate-900">محصولات مرتبط</h2>
-                <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <section class="fs-product-related wrap" data-slider aria-label="محصولات مشابه">
+                <header class="fs-product-related-head">
+                    <h2>محصولات مشابه</h2>
+                    <div class="fs-product-related-arrows">
+                        <button type="button" class="fs-slider-arrow" data-slider-prev aria-label="قبلی">‹</button>
+                        <button type="button" class="fs-slider-arrow" data-slider-next aria-label="بعدی">›</button>
+                    </div>
+                </header>
+                <div class="rail fs-product-related-track" data-slider-track>
                     @foreach ($related as $item)
                         <x-shop.product-card :product="$item" />
                     @endforeach
                 </div>
             </section>
         @endif
+
+        <div class="fs-product-mobile-bar lg:hidden" aria-hidden="false">
+            <div>
+                <span class="fs-product-mobile-price">{{ JalaliDate::toPersianDigits(number_format($product->sellablePrice())) }} تومان</span>
+            </div>
+            <a href="#product-intro" class="fs-product-mobile-buy">افزودن به سبد</a>
+        </div>
     </div>
-    @if (count($gallery) > 1)
-        <script>
-            document.querySelectorAll('[data-gallery-thumb]').forEach((btn) => {
-                btn.addEventListener('click', () => {
-                    const img = document.getElementById('product-main-image');
-                    if (img) img.src = btn.dataset.galleryThumb;
-                    document.querySelectorAll('[data-gallery-thumb]').forEach(b => b.classList.remove('border-brand-600'));
-                    btn.classList.add('border-brand-600');
-                });
-            });
-        </script>
-    @endif
+
 @endsection
