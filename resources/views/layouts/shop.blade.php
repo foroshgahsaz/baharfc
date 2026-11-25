@@ -38,16 +38,10 @@
 
     <livewire:shop.cart-drawer />
 
-    <footer class="shop-footer">
-        <div class="container shop-footer-inner">
-            <p>{{ $shopFooterText ?? 'فروشگاه اینترنتی '.($shopSiteName ?? config('app.name')) }}</p>
-            @if ($shopContactEnabled ?? false)
-                <p class="mt-2">
-                    <a href="{{ route('contact') }}" class="text-sm text-brand-600 hover:underline">تماس با ما</a>
-                </p>
-            @endif
-        </div>
-    </footer>
+    <x-shop.site-footer
+        :shop-footer-text="$shopFooterText ?? null"
+        :shop-contact-enabled="$shopContactEnabled ?? false"
+    />
 
     @livewireScripts
     @stack('scripts')
