@@ -26,6 +26,11 @@ class MediaPickerModal extends Component
 
     public bool $imagesOnly = true;
 
+    public bool $multiSelect = false;
+
+    /** @var list<int> */
+    public array $selectedIds = [];
+
     public string $search = '';
 
     public string $typeFilter = 'all';
@@ -34,13 +39,14 @@ class MediaPickerModal extends Component
     public array $newFiles = [];
 
     #[On('open-media-picker')]
-    public function openPicker(mixed $statePath = null, mixed $imagesOnly = true, mixed $componentId = null): void
+    public function openPicker(mixed $statePath = null, mixed $imagesOnly = true, mixed $componentId = null, mixed $multiple = false): void
     {
         if (is_array($statePath)) {
             $payload = $statePath;
             $statePath = $payload['statePath'] ?? null;
             $imagesOnly = $payload['imagesOnly'] ?? true;
             $componentId = $payload['componentId'] ?? null;
+            $multiple = $payload['multiple'] ?? false;
         }
 
         if (! is_string($statePath) || $statePath === '') {
@@ -60,6 +66,8 @@ class MediaPickerModal extends Component
         $this->targetStatePath = $statePath;
         $this->targetComponentId = is_string($componentId) ? $componentId : null;
         $this->imagesOnly = filter_var($imagesOnly, FILTER_VALIDATE_BOOLEAN);
+        $this->multiSelect = filter_var($multiple, FILTER_VALIDATE_BOOLEAN);
+        $this->selectedIds = [];
         $this->typeFilter = $imagesOnly ? 'image' : 'all';
         $this->search = '';
         $this->newFiles = [];
@@ -72,6 +80,8 @@ class MediaPickerModal extends Component
         $this->open = false;
         $this->targetStatePath = null;
         $this->targetComponentId = null;
+        $this->multiSelect = false;
+        $this->selectedIds = [];
         $this->newFiles = [];
     }
 
@@ -138,8 +148,72 @@ class MediaPickerModal extends Component
         }
     }
 
+    public function toggleSelect(int $mediaId): void
+    {
+        $media = Media::query()->findOrFail($mediaId);
+
+        if ($this->imagesOnly && ! $media->isImage()) {
+            return;
+        }
+
+        if (in_array($mediaId, $this->selectedIds, true)) {
+            $this->selectedIds = array_values(array_filter(
+                $this->selectedIds,
+                fn (int $id) => $id !== $mediaId,
+            ));
+        } else {
+            $this->selectedIds[] = $mediaId;
+        }
+    }
+
+    public function confirmMultiSelect(): void
+    {
+        if ($this->selectedIds === []) {
+            Notification::make()
+                ->title('حداقل یک تصویر انتخاب کنید')
+                ->warning()
+                ->send();
+
+            return;
+        }
+
+        $paths = Media::query()
+            ->whereIn('id', $this->selectedIds)
+            ->get()
+            ->sortBy(fn (Media $media) => array_search($media->id, $this->selectedIds, true))
+            ->pluck('path')
+            ->filter()
+            ->values()
+            ->all();
+
+        $statePath = (string) $this->targetStatePath;
+        $componentId = $this->targetComponentId;
+
+        $this->js(sprintf(
+            'window.baharfcApplyMediaPickMultiple?.(%s, %s, %s)',
+            Js::from($statePath),
+            Js::from($paths),
+            Js::from($componentId),
+        ));
+
+        $this->dispatch(
+            'media-multi-picked',
+            statePath: $statePath,
+            paths: $paths,
+            componentId: $componentId,
+        );
+
+        $this->close();
+    }
+
     public function pick(int $mediaId): void
     {
+        if ($this->multiSelect) {
+            $this->toggleSelect($mediaId);
+
+            return;
+        }
+
         $media = Media::query()->findOrFail($mediaId);
 
         if ($this->imagesOnly && ! $media->isImage()) {
@@ -185,6 +259,8 @@ class MediaPickerModal extends Component
 
         return view('livewire.admin.media-picker-modal', [
             'open' => true,
+            'multiSelect' => $this->multiSelect,
+            'selectedIds' => $this->selectedIds,
             'items' => app(MediaLibraryService::class)->paginate(
                 search: trim($this->search),
                 type: $type,
