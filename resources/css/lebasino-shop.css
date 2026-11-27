@@ -3875,6 +3875,18 @@
         gap: 28px;
     }
 
+    /* RTL: ستون ۱ سمت راست — سایدبار؛ ستون ۲ چپ — گرید محصولات (ترتیب DOM: main سپس sidebar) */
+    .lebasino-page .fs-catalog-sidebar {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .lebasino-page .fs-catalog-main {
+        grid-column: 2;
+        grid-row: 1;
+        min-width: 0;
+    }
+
     .lebasino-page .fs-catalog-head {
         text-align: start;
     }
@@ -3917,13 +3929,17 @@
 .lebasino-page .fs-filter-list a {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 8px;
     padding: 8px 10px;
     border-radius: 10px;
     font-size: 13px;
     color: #5c6270;
     text-decoration: none;
+}
+
+.lebasino-page .fs-filter-list a .fs-filter-count {
+    margin-inline-start: auto;
 }
 
 .lebasino-page .fs-filter-list a:is(:hover, .is-active) {
