@@ -4084,6 +4084,327 @@
     }
 }
 
+/* ——— WordPress-style blog ——— */
+.lebasino-page .fs-blog-page {
+    padding: 24px 0 56px;
+}
+
+.lebasino-page .fs-blog-page-head {
+    margin-bottom: 24px;
+}
+
+.lebasino-page .fs-blog-page-head h1 {
+    margin: 0;
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 800;
+    color: #273044;
+}
+
+.lebasino-page .fs-blog-page-head p {
+    margin: 8px 0 0;
+    color: #85858a;
+    font-size: 14px;
+}
+
+.lebasino-page .fs-blog-layout {
+    display: grid;
+    gap: 28px;
+}
+
+@media (min-width: 992px) {
+    .lebasino-page .fs-blog-layout {
+        grid-template-columns: minmax(0, 1fr) 280px;
+        align-items: start;
+    }
+}
+
+.lebasino-page .fs-blog-grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+    .lebasino-page .fs-blog-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.lebasino-page .fs-blog-featured-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    margin-bottom: 28px;
+}
+
+@media (min-width: 768px) {
+    .lebasino-page .fs-blog-featured-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.lebasino-page .fs-blog-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #eceef2;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #fff;
+    height: 100%;
+}
+
+.lebasino-page .fs-blog-card-media {
+    display: block;
+    aspect-ratio: 16 / 10;
+    background: #f5f5f8;
+    overflow: hidden;
+}
+
+.lebasino-page .fs-blog-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lebasino-page .fs-blog-card-placeholder {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    font-size: 42px;
+    opacity: 0.35;
+}
+
+.lebasino-page .fs-blog-card-body {
+    padding: 14px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.lebasino-page .fs-blog-card-category {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--lebasino-accent);
+    text-decoration: none;
+}
+
+.lebasino-page .fs-blog-card-title {
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+.lebasino-page .fs-blog-card-title a {
+    color: #273044;
+    text-decoration: none;
+}
+
+.lebasino-page .fs-blog-card-title a:hover {
+    color: var(--lebasino-accent);
+}
+
+.lebasino-page .fs-blog-card-excerpt {
+    margin: 0;
+    font-size: 13px;
+    color: #5c6270;
+    line-height: 1.7;
+}
+
+.lebasino-page .fs-blog-card-meta {
+    margin: auto 0 0;
+    font-size: 12px;
+    color: #85858a;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.lebasino-page .fs-blog-card-meta a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.lebasino-page .fs-blog-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.lebasino-page .fs-blog-widget {
+    border: 1px solid #eceef2;
+    border-radius: 16px;
+    padding: 14px;
+    background: #fff;
+}
+
+.lebasino-page .fs-blog-widget h2 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.lebasino-page .fs-blog-widget ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.lebasino-page .fs-blog-widget li + li {
+    margin-top: 6px;
+}
+
+.lebasino-page .fs-blog-widget a {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+    color: #5c6270;
+    text-decoration: none;
+}
+
+.lebasino-page .fs-blog-widget a:hover {
+    color: var(--lebasino-accent);
+}
+
+.lebasino-page .fs-blog-widget-count {
+    font-size: 11px;
+    color: #9aa0ad;
+}
+
+.lebasino-page .fs-blog-sidebar-search,
+.lebasino-page .fs-blog-inline-search {
+    display: flex;
+    gap: 8px;
+}
+
+.lebasino-page .fs-blog-sidebar-search input,
+.lebasino-page .fs-blog-inline-search input {
+    flex: 1;
+    border: 1px solid #e0e3ea;
+    border-radius: 12px;
+    padding: 8px 12px;
+    font: inherit;
+}
+
+.lebasino-page .fs-blog-sidebar-search button,
+.lebasino-page .fs-blog-inline-search button {
+    border: 0;
+    border-radius: 12px;
+    background: var(--lebasino-accent);
+    color: #fff;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.lebasino-page .fs-blog-tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.lebasino-page .fs-blog-tag-cloud a {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f7f5fa;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.lebasino-page .fs-blog-widget-recent time {
+    display: block;
+    font-size: 11px;
+    color: #9aa0ad;
+    margin-top: 2px;
+}
+
+.lebasino-page .fs-blog-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: #85858a;
+}
+
+.lebasino-page .fs-blog-breadcrumb a {
+    color: #85858a;
+    text-decoration: none;
+}
+
+.lebasino-page .fs-blog-single-cover {
+    width: 100%;
+    border-radius: 18px;
+    margin: 16px 0;
+    max-height: 420px;
+    object-fit: cover;
+}
+
+.lebasino-page .fs-blog-single-excerpt {
+    font-size: 18px;
+    color: #5c6270;
+    line-height: 1.8;
+}
+
+.lebasino-page .fs-blog-single-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin: 20px 0;
+    font-size: 13px;
+}
+
+.lebasino-page .fs-blog-single-tags a {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f7f5fa;
+    text-decoration: none;
+    color: #5c6270;
+}
+
+.lebasino-page .fs-blog-related {
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid #eceef2;
+}
+
+.lebasino-page .fs-blog-related-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+    .lebasino-page .fs-blog-related-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.lebasino-page .fs-blog-empty,
+.lebasino-page .fs-blog-comments-closed {
+    padding: 32px;
+    border: 1px dashed #d8dbe3;
+    border-radius: 16px;
+    color: #85858a;
+    text-align: center;
+}
+
+.lebasino-page .fs-blog-pagination {
+    margin-top: 24px;
+}
+
+.lebasino-page .fs-blog-rss {
+    margin: 0;
+    font-size: 12px;
+}
+
+.lebasino-page .fs-blog-rss a {
+    color: var(--lebasino-accent);
+}
+
 .maintenance-page {
     min-height: 100dvh;
     display: grid;

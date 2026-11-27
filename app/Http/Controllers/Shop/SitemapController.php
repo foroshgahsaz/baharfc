@@ -17,6 +17,17 @@ class SitemapController extends Controller
             ['loc' => route('blog.index'), 'changefreq' => 'weekly', 'priority' => '0.6'],
         ]);
 
+        BlogPost::query()
+            ->publishedOnSite()
+            ->orderBy('id')
+            ->each(function (BlogPost $post) use (&$urls): void {
+                $urls->push([
+                    'loc' => route('blog.show', $post->slug),
+                    'changefreq' => 'weekly',
+                    'priority' => '0.6',
+                ]);
+            });
+
         Product::query()
             ->where('is_active', true)
             ->orderBy('id')
@@ -25,17 +36,6 @@ class SitemapController extends Controller
                     'loc' => route('products.show', $product->slug),
                     'changefreq' => 'weekly',
                     'priority' => '0.8',
-                ]);
-            });
-
-        BlogPost::query()
-            ->where('is_published', true)
-            ->orderBy('id')
-            ->each(function (BlogPost $post) use (&$urls): void {
-                $urls->push([
-                    'loc' => route('blog.show', $post->slug),
-                    'changefreq' => 'monthly',
-                    'priority' => '0.5',
                 ]);
             });
 

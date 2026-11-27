@@ -10,6 +10,7 @@ use App\Filament\Resources\BlogPosts\Pages\EditBlogPost;
 use App\Filament\Resources\BlogPosts\Pages\ListBlogPosts;
 use App\Filament\Resources\BlogPosts\RelationManagers\CommentsRelationManager;
 use App\Models\BlogPost;
+use App\Support\SchemaGuard;
 use App\Models\User;
 use BackedEnum;
 use App\Filament\Forms\Components\JalaliDateTimePicker;
@@ -94,9 +95,18 @@ class BlogPostResource extends Resource
                     ->label('محتوا')
                     ->required()
                     ->columnSpanFull(),
-                TextInput::make('tags')
+                Select::make('tags')
                     ->label('برچسب‌ها')
-                    ->helperText('با ویرگول جدا کنید')
+                    ->relationship('tags', 'name')
+                    ->multiple()
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        TextInput::make('name')->label('نام')->required()->maxLength(120),
+                        TextInput::make('slug')->label('نامک')->required()->maxLength(120),
+                    ])
+                    ->helperText('مدیریت برچسب‌ها مثل تاکنونومی وردپرس')
+                    ->visible(fn (): bool => SchemaGuard::hasTable('blog_tags'))
                     ->columnSpanFull(),
                 TextInput::make('meta_title')
                     ->label('عنوان SEO'),

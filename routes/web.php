@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Payment\PaymentCallbackController;
 use App\Http\Controllers\Shop\BlogController;
+use App\Http\Controllers\Shop\BlogFeedController;
 use App\Http\Controllers\Shop\ContactController;
 use App\Http\Controllers\Shop\HomeController;
 use App\Http\Controllers\Shop\OrderInvoiceController;
@@ -20,6 +21,12 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::get('/contact', ContactController::class)->name('contact');
 
+Route::get('/blog/feed.xml', BlogFeedController::class)->name('blog.feed');
+Route::get('/blog/search', [BlogController::class, 'search'])->name('blog.search');
+Route::get('/blog/category/{slug}', [BlogController::class, 'category'])->name('blog.category');
+Route::get('/blog/tag/{slug}', [BlogController::class, 'tag'])->name('blog.tag');
+Route::get('/blog/author/{author}', [BlogController::class, 'author'])->name('blog.author');
+Route::get('/blog/archive/{year}/{month?}', [BlogController::class, 'archive'])->name('blog.archive');
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 

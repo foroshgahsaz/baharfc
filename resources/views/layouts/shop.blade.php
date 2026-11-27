@@ -8,7 +8,9 @@
     @if (! empty($shopAccent))
         <style>:root { --lebasino-accent: {{ $shopAccent }}; }</style>
     @endif
-    @if (! empty($shopMetaDescription))
+    @if (! empty($pageMetaDescription))
+        <meta name="description" content="{{ $pageMetaDescription }}">
+    @elseif (! empty($shopMetaDescription))
         <meta name="description" content="{{ $shopMetaDescription }}">
     @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
