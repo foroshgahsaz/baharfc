@@ -77,7 +77,7 @@ class MenuItem extends Model
     {
         return match ($this->item_type) {
             'category' => $this->category
-                ? route('products.index', array_merge(['category' => $this->category->slug], $this->query_params ?? []))
+                ? route('categories.show', $this->category->slug)
                 : '#',
             'product' => $this->product
                 ? route('products.show', $this->product->slug)

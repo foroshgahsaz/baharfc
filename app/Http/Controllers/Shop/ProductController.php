@@ -56,7 +56,15 @@ class ProductController extends Controller
             'brands' => Brand::query()->where('is_active', true)->orderBy('name')->get(),
             'sort' => $sort,
             'search' => $search,
+            'mainClass' => 'container',
         ]);
+    }
+
+    public function category(Request $request, string $slug): View
+    {
+        $request->merge(['category' => $slug]);
+
+        return $this->index($request);
     }
 
     public function show(string $slug): View

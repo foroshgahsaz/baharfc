@@ -24,6 +24,7 @@ Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/category/{slug}', [ProductController::class, 'category'])->name('categories.show');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
