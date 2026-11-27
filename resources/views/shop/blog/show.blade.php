@@ -1,41 +1,98 @@
 @extends('layouts.shop')
 
+@push('head')
+    <link rel="canonical" href="{{ route('blog.show', $post->slug) }}">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ $post->meta_title ?: $post->title }}">
+    <meta property="og:description" content="{{ $post->metaDescriptionForSeo() }}">
+    <meta property="og:url" content="{{ route('blog.show', $post->slug) }}">
+    @if ($post->featuredImageUrl())
+        <meta property="og:image" content="{{ $post->featuredImageUrl() }}">
+    @endif
+    <meta name="twitter:card" content="summary_large_image">
+@endpush
+
 @section('content')
-    <article class="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-        <a href="{{ route('blog.index') }}" class="text-sm text-brand-600 hover:underline">بازگشت به بلاگ</a>
-        @if ($post->category)
-            <p class="mt-4 text-sm font-medium text-brand-600">{{ $post->category->name }}</p>
-        @endif
-        <h1 class="mt-2 text-3xl font-bold text-slate-900">{{ $post->title }}</h1>
-        <p class="mt-2 text-sm text-slate-400">
-            @jalali($post->published_at)
-            @if ($post->author)
-                <span class="mx-2">·</span>
-                <span>{{ $post->author->name }}</span>
+    <article class="fs-blog-single wrap" itemscope itemtype="https://schema.org/BlogPosting">
+        <nav class="fs-blog-breadcrumb" aria-label="مسیر">
+            <a href="{{ route('home') }}">خانه</a>
+            <span>/</span>
+            <a href="{{ route('blog.index') }}">بلاگ</a>
+            @if ($post->category)
+                <span>/</span>
+                <a href="{{ route('blog.category', $post->category->slug) }}">{{ $post->category->name }}</a>
             @endif
-        </p>
-        @if ($post->featuredImageUrl())
-            <img
-                src="{{ $post->featuredImageUrl() }}"
-                alt=""
-                class="mt-6 w-full rounded-2xl object-cover"
-                loading="lazy"
+        </nav>
+
+        <div class="fs-blog-layout">
+            <div class="fs-blog-main">
+                <header class="fs-blog-single-head">
+                    @if ($post->category)
+                        <a href="{{ route('blog.category', $post->category->slug) }}" class="fs-blog-card-category">{{ $post->category->name }}</a>
+                    @endif
+                    <h1 itemprop="headline">{{ $post->title }}</h1>
+                    <p class="fs-blog-card-meta">
+                        <time itemprop="datePublished" datetime="{{ $post->published_at?->toAtomString() }}">@jalali($post->published_at)</time>
+                        @if ($post->author)
+                            <span>·</span>
+                            <a href="{{ route('blog.author', $post->author) }}"><span itemprop="author">{{ $post->author->name }}</span></a>
+                        @endif
+                        <span>·</span>
+                        <span>{{ $post->readingTimeMinutes() }} دقیقه مطالعه</span>
+                    </p>
+                </header>
+
+                @if ($post->featuredImageUrl())
+                    <img
+                        src="{{ $post->featuredImageUrl() }}"
+                        alt=""
+                        class="fs-blog-single-cover"
+                        itemprop="image"
+                        loading="lazy"
+                    />
+                @endif
+
+                @if ($post->excerpt)
+                    <p class="fs-blog-single-excerpt" itemprop="description">{{ $post->excerpt }}</p>
+                @endif
+
+                <div class="fs-blog-single-content fs-product-prose" itemprop="articleBody">
+                    {!! $post->renderedBody() !!}
+                </div>
+
+                @if ($post->relationLoaded('tags') && $post->tags->isNotEmpty())
+                    <div class="fs-blog-single-tags">
+                        <span>برچسب‌ها:</span>
+                        @foreach ($post->tags as $tag)
+                            <a href="{{ route('blog.tag', $tag->slug) }}">{{ $tag->name }}</a>
+                        @endforeach
+                    </div>
+                @endif
+
+                @if ($post->allow_comments)
+                    <livewire:shop.blog-post-comments :post="$post" />
+                @else
+                    <p class="fs-blog-comments-closed">ثبت نظر برای این مطلب بسته است.</p>
+                @endif
+
+                @if ($related->isNotEmpty())
+                    <section class="fs-blog-related" aria-labelledby="related-posts">
+                        <h2 id="related-posts">مطالب مرتبط</h2>
+                        <div class="fs-blog-related-grid">
+                            @foreach ($related as $item)
+                                <x-shop.blog-post-card :post="$item" />
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
+            </div>
+
+            <x-shop.blog-sidebar
+                :sidebar-categories="$sidebarCategories"
+                :popular-tags="$popularTags"
+                :recent-posts="$recentPosts"
+                :archive-months="$archiveMonths"
             />
-        @endif
-        @if ($post->excerpt)
-            <p class="mt-6 text-lg text-slate-600">{{ $post->excerpt }}</p>
-        @endif
-        <div class="prose prose-slate mt-8 max-w-none text-sm leading-relaxed">
-            {!! $post->renderedBody() !!}
         </div>
-
-        @if ($post->tags)
-            <p class="mt-8 text-xs text-slate-500">
-                <span class="font-medium">برچسب‌ها:</span>
-                {{ $post->tags }}
-            </p>
-        @endif
-
-        <livewire:shop.blog-post-comments :post="$post" />
     </article>
 @endsection

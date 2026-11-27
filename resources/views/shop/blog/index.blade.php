@@ -1,34 +1,44 @@
 @extends('layouts.shop')
 
 @section('content')
-    <div class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold text-slate-900">بلاگ</h1>
-        <div class="mt-8 space-y-6">
-            @forelse ($posts as $post)
-                <article class="rounded-2xl border border-slate-200 bg-white p-6">
-                    @if ($post->featuredImageUrl())
-                        <img
-                            src="{{ $post->featuredImageUrl() }}"
-                            alt=""
-                            class="mb-4 w-full rounded-xl object-cover max-h-48"
-                            loading="lazy"
-                        />
-                    @endif
-                    @if ($post->category)
-                        <p class="text-xs font-medium text-brand-600">{{ $post->category->name }}</p>
-                    @endif
-                    <h2 class="mt-2 text-xl font-bold">
-                        <a href="{{ route('blog.show', $post->slug) }}" class="hover:text-brand-700">{{ $post->title }}</a>
-                    </h2>
-                    @if ($post->excerpt)
-                        <p class="mt-2 text-sm text-slate-600">{{ $post->excerpt }}</p>
-                    @endif
-                    <p class="mt-3 text-xs text-slate-400">@jalaliDate($post->published_at)</p>
-                </article>
-            @empty
-                <p class="text-slate-500">هنوز مطلبی منتشر نشده است.</p>
-            @endforelse
+    <div class="fs-blog-page wrap">
+        <header class="fs-blog-page-head">
+            <h1>بلاگ</h1>
+            <p>مقالات و راهنماهای فروشگاه</p>
+        </header>
+
+        <div class="fs-blog-layout">
+            <div class="fs-blog-main">
+                @if ($featuredPosts->isNotEmpty())
+                    <section class="fs-blog-featured" aria-label="مطالب ویژه">
+                        <h2>مطالب ویژه</h2>
+                        <div class="fs-blog-featured-grid">
+                            @foreach ($featuredPosts as $post)
+                                <x-shop.blog-post-card :post="$post" :featured="true" />
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
+
+                <section aria-labelledby="blog-latest-heading">
+                    <h2 id="blog-latest-heading" class="fs-blog-section-title">{{ $archiveHeading ?? 'آخرین مطالب' }}</h2>
+                    <div class="fs-blog-grid">
+                        @forelse ($posts as $post)
+                            <x-shop.blog-post-card :post="$post" />
+                        @empty
+                            <p class="fs-blog-empty">هنوز مطلبی منتشر نشده است.</p>
+                        @endforelse
+                    </div>
+                    <div class="fs-blog-pagination">{{ $posts->links() }}</div>
+                </section>
+            </div>
+
+            <x-shop.blog-sidebar
+                :sidebar-categories="$sidebarCategories"
+                :popular-tags="$popularTags"
+                :recent-posts="$recentPosts"
+                :archive-months="$archiveMonths"
+            />
         </div>
-        <div class="mt-8">{{ $posts->links() }}</div>
     </div>
 @endsection

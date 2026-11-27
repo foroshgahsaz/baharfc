@@ -8,8 +8,11 @@ use App\Filament\Resources\BlogCategories\Pages\EditBlogCategory;
 use App\Filament\Resources\BlogCategories\Pages\ListBlogCategories;
 use App\Models\BlogCategory;
 use BackedEnum;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use App\Support\SchemaGuard;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -44,6 +47,26 @@ class BlogCategoryResource extends Resource
         return $schema->components([
             TextInput::make('name')->label('نام')->required(),
             TextInput::make('slug')->label('نامک')->required()->unique(ignoreRecord: true),
+            Select::make('parent_id')
+                ->label('دسته والد')
+                ->relationship('parent', 'name')
+                ->searchable()
+                ->preload()
+                ->visible(fn (): bool => SchemaGuard::hasColumn('blog_categories', 'parent_id')),
+            Textarea::make('description')
+                ->label('توضیح (صفحه آرشیو)')
+                ->rows(3)
+                ->columnSpanFull()
+                ->visible(fn (): bool => SchemaGuard::hasColumn('blog_categories', 'description')),
+            TextInput::make('meta_title')
+                ->label('عنوان SEO')
+                ->visible(fn (): bool => SchemaGuard::hasColumn('blog_categories', 'meta_title')),
+            Textarea::make('meta_description')
+                ->label('توضیح SEO')
+                ->rows(2)
+                ->maxLength(500)
+                ->columnSpanFull()
+                ->visible(fn (): bool => SchemaGuard::hasColumn('blog_categories', 'meta_description')),
             Toggle::make('is_active')->label('فعال')->default(true),
         ]);
     }

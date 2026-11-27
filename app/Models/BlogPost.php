@@ -7,6 +7,7 @@ use App\Support\BlogHtmlSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
@@ -60,6 +61,11 @@ class BlogPost extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(BlogTag::class, 'blog_post_blog_tag');
     }
 
     public function comments(): HasMany
@@ -123,5 +129,23 @@ class BlogPost extends Model
     public function renderedBody(): string
     {
         return app(BlogHtmlSanitizer::class)->clean($this->body);
+    }
+
+    public function metaDescriptionForSeo(): string
+    {
+        if (filled($this->meta_description)) {
+            return (string) $this->meta_description;
+        }
+
+        $source = $this->excerpt ?: strip_tags($this->body ?? '');
+
+        return mb_strimwidth(trim(preg_replace('/\s+/u', ' ', $source) ?? ''), 0, 160, '…');
+    }
+
+    public function readingTimeMinutes(): int
+    {
+        $text = strip_tags($this->body ?? '');
+
+        return max(1, (int) ceil(mb_strlen($text) / 900));
     }
 }
