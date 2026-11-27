@@ -1,14 +1,33 @@
 <header class="site-header">
     <div class="topbar container">
-        <a class="brand" href="{{ route('home') }}" aria-label="{{ $shopWordmark ?? 'BAHARFC' }}">
-            @if (! empty($shopLogoUrl))
-                <img src="{{ $shopLogoUrl }}" alt="{{ $shopWordmark }}" class="brand-logo">
-            @else
-                {{ $shopWordmark ?? 'BAHARFC' }}
-            @endif
-        </a>
+        <div class="topbar-start">
+            <button class="mobile-menu" id="menuToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="باز کردن منو">☰</button>
+            <a class="brand" href="{{ route('home') }}" aria-label="{{ $shopWordmark ?? 'BAHARFC' }}">
+                @if (! empty($shopLogoUrl))
+                    <img src="{{ $shopLogoUrl }}" alt="{{ $shopWordmark }}" class="brand-logo">
+                @else
+                    {{ $shopWordmark ?? 'BAHARFC' }}
+                @endif
+            </a>
+        </div>
 
-        <livewire:shop.search-bar />
+        <div @class([
+            'topbar-search',
+            'topbar-search--mobile-icon' => $mobileSearchIconEnabled ?? true,
+        ]) id="shopSearch">
+            @if ($mobileSearchIconEnabled ?? true)
+                <button type="button" class="mobile-search-trigger" id="mobileSearchOpen" aria-expanded="false" aria-controls="mobileSearchSheet" aria-label="جستجو">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" fill="none" stroke="currentColor" stroke-width="2"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="2"/></svg>
+                </button>
+            @endif
+            <div class="topbar-search-inner" id="mobileSearchSheet">
+                <div class="mobile-search-sheet-head">
+                    <span>جستجوی محصولات</span>
+                    <button type="button" class="mobile-search-close" id="mobileSearchClose" aria-label="بستن جستجو">×</button>
+                </div>
+                <livewire:shop.search-bar />
+            </div>
+        </div>
 
         <nav class="user-links" aria-label="حساب کاربری">
             @guest
@@ -29,37 +48,24 @@
     <div class="nav-wrap">
         <div class="mobile-nav-backdrop" id="mobileNavBackdrop" aria-hidden="true"></div>
         <div class="container nav-row">
-            <button class="mobile-menu" id="menuToggle" type="button" aria-expanded="false" aria-controls="mainNav" aria-label="باز کردن منو">☰</button>
-            <nav class="main-nav" id="mainNav" aria-label="منوی اصلی">
-                <div class="mobile-nav-head">
+            <ul class="main-nav" id="mainNav" aria-label="منوی اصلی">
+                <li class="mobile-nav-head">
                     <span>منو</span>
                     <button type="button" class="mobile-nav-close" id="mobileNavClose" aria-label="بستن منو">×</button>
-                </div>
+                </li>
                 @if (($headerMenuItems ?? collect())->isNotEmpty())
                     @foreach ($headerMenuItems as $item)
-                        <a
-                            href="{{ $item->resolvedUrl() }}"
-                            @class([
-                                'nav-divider' => $item->show_divider_before,
-                                'is-active' => $item->isCurrent(),
-                            ])
-                            @if ($item->open_in_new_tab) target="_blank" rel="noopener noreferrer" @endif
-                        >{{ $item->label }}</a>
+                        <x-shop.nav-menu-item :item="$item" />
                     @endforeach
                 @else
-                    <a href="{{ route('products.index', ['category' => 'women']) }}">زنانه</a>
-                    <a href="{{ route('products.index', ['category' => 'men']) }}">مردانه</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('categories.show', 'women') }}">زنانه</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('categories.show', 'men') }}">مردانه</a>
+                    </li>
                 @endif
-            </nav>
-            @if ($headerCta ?? null)
-                <a
-                    class="special"
-                    href="{{ $headerCta->resolvedUrl() }}"
-                    @if ($headerCta->open_in_new_tab) target="_blank" rel="noopener noreferrer" @endif
-                >{{ $headerCta->label }}</a>
-            @else
-                <a class="special" href="{{ route('products.index', ['sort' => 'price_desc']) }}">پیشنهاد ویژه</a>
-            @endif
+            </ul>
         </div>
     </div>
 </header>

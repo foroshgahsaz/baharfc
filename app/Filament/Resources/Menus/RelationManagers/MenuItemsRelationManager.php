@@ -93,7 +93,11 @@ class MenuItemsRelationManager extends RelationManager
                             ->all();
                     })
                     ->native(false)
-                    ->helperText('برای زیرمنو (مثل وردپرس) — فعلاً هدر فقط سطح اول را نشان می‌دهد.'),
+                    ->helperText('زیرمنو یا ستون مگامنو — برای مگامنو، والد را خالی بگذارید و «مگامنو» را روی آیتم سطح اول فعال کنید؛ فرزندان مستقیم ستون‌ها و نوه‌ها لینک‌های هر ستون هستند.'),
+                Toggle::make('is_mega_menu')
+                    ->label('مگامنو (چندستونه، مثل وردپرس)')
+                    ->helperText('فقط برای آیتم‌های سطح اول منوی header_main.')
+                    ->visible(fn (Get $get): bool => ! $get('parent_id')),
                 TextInput::make('sort_order')
                     ->label('ترتیب')
                     ->numeric()

@@ -31,6 +31,7 @@ class MenuItem extends Model
         'is_active',
         'show_divider_before',
         'open_in_new_tab',
+        'is_mega_menu',
     ];
 
     protected function casts(): array
@@ -39,8 +40,24 @@ class MenuItem extends Model
             'is_active' => 'boolean',
             'show_divider_before' => 'boolean',
             'open_in_new_tab' => 'boolean',
+            'is_mega_menu' => 'boolean',
             'query_params' => 'array',
         ];
+    }
+
+    public function activeChildren(): HasMany
+    {
+        return $this->children()
+            ->where('is_active', true)
+            ->with([
+                'category',
+                'product',
+                'blogPost',
+                'children' => fn ($query) => $query
+                    ->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->with(['category', 'product', 'blogPost']),
+            ]);
     }
 
     public function menu(): BelongsTo
@@ -110,14 +127,41 @@ class MenuItem extends Model
                 'account' => request()->routeIs('account.*'),
                 default => false,
             },
-            'category' => request()->routeIs('products.index')
-                && request()->string('category')->toString() === ($this->category?->slug ?? ''),
+            'category' => $this->matchesCategoryRoute(),
             'product' => request()->routeIs('products.show')
                 && request()->route('slug') === ($this->product?->slug ?? ''),
             'blog_post' => request()->routeIs('blog.show')
                 && request()->route('slug') === ($this->blogPost?->slug ?? ''),
             default => false,
         };
+    }
+
+    protected function matchesCategoryRoute(): bool
+    {
+        $slug = $this->category?->slug ?? '';
+        if ($slug === '') {
+            return false;
+        }
+
+        if (request()->routeIs('categories.show')) {
+            return request()->route('slug') === $slug;
+        }
+
+        return request()->routeIs('products.index')
+            && request()->string('category')->toString() === $slug;
+    }
+
+    public function hasMegaPanel(): bool
+    {
+        if (! $this->is_mega_menu) {
+            return false;
+        }
+
+        if ($this->relationLoaded('children')) {
+            return $this->children->where('is_active', true)->isNotEmpty();
+        }
+
+        return $this->children()->where('is_active', true)->exists();
     }
 
     protected function matchesProductsIndex(): bool

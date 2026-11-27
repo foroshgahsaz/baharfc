@@ -29,6 +29,9 @@ class ShopSetting extends Model
         'contact_form_show_subject',
         'contact_form_require_subject',
         'footer_text',
+        'mobile_header_search_icon',
+        'mobile_bottom_nav_enabled',
+        'mobile_bottom_nav_items',
     ];
 
     protected function casts(): array
@@ -40,6 +43,9 @@ class ShopSetting extends Model
             'contact_form_require_phone' => 'boolean',
             'contact_form_show_subject' => 'boolean',
             'contact_form_require_subject' => 'boolean',
+            'mobile_header_search_icon' => 'boolean',
+            'mobile_bottom_nav_enabled' => 'boolean',
+            'mobile_bottom_nav_items' => 'array',
         ];
     }
 
