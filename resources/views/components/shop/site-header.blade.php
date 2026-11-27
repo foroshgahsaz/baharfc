@@ -11,11 +11,6 @@
         <livewire:shop.search-bar />
 
         <nav class="user-links" aria-label="حساب کاربری">
-            <a href="{{ auth()->check() ? route('account.index') : route('login') }}">
-                <span class="heart" aria-hidden="true">♡</span>
-                <span class="link-text">لیست علاقه‌مندی</span>
-                <b>{{ $wishlistCount ?? 0 }}</b>
-            </a>
             @guest
                 <a href="{{ route('login') }}">
                     <span class="user-icon" aria-hidden="true">♙</span>

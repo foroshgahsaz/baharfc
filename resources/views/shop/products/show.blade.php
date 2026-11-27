@@ -56,7 +56,7 @@
             <a href="{{ route('home') }}">خانه</a>
             @foreach ($categoryTrail as $cat)
                 <span aria-hidden="true">›</span>
-                <a href="{{ route('products.index', ['category' => $cat->slug]) }}">{{ $cat->name }}</a>
+                <a href="{{ route('categories.show', $cat->slug) }}">{{ $cat->name }}</a>
             @endforeach
             @if ($categoryTrail->isEmpty())
                 <span aria-hidden="true">›</span>
@@ -76,7 +76,6 @@
                         <span class="fs-product-gallery-placeholder">📦</span>
                     @endif
                     <div class="fs-product-gallery-actions">
-                        <livewire:shop.product-wishlist-toggle :product-id="$product->id" :key="'wish-gallery-'.$product->id" />
                         <button type="button" class="fs-product-icon-btn" data-product-zoom aria-label="بزرگنمایی تصویر">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg>
                         </button>
@@ -107,10 +106,10 @@
                         <a href="{{ route('products.index', ['brand' => $product->brand->slug]) }}" class="fs-product-pill">{{ $product->brand->name }}</a>
                     @endif
                     @if ($product->category?->parent)
-                        <a href="{{ route('products.index', ['category' => $product->category->parent->slug]) }}" class="fs-product-pill">{{ $product->category->parent->name }}</a>
+                        <a href="{{ route('categories.show', $product->category->parent->slug) }}" class="fs-product-pill">{{ $product->category->parent->name }}</a>
                     @endif
                     @if ($product->category)
-                        <a href="{{ route('products.index', ['category' => $product->category->slug]) }}" class="fs-product-pill">{{ $product->category->name }}</a>
+                        <a href="{{ route('categories.show', $product->category->slug) }}" class="fs-product-pill">{{ $product->category->name }}</a>
                     @endif
                 </div>
 

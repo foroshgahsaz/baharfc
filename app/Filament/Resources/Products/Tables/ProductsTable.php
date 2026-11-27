@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
+use App\Models\Product;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -47,6 +49,12 @@ class ProductsTable
                 TernaryFilter::make('is_featured')->label('ویژه'),
             ])
             ->recordActions([
+                Action::make('viewStorefront')
+                    ->label('نمایش در فروشگاه')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (Product $record): string => route('products.show', $record->slug))
+                    ->openUrlInNewTab()
+                    ->visible(fn (Product $record): bool => $record->is_active),
                 EditAction::make(),
             ])
             ->toolbarActions([

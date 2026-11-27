@@ -740,6 +740,7 @@
 }
 
 .lebasino-page .amazing-product-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -761,6 +762,19 @@
 .lebasino-page .amazing-product-card:is(:hover, :focus-within) {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.lebasino-page .amazing-product-card-discount {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: #e01e6b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
 }
 
 .lebasino-page .amazing-product-card-header {
@@ -3466,6 +3480,233 @@
     font-size: 28px;
     line-height: 1;
     cursor: pointer;
+}
+
+/* ——— Category / catalog listing (Hiba-style) ——— */
+.lebasino-page .fs-catalog-page {
+    padding: 24px 0 56px;
+}
+
+.lebasino-page .fs-catalog-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: #85858a;
+}
+
+.lebasino-page .fs-catalog-breadcrumb a {
+    color: #85858a;
+    text-decoration: none;
+}
+
+.lebasino-page .fs-catalog-breadcrumb a:hover {
+    color: var(--lebasino-accent);
+}
+
+.lebasino-page .fs-catalog-head {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.lebasino-page .fs-catalog-head h1 {
+    margin: 0;
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 800;
+    color: #273044;
+}
+
+.lebasino-page .fs-catalog-count {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #85858a;
+}
+
+.lebasino-page .fs-catalog-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding: 14px 16px;
+    border: 1px solid #eceef2;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.lebasino-page .fs-catalog-toolbar-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.lebasino-page .fs-catalog-input {
+    width: 120px;
+    padding: 8px 12px;
+    border: 1px solid #e0e3ea;
+    border-radius: 12px;
+    font: inherit;
+    font-size: 13px;
+}
+
+.lebasino-page .fs-catalog-apply {
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--lebasino-accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.lebasino-page .fs-catalog-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #5c6270;
+}
+
+.lebasino-page .fs-catalog-sort select {
+    padding: 8px 12px;
+    border: 1px solid #e0e3ea;
+    border-radius: 12px;
+    font: inherit;
+    font-size: 13px;
+}
+
+.lebasino-page .fs-catalog-search-note {
+    flex: 1 1 100%;
+    margin: 0;
+    font-size: 13px;
+    color: var(--lebasino-accent);
+}
+
+.lebasino-page .fs-catalog-grid {
+    display: grid;
+    gap: 20px 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+    .lebasino-page .fs-catalog-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .lebasino-page .fs-catalog-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 24px 20px;
+    }
+}
+
+.lebasino-page .fs-catalog-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lebasino-page .fs-catalog-card-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #f7f7f9;
+}
+
+.lebasino-page .fs-catalog-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.lebasino-page .fs-catalog-card-media:is(:hover, :focus-visible) img {
+    transform: scale(1.04);
+}
+
+.lebasino-page .fs-catalog-badge {
+    position: absolute;
+    top: 10px;
+    inset-inline-start: 10px;
+    z-index: 1;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: var(--lebasino-accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.lebasino-page .fs-catalog-placeholder {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    font-size: 40px;
+    opacity: 0.4;
+}
+
+.lebasino-page .fs-catalog-card-title {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.55;
+    text-align: center;
+}
+
+.lebasino-page .fs-catalog-card-title a {
+    color: #273044;
+    text-decoration: none;
+}
+
+.lebasino-page .fs-catalog-card-title a:hover {
+    color: var(--lebasino-accent);
+}
+
+.lebasino-page .fs-catalog-card-price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.lebasino-page .fs-catalog-price-old {
+    color: #9aa0ad;
+    text-decoration: line-through;
+    font-size: 12px;
+}
+
+.lebasino-page .fs-catalog-price-final {
+    font-weight: 800;
+    color: #273044;
+}
+
+.lebasino-page .fs-catalog-empty {
+    grid-column: 1 / -1;
+    padding: 48px 24px;
+    border: 1px dashed #d8dbe3;
+    border-radius: 20px;
+    text-align: center;
+    color: #85858a;
+}
+
+.lebasino-page .fs-catalog-pagination {
+    margin-top: 32px;
+}
+
+.lebasino-page .fs-catalog-seo {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid #eceef2;
 }
 
 .maintenance-page {

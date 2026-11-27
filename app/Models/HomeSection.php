@@ -106,7 +106,7 @@ class HomeSection extends Model
         }
 
         if ($this->resolvedSource() === HomeProductSource::Category && $this->category) {
-            return route('products.index', ['category' => $this->category->slug]);
+            return route('categories.show', $this->category->slug);
         }
 
         return route('products.index');

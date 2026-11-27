@@ -42,7 +42,7 @@
             @php
                 $isModel = $item instanceof \App\Models\Category;
                 $label = $isModel ? ($item->home_caption ?: $item->name) : ($item['label'] ?? '');
-                $href = route('products.index', ['category' => $isModel ? $item->slug : ($item['slug'] ?? null)]);
+                $href = route('categories.show', $isModel ? $item->slug : ($item['slug'] ?? ''));
                 $fallbackImage = 'images/lebasino/categories/cat-'.(($loop->index % 10) + 1).'.jpg';
                 $image = $isModel
                     ? ($item->imageUrl() ?: asset($fallbackImage))

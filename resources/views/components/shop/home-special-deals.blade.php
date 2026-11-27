@@ -14,22 +14,9 @@
                         $percent = $product->discountPercent();
                     @endphp
                     <article class="amazing-product-card">
-                        <header class="amazing-product-card-header">
-                            <a
-                                href="{{ route('products.show', $product->slug) }}"
-                                class="amazing-wishlist-link"
-                                title="مشاهده محصول"
-                                aria-label="مشاهده {{ $product->name }}"
-                            >
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                </svg>
-                            </a>
-                            <div class="amazing-rating" aria-hidden="true">
-                                <span>۰</span>
-                                <span class="amazing-star">★</span>
-                            </div>
-                        </header>
+                        @if ($hasDiscount && $percent)
+                            <span class="amazing-product-card-discount">٪{{ JalaliDate::toPersianDigits((string) $percent) }}</span>
+                        @endif
 
                         <a href="{{ route('products.show', $product->slug) }}" class="amazing-product-image">
                             @if ($product->imageUrl())

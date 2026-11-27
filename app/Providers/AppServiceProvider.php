@@ -100,13 +100,6 @@ class AppServiceProvider extends ServiceProvider
             $view->with('cartItemCount', $cart->itemCount());
             $view->with('cartSubtotal', $cart->subtotal());
 
-            $wishlistCount = 0;
-            if (auth()->check() && Schema::hasTable('wishlist_items')) {
-                $wishlistCount = auth()->user()->wishlistItems()->count();
-            }
-
-            $view->with('wishlistCount', $wishlistCount);
-
             $view->with('adminBar', app(AdminBarBuilder::class)->forShop(request()));
         });
 
