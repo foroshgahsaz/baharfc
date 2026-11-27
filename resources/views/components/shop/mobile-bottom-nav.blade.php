@@ -8,6 +8,13 @@
                 @class([
                     'mobile-bottom-nav-item',
                     'is-action' => ($item['key'] ?? '') === 'search',
+                    'is-active' => match ($item['key'] ?? '') {
+                        'home' => request()->routeIs('home'),
+                        'categories' => request()->routeIs('products.*', 'categories.*'),
+                        'cart' => request()->routeIs('cart.*'),
+                        'account' => request()->routeIs('account.*', 'login', 'register'),
+                        default => false,
+                    },
                 ])
                 data-mobile-bottom-key="{{ $item['key'] ?? '' }}"
                 aria-label="{{ $item['label'] ?? '' }}"

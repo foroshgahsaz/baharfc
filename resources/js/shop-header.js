@@ -94,9 +94,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const filtersOpen = document.querySelector('[data-catalog-filters-open]');
     const catalogSidebar = document.querySelector('.fs-catalog-sidebar');
+    const catalogBackdrop = document.getElementById('catalogFiltersBackdrop');
+    const filtersClose = document.querySelector('[data-catalog-filters-close]');
+
+    const setCatalogFiltersOpen = (open) => {
+        catalogSidebar?.classList.toggle('is-mobile-open', open);
+        catalogSidebar?.setAttribute('aria-hidden', open ? 'false' : 'true');
+        catalogBackdrop?.toggleAttribute('hidden', ! open);
+        catalogBackdrop?.classList.toggle('is-open', open);
+        filtersOpen?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        document.body.classList.toggle('catalog-filters-open', open);
+    };
+
     filtersOpen?.addEventListener('click', () => {
-        const open = catalogSidebar?.classList.toggle('is-mobile-open');
-        filtersOpen.setAttribute('aria-expanded', open ? 'true' : 'false');
-        document.body.classList.toggle('catalog-filters-open', Boolean(open));
+        const willOpen = ! catalogSidebar?.classList.contains('is-mobile-open');
+        setCatalogFiltersOpen(willOpen);
+    });
+
+    filtersClose?.addEventListener('click', () => setCatalogFiltersOpen(false));
+    catalogBackdrop?.addEventListener('click', () => setCatalogFiltersOpen(false));
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && catalogSidebar?.classList.contains('is-mobile-open')) {
+            setCatalogFiltersOpen(false);
+        }
     });
 });

@@ -25,8 +25,44 @@
             <p class="fs-catalog-count">{{ JalaliDate::toPersianDigits((string) $products->total()) }} محصول</p>
         </header>
 
+        <div class="fs-catalog-backdrop" id="catalogFiltersBackdrop" aria-hidden="true" hidden></div>
+
         <div class="fs-catalog-layout">
-            <aside class="fs-catalog-sidebar" aria-label="فیلترها">
+            <div class="fs-catalog-main">
+                @if (! empty($search))
+                    <p class="fs-catalog-search-note">نتایج جستجو: «{{ $search }}»</p>
+                @endif
+
+                <button type="button" class="fs-catalog-mobile-filters" data-catalog-filters-open aria-expanded="false">
+                    فیلتر و دسته‌بندی
+                </button>
+
+                <div class="fs-catalog-grid" aria-live="polite">
+                    @forelse ($products as $product)
+                        <x-shop.catalog-product-card :product="$product" />
+                    @empty
+                        <p class="fs-catalog-empty">محصولی در این دسته یافت نشد.</p>
+                    @endforelse
+                </div>
+
+                @if ($products->hasPages())
+                    <div class="fs-catalog-pagination">
+                        {{ $products->links() }}
+                    </div>
+                @endif
+
+                @if ($category && filled($category->description))
+                    <section class="fs-catalog-seo fs-product-prose" aria-label="درباره دسته">
+                        {!! $category->description !!}
+                    </section>
+                @endif
+            </div>
+
+            <aside class="fs-catalog-sidebar" id="catalogSidebar" aria-label="فیلترها" aria-hidden="true">
+                <div class="fs-catalog-sidebar-head">
+                    <strong>فیلترها</strong>
+                    <button type="button" class="fs-catalog-sidebar-close" data-catalog-filters-close aria-label="بستن فیلترها">×</button>
+                </div>
                 <form method="get" action="{{ $formAction }}" class="fs-catalog-filters">
                     @if (! empty($search))
                         <input type="hidden" name="q" value="{{ $search }}" />
@@ -116,36 +152,6 @@
                     </details>
                 </form>
             </aside>
-
-            <div class="fs-catalog-main">
-                @if (! empty($search))
-                    <p class="fs-catalog-search-note">نتایج جستجو: «{{ $search }}»</p>
-                @endif
-
-                <button type="button" class="fs-catalog-mobile-filters" data-catalog-filters-open aria-expanded="false">
-                    فیلتر و دسته‌بندی
-                </button>
-
-                <div class="fs-catalog-grid" aria-live="polite">
-                    @forelse ($products as $product)
-                        <x-shop.catalog-product-card :product="$product" />
-                    @empty
-                        <p class="fs-catalog-empty">محصولی در این دسته یافت نشد.</p>
-                    @endforelse
-                </div>
-
-                @if ($products->hasPages())
-                    <div class="fs-catalog-pagination">
-                        {{ $products->links() }}
-                    </div>
-                @endif
-
-                @if ($category && filled($category->description))
-                    <section class="fs-catalog-seo fs-product-prose" aria-label="درباره دسته">
-                        {!! $category->description !!}
-                    </section>
-                @endif
-            </div>
         </div>
     </div>
 @endsection

@@ -105,11 +105,13 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('layouts.shop', function ($view): void {
             try {
-                $view->with('mobileBottomNavEnabled', ShopMobileNav::bottomNavEnabled());
-                $view->with('mobileBottomNavItems', ShopMobileNav::resolvedBottomNavItems());
+                $bottomEnabled = ShopMobileNav::bottomNavEnabled();
+                $bottomItems = ShopMobileNav::resolvedBottomNavItems();
+                $view->with('mobileBottomNavEnabled', $bottomEnabled && $bottomItems !== []);
+                $view->with('mobileBottomNavItems', $bottomItems);
             } catch (\Throwable) {
-                $view->with('mobileBottomNavEnabled', false);
-                $view->with('mobileBottomNavItems', []);
+                $view->with('mobileBottomNavEnabled', true);
+                $view->with('mobileBottomNavItems', ShopMobileNav::resolvedBottomNavItems());
             }
 
             $cart = app(CartService::class);
