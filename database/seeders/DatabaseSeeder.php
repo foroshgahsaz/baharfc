@@ -25,9 +25,8 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->call([
-            DemoCatalogSeeder::class,
+            FashionRetailSeeder::class,
             CartCatalogSeeder::class,
-            ShopMenuSeeder::class,
         ]);
     }
 }
