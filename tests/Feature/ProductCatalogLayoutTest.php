@@ -33,6 +33,8 @@ class ProductCatalogLayoutTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('fs-catalog-page', false);
+        $response->assertSee('fs-catalog-layout', false);
+        $response->assertSee('fs-catalog-sidebar', false);
         $response->assertSee('پوشاک زنانه', false);
         $response->assertSee('مانتو مجلسی', false);
         $response->assertSee('راهنمای خرید', false);

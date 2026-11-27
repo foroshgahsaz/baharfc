@@ -112,6 +112,41 @@ class ShopMenuTest extends TestCase
         }
     }
 
+    public function test_header_renders_child_menu_items(): void
+    {
+        $menu = Menu::query()->create([
+            'name' => 'منوی اصلی هدر',
+            'slug' => 'header_main',
+            'is_active' => true,
+        ]);
+
+        $parent = MenuItem::query()->create([
+            'menu_id' => $menu->id,
+            'label' => 'زنانه',
+            'item_type' => 'page',
+            'page_key' => 'products',
+            'sort_order' => 0,
+            'is_active' => true,
+        ]);
+
+        MenuItem::query()->create([
+            'menu_id' => $menu->id,
+            'parent_id' => $parent->id,
+            'label' => 'مانتو',
+            'item_type' => 'page',
+            'page_key' => 'products',
+            'sort_order' => 0,
+            'is_active' => true,
+        ]);
+
+        ShopMenu::forgetCache();
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('زنانه', false)
+            ->assertSee('مانتو', false);
+    }
+
     public function test_updating_menu_item_busts_guest_product_page_cache(): void
     {
         $product = Product::factory()->create(['is_active' => true]);

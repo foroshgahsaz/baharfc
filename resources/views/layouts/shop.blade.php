@@ -18,15 +18,13 @@
 <body @class([
     'lebasino-page min-h-full bg-white font-sans text-slate-800 antialiased',
     'has-baharfc-admin-bar' => $adminBar ?? false,
+    'has-mobile-bottom-nav' => ($mobileBottomNavEnabled ?? false) && ! empty($mobileBottomNavItems ?? []),
 ])>
     @isset($adminBar)
         <x-admin-bar :admin-bar="$adminBar" />
     @endisset
 
-    @include('components.shop.site-header', [
-        'headerMenuItems' => $headerMenuItems ?? collect(),
-        'headerCta' => $headerCta ?? null,
-    ])
+    <x-shop.site-header />
 
     <main @if (! empty($mainClass)) class="{{ $mainClass }}" @endif>
         @hasSection('content')
@@ -42,6 +40,10 @@
         :shop-footer-text="$shopFooterText ?? null"
         :shop-contact-enabled="$shopContactEnabled ?? false"
     />
+
+    @if (($mobileBottomNavEnabled ?? false) && ! empty($mobileBottomNavItems ?? []))
+        <x-shop.mobile-bottom-nav :items="$mobileBottomNavItems" />
+    @endif
 
     @livewireScripts
     @stack('scripts')

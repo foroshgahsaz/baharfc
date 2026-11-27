@@ -18,14 +18,23 @@ class ProductController extends Controller
             ->where('is_active', true);
 
         if ($slug = $request->string('category')->toString()) {
-            $category = Category::query()->where('slug', $slug)->where('is_active', true)->firstOrFail();
+            $category = Category::query()
+                ->with('parent')
+                ->where('slug', $slug)
+                ->where('is_active', true)
+                ->firstOrFail();
             $query->where('category_id', $category->id);
         } else {
             $category = null;
         }
 
-        if ($brandSlug = $request->string('brand')->toString()) {
-            $query->whereHas('brand', fn ($q) => $q->where('slug', $brandSlug)->where('is_active', true));
+        $brandSlug = $request->string('brand')->toString();
+        $selectedBrand = null;
+        if ($brandSlug !== '') {
+            $selectedBrand = Brand::query()->where('slug', $brandSlug)->where('is_active', true)->first();
+            if ($selectedBrand) {
+                $query->where('brand_id', $selectedBrand->id);
+            }
         }
 
         $search = $request->string('q')->trim()->toString();
@@ -49,13 +58,34 @@ class ProductController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
+        $sidebarCategories = Category::query()
+            ->where('is_active', true)
+            ->whereNull('parent_id')
+            ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
+            ->orderBy('sort_order')
+            ->get();
+
+        $sidebarChildCategories = ($category ?? null)
+            ? Category::query()
+                ->where('is_active', true)
+                ->where('parent_id', $category->id)
+                ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
+                ->orderBy('sort_order')
+                ->get()
+            : collect();
+
         return view('shop.products.index', [
             'products' => $products,
             'category' => $category ?? null,
-            'categories' => Category::query()->where('is_active', true)->whereNull('parent_id')->orderBy('sort_order')->get(),
+            'categories' => $sidebarCategories,
+            'sidebarChildCategories' => $sidebarChildCategories,
             'brands' => Brand::query()->where('is_active', true)->orderBy('name')->get(),
+            'selectedBrand' => $selectedBrand,
             'sort' => $sort,
             'search' => $search,
+            'formAction' => ($category ?? null)
+                ? route('categories.show', $category->slug)
+                : route('products.index'),
             'mainClass' => 'container',
         ]);
     }

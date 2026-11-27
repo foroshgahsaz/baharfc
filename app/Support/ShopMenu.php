@@ -95,7 +95,23 @@ class ShopMenu
 
         return $menu->rootItems()
             ->where('is_active', true)
-            ->with(['category', 'product', 'blogPost'])
+            ->with([
+                'category',
+                'product',
+                'blogPost',
+                'children' => fn ($query) => $query
+                    ->where('is_active', true)
+                    ->orderBy('sort_order')
+                    ->with([
+                        'category',
+                        'product',
+                        'blogPost',
+                        'children' => fn ($childQuery) => $childQuery
+                            ->where('is_active', true)
+                            ->orderBy('sort_order')
+                            ->with(['category', 'product', 'blogPost']),
+                    ]),
+            ])
             ->get();
     }
 

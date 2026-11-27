@@ -15,6 +15,7 @@ use App\Support\PersistentLogStorage;
 use App\Support\PublicUploadStorage;
 use App\Support\ShopAppearance;
 use App\Support\ShopMenu;
+use App\Support\ShopMobileNav;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -78,23 +79,38 @@ class AppServiceProvider extends ServiceProvider
 
         $shareHeaderMenu = function ($view): void {
             $data = $view->getData();
-            if (isset($data['headerMenuItems'])) {
+            $items = $data['headerMenuItems'] ?? null;
+            if ($items instanceof \Illuminate\Support\Collection && $items->isNotEmpty()) {
                 return;
             }
 
             try {
                 $view->with('headerMenuItems', ShopMenu::headerItems());
-                $view->with('headerCta', ShopMenu::headerCta());
             } catch (\Throwable) {
                 $view->with('headerMenuItems', collect());
-                $view->with('headerCta', null);
+            }
+
+            try {
+                $view->with('mobileSearchIconEnabled', ShopMobileNav::mobileSearchIconEnabled());
+                $view->with('mobileBottomNavEnabled', ShopMobileNav::bottomNavEnabled());
+                $view->with('mobileBottomNavItems', ShopMobileNav::resolvedBottomNavItems());
+            } catch (\Throwable) {
+                $view->with('mobileSearchIconEnabled', true);
+                $view->with('mobileBottomNavEnabled', false);
+                $view->with('mobileBottomNavItems', []);
             }
         };
 
-        View::composer('components.shop.site-header', $shareHeaderMenu);
+        View::composer(['components.shop.site-header', 'layouts.shop'], $shareHeaderMenu);
 
-        View::composer('layouts.shop', function ($view) use ($shareHeaderMenu): void {
-            $shareHeaderMenu($view);
+        View::composer('layouts.shop', function ($view): void {
+            try {
+                $view->with('mobileBottomNavEnabled', ShopMobileNav::bottomNavEnabled());
+                $view->with('mobileBottomNavItems', ShopMobileNav::resolvedBottomNavItems());
+            } catch (\Throwable) {
+                $view->with('mobileBottomNavEnabled', false);
+                $view->with('mobileBottomNavItems', []);
+            }
 
             $cart = app(CartService::class);
             $view->with('cartItemCount', $cart->itemCount());

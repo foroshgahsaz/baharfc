@@ -7,6 +7,8 @@ use App\Models\ShopSetting;
 use App\Support\SchemaGuard;
 use BackedEnum;
 use Filament\Actions\Action;
+use App\Support\ShopMobileNav;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\ColorPicker;
 use App\Filament\Forms\Components\MediaPicker;
 use Filament\Forms\Components\Textarea;
@@ -123,6 +125,29 @@ class ShopSettings extends Page implements HasSchemas
                     ->default(false)
                     ->visible(fn (): bool => static::contactFormSettingsReady()),
                 Textarea::make('footer_text')->label('متن فوتر')->rows(2)->columnSpanFull(),
+                Toggle::make('mobile_header_search_icon')
+                    ->label('جستجو با آیکون در موبایل (شبیه چینی‌بازار)')
+                    ->default(true)
+                    ->visible(fn (): bool => SchemaGuard::hasColumn('shop_settings', 'mobile_header_search_icon'))
+                    ->columnSpanFull(),
+                Toggle::make('mobile_bottom_nav_enabled')
+                    ->label('منوی استیکی پایین صفحه در موبایل')
+                    ->default(true)
+                    ->visible(fn (): bool => SchemaGuard::hasColumn('shop_settings', 'mobile_bottom_nav_enabled'))
+                    ->columnSpanFull(),
+                CheckboxList::make('mobile_bottom_nav_items')
+                    ->label('آیتم‌های منوی پایین موبایل')
+                    ->options([
+                        'home' => 'خانه',
+                        'categories' => 'دسته‌بندی‌ها',
+                        'search' => 'جستجو',
+                        'cart' => 'سبد خرید',
+                        'account' => 'حساب کاربری',
+                    ])
+                    ->default(ShopMobileNav::DEFAULT_BOTTOM_ITEMS)
+                    ->columns(2)
+                    ->visible(fn (): bool => SchemaGuard::hasColumn('shop_settings', 'mobile_bottom_nav_items'))
+                    ->columnSpanFull(),
                 Toggle::make('maintenance_enabled')->label('حالت در دست تعمیر')->columnSpanFull(),
                 Textarea::make('maintenance_message')
                     ->label('پیام صفحه تعمیر')
