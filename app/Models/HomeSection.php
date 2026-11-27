@@ -48,28 +48,55 @@ class HomeSection extends Model
         return $this->belongsToMany(Product::class, 'home_section_product')
             ->withPivot('sort_order')
             ->withTimestamps()
-            ->orderByPivot('sort_order');
+            ->orderByPivot('sort_order')
+            ->orderBy('products.id');
+    }
+
+    public function resolvedSource(): HomeProductSource
+    {
+        if ($this->source instanceof HomeProductSource) {
+            return $this->source;
+        }
+
+        return HomeProductSource::tryFrom((string) $this->source) ?? HomeProductSource::Category;
     }
 
     public function resolvedProducts(): Collection
     {
-        if ($this->source === HomeProductSource::Manual) {
-            return $this->products()
-                ->where('products.is_active', true)
-                ->get();
+        if ($this->resolvedSource() === HomeProductSource::Manual) {
+            $products = $this->relationLoaded('products')
+                ? $this->products
+                : $this->products()->get();
+
+            return $products
+                ->filter(fn (Product $product) => $product->is_active)
+                ->unique('id')
+                ->sortBy(fn (Product $product) => (int) ($product->pivot->sort_order ?? 0))
+                ->values();
         }
 
         if ($this->category_id === null) {
             return collect();
         }
 
+        $limit = max(1, min(24, (int) ($this->product_limit ?: 8)));
+
         return Product::query()
             ->where('is_active', true)
             ->where('category_id', $this->category_id)
             ->orderBy('sort_order')
-            ->latest()
-            ->limit(max(1, min(24, (int) $this->product_limit)))
+            ->latest('id')
+            ->limit($limit)
             ->get();
+    }
+
+    public function isStyle2(): bool
+    {
+        if ($this->style instanceof HomeCarouselStyle) {
+            return $this->style === HomeCarouselStyle::Style2;
+        }
+
+        return (string) $this->style === HomeCarouselStyle::Style2->value;
     }
 
     public function moreLinkUrl(): ?string
@@ -78,7 +105,7 @@ class HomeSection extends Model
             return $this->more_url;
         }
 
-        if ($this->source === HomeProductSource::Category && $this->category) {
+        if ($this->resolvedSource() === HomeProductSource::Category && $this->category) {
             return route('products.index', ['category' => $this->category->slug]);
         }
 

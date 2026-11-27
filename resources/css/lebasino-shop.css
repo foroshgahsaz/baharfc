@@ -2134,7 +2134,7 @@
 .lebasino-page .home-carousel {
     width: 100%;
     margin-top: 48px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .lebasino-page .home-carousel-style-1-heading,
