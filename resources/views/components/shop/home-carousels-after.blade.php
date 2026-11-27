@@ -9,7 +9,7 @@
         $products = $section->resolvedProducts();
     @endphp
     @if ($products->isNotEmpty())
-        @if ($section->style === \App\Enums\HomeCarouselStyle::Style2)
+        @if ($section->isStyle2())
             <x-shop.home-carousel-style-2 :section="$section" :products="$products" />
         @else
             <x-shop.home-carousel-style-1 :section="$section" :products="$products" />

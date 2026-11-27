@@ -88,7 +88,8 @@ class HomeSectionResource extends Resource
                     ->required()
                     ->default(HomeProductSource::Category->value)
                     ->live()
-                    ->native(false),
+                    ->native(false)
+                    ->helperText('برای انتخاب دقیق چند محصول، گزینه «انتخاب دستی» را بزنید و از تب محصولات، آیتم‌ها را اضافه کنید.'),
                 Select::make('category_id')
                     ->label('دسته‌بندی')
                     ->relationship('category', 'name')
