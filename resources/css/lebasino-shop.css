@@ -12,6 +12,16 @@
     overflow-x: clip;
 }
 
+.lebasino-page:has(.home-carousel--full-bleed),
+.lebasino-page:has(.amazing-section) {
+    overflow-x: visible;
+}
+
+.lebasino-page main.container:has(.home-carousel--full-bleed),
+.lebasino-page main.container:has(.amazing-section) {
+    overflow-x: visible;
+}
+
 .lebasino-page a {
     color: inherit;
     text-decoration: none;
@@ -2303,6 +2313,23 @@
     width: 100%;
     margin-top: 48px;
     overflow: visible;
+}
+
+/* تمام‌عرض داخل main.container — همان تکنیک پیشنهاد شگفت‌انگیز */
+.lebasino-page .home-carousel.home-carousel--full-bleed {
+    --home-carousel-bleed-pad: clamp(16px, 3.5vw, 48px);
+
+    width: 100vw;
+    max-width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    padding-inline: var(--home-carousel-bleed-pad);
+    box-sizing: border-box;
+}
+
+.lebasino-page .home-carousel.home-carousel--full-bleed .home-carousel-style-2-track {
+    margin-inline: calc(-1 * var(--home-carousel-bleed-pad));
+    padding-inline: var(--home-carousel-bleed-pad);
+    scroll-padding-inline: var(--home-carousel-bleed-pad);
 }
 
 .lebasino-page .home-carousel-style-1-heading,

@@ -5,7 +5,7 @@
     $dotCount = min(5, max(1, (int) ceil($products->count() / 2)));
 @endphp
 
-<section class="home-carousel home-carousel-style-2" data-slider aria-label="{{ $section->title }}">
+<section class="home-carousel home-carousel-style-2 home-carousel--full-bleed" data-slider aria-label="{{ $section->title }}">
     <header class="home-carousel-style-2-heading">
         <div class="home-carousel-style-2-title-wrap">
             <h2>
