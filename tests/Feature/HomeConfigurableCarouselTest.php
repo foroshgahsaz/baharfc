@@ -74,6 +74,7 @@ class HomeConfigurableCarouselTest extends TestCase
         $html = $this->get(route('home'))->assertOk()->getContent();
 
         $this->assertStringContainsString('home-carousel-style-2', $html);
+        $this->assertStringContainsString('home-carousel--full-bleed', $html);
         $this->assertStringContainsString('بهترین برندهای ایران', $html);
         $this->assertStringContainsString($products->first()->name, $html);
     }

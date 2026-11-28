@@ -12,6 +12,16 @@
     overflow-x: clip;
 }
 
+.lebasino-page:has(.home-carousel--full-bleed),
+.lebasino-page:has(.amazing-section) {
+    overflow-x: visible;
+}
+
+.lebasino-page main.container:has(.home-carousel--full-bleed),
+.lebasino-page main.container:has(.amazing-section) {
+    overflow-x: visible;
+}
+
 .lebasino-page a {
     color: inherit;
     text-decoration: none;
@@ -2305,6 +2315,23 @@
     overflow: visible;
 }
 
+/* تمام‌عرض داخل main.container — همان تکنیک پیشنهاد شگفت‌انگیز */
+.lebasino-page .home-carousel.home-carousel--full-bleed {
+    --home-carousel-bleed-pad: clamp(16px, 3.5vw, 48px);
+
+    width: 100vw;
+    max-width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    padding-inline: var(--home-carousel-bleed-pad);
+    box-sizing: border-box;
+}
+
+.lebasino-page .home-carousel.home-carousel--full-bleed .home-carousel-style-2-track {
+    margin-inline: calc(-1 * var(--home-carousel-bleed-pad));
+    padding-inline: var(--home-carousel-bleed-pad);
+    scroll-padding-inline: var(--home-carousel-bleed-pad);
+}
+
 .lebasino-page .home-carousel-style-1-heading,
 .lebasino-page .home-carousel-style-2-heading {
     display: flex;
@@ -3875,6 +3902,18 @@
         gap: 28px;
     }
 
+    /* RTL: ستون ۱ سمت راست — سایدبار؛ ستون ۲ چپ — گرید محصولات (ترتیب DOM: main سپس sidebar) */
+    .lebasino-page .fs-catalog-sidebar {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .lebasino-page .fs-catalog-main {
+        grid-column: 2;
+        grid-row: 1;
+        min-width: 0;
+    }
+
     .lebasino-page .fs-catalog-head {
         text-align: start;
     }
@@ -3917,13 +3956,17 @@
 .lebasino-page .fs-filter-list a {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 8px;
     padding: 8px 10px;
     border-radius: 10px;
     font-size: 13px;
     color: #5c6270;
     text-decoration: none;
+}
+
+.lebasino-page .fs-filter-list a .fs-filter-count {
+    margin-inline-start: auto;
 }
 
 .lebasino-page .fs-filter-list a:is(:hover, .is-active) {
